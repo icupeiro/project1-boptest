@@ -4,7 +4,7 @@ model IBPSA_BOPTEST
     "Model that handles time and weather data"
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
 
-   SubSystems.BuildingEnvelope.Envelope buiEnv(T_start=296.65)
+   SubSystems.BuildingEnvelope.EnvelopeSim buiEnv(T_start=296.65)
     "Envelope of the building"
     annotation (Placement(transformation(extent={{-50,56},{-8,86}})));
 
