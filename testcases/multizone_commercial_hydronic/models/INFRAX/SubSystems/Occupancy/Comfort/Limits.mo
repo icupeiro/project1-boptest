@@ -67,10 +67,10 @@ equation
   totalUnderHeat=sum(intUnder[:]);
 
   // Set the values for the different kinds of control
-  THardUp = if (clock.hour >= 6 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 1] else ctrlLimits.limValue[typeLimit, 1] + 5;
-  TSoftUp = if (clock.hour >= 6 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 2] else ctrlLimits.limValue[typeLimit, 2] + 5;
-  TSoftDown = if (clock.hour >= 6 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 3] else ctrlLimits.limValue[typeLimit, 3] - 5;
-  THardDown = if (clock.hour >= 6 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 4] else ctrlLimits.limValue[typeLimit, 4] - 5;
+  THardUp = if (clock.hour >= 7 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 1] else ctrlLimits.limValue[typeLimit, 1] + 5;
+  TSoftUp = if (clock.hour >= 7 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 2] else ctrlLimits.limValue[typeLimit, 2] + 5;
+  TSoftDown = if (clock.hour >= 7 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 3] else ctrlLimits.limValue[typeLimit, 3] - 5;
+  THardDown = if (clock.hour >= 7 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 4] else ctrlLimits.limValue[typeLimit, 4] - 5;
   //limits = if ctrlLimits.RMOT < (273.15 + (10 + 15)/2) then ctrlLimits.limValue[typeLimit, 3] else ctrlLimits.limValue[typeLimit, 2];
   connect(Tavg, realExpression.y) annotation (Line(points={{155,-11},{130,-11},
           {130,-11},{103.2,-11}}, color={0,0,127}));
