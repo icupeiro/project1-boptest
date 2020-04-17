@@ -5,7 +5,7 @@ model RBCbaseline "hybridGEOTABS RBC baseline"
         iconTransformation(extent={{-110,-10},{-90,10}})));
   SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{120,
             20}}), iconTransformation(extent={{90,-10},{110,10}})));
-  SubControllers.ModeSelector_baseline modSel(
+  SubControllers.ModeSelector_BOPTEST  modSel(
     heat(start=true),
     rest(start=false),
     cool(start=false)) "Mode selector sequence"

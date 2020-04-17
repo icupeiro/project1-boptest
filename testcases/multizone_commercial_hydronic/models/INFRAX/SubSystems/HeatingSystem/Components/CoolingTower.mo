@@ -245,6 +245,10 @@ Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coolingTower(
         transformation(rotation=0, extent={{100,80},{120,100}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=coolingTower.PFan)
     annotation (Placement(transformation(extent={{72,80},{92,100}})));
+  Modelica.Blocks.Interfaces.RealOutput P10 annotation (Placement(
+        transformation(rotation=0, extent={{100,-30},{120,-10}})));
+  Modelica.Blocks.Interfaces.RealOutput P11 annotation (Placement(
+        transformation(rotation=0, extent={{100,-48},{120,-28}})));
 equation
   connect(p10.port_b,t31. port_a)
     annotation (Line(points={{-1,-52},{-1,-36}},          color={0,127,255}));
@@ -343,6 +347,10 @@ equation
       index=1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
+  connect(p10.P, P10) annotation (Line(points={{-9.1,-51.3},{-9.1,-20},{110,-20}},
+        color={0,0,127}));
+  connect(p11.P, P11) annotation (Line(points={{-21.2,50.6},{-21.2,-38},{110,
+          -38}}, color={0,0,127}));
   annotation (Diagram(coordinateSystem(extent={{-140,-100},{100,100}})), Icon(
         coordinateSystem(extent={{-140,-100},{100,100}})));
 end CoolingTower;
