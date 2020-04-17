@@ -29,7 +29,7 @@ def compile_fmu():
     # DEFINE MODEL
     # ------------
     mopath = 'INFRAX';
-    modelpath = 'INFRAX.hG_RBC_baseline'
+    modelpath = 'INFRAX.IBPSA_BOPTEST'
     # ------------
     
     # COMPILE FMU
