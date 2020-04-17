@@ -14,8 +14,10 @@ WORKDIR $HOME
 
 RUN git clone https://github.com/ibpsa/modelica-ibpsa.git $HOME/git/ibpsa/modelica-ibpsa && \
     git clone https://github.com/lbl-srg/modelica-buildings.git $HOME/git/buildings/modelica-buildings && \
+    git clone https://github.com/open-ideas/IDEAS.git $HOME/git/open-ideas/IDEAS && \
     cd $HOME/git/ibpsa/modelica-ibpsa && \
-    cd $HOME/git/buildings/modelica-buildings
+    cd $HOME/git/buildings/modelica-buildings && \
+    cd $HOME/git/open-ideas/IDEAS && git fetch origin && git checkout -b issue1029_portVector origin/issue1029_portVector 
 
 RUN python -m pip install --user flask-restful pandas==0.22.0 requests
 
@@ -27,4 +29,4 @@ ENV SUNDIALS_HOME $JMODELICA_HOME/ThirdParty/Sundials
 ENV SEPARATE_PROCESS_JVM /usr/lib/jvm/java-8-openjdk-amd64/
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 ENV PYTHONPATH $PYTHONPATH:$JMODELICA_HOME/Python:$JMODELICA_HOME/Python/pymodelica:/usr/local/testing
-ENV MODELICAPATH $MODELICAPATH:$HOME/git/buildings/modelica-buildings:$HOME/git/ibpsa/modelica-ibpsa
+ENV MODELICAPATH $MODELICAPATH:$HOME/git/buildings/modelica-buildings:$HOME/git/ibpsa/modelica-ibpsa:$HOME/git/open-ideas/IDEAS
