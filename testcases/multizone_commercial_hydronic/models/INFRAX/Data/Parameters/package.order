@@ -1,0 +1,15 @@
+Structure
+StrGndFlr
+Str1stFlr
+Air
+Str2ndFlr
+Str3rdFlr
+Hydronic
+DYNACIAT_LG_LGP_200
+INFRAXTABS
+DYNACIAT_200_LG_LGP_cissimmo_wetter
+BorefieldData
+INFRAX_AHU_Fans
+INFRAX_AHU_FanSupply
+NonGEOTABS
+TRANE_CGAM52_70kW_4_0COP_R410A

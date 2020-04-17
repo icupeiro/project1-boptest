@@ -1,0 +1,20 @@
+optimization EnvelopeCon(objectiveIntegrand = sum(u)+10000*sum(slack), startTime=0, finalTime=1e6)
+  input Real[27] u(each free=true, each start=0, each min=0, each nominal = 5000);
+  input Real[10] slack(each free=true, each start=0, each min=0, each nominal = 1);
+  extends INFRAX.MPC.EnvelopeCon(QCon(y=u));
+ 
+constraint
+envelope.floor3.southZone.TSensor>=295-slack[1];
+envelope.floor2.northZone.TSensor>=295-slack[2];
+envelope.floor2.meetingRoom1.TSensor>=295-slack[3];
+envelope.floor2.meetingRoom2.TSensor>=295-slack[4];
+envelope.floor2.southZone.TSensor>=295-slack[5];
+envelope.floor1.meetingRoom1.TSensor>=295-slack[6];
+envelope.floor1.meetingRoom2.TSensor>=295-slack[7];
+envelope.floor1.northZone.TSensor>=295-slack[8];
+envelope.floor1.southZone2.TSensor>=295-slack[9];
+envelope.floor0.meetingRoom2.TSensor>=295-slack[10];
+  
+end EnvelopeCon;
+
+
