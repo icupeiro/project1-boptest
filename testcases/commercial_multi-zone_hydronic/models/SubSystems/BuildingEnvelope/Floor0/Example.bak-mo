@@ -1,0 +1,321 @@
+within INFRAX.SubSystems.BuildingEnvelope.Floor0;
+package Example
+
+  model Floor0_STABLE
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+
+    IDEAS.Buildings.Components.Zone kitchen(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=strGndFlr.Vol_GndFlr_KT,
+      hZone=strGndFlr.HeightGndFlr,
+      nSurf=6) "kitchen lunch room"
+      annotation (Placement(transformation(extent={{80,-20},{120,20}})));
+    INFRAX.Data.Parameters.StrGndFlr strGndFlr
+      annotation (Placement(transformation(extent={{120,-100},{140,-80}})));
+    IDEAS.Buildings.Components.OuterWall[2] KTouterWalls(
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      each inc=IDEAS.Types.Tilt.Wall,
+      azi={INFRAX.Data.Orientations.E,INFRAX.Data.Orientations.S},
+      A=strGndFlr.AWall_GndFlr_KT) "kitchen lunchroom outer walls"
+      annotation (Placement(transformation(extent={{100,-46},{88,-26}})));
+    IDEAS.Buildings.Components.Window[2] window(
+      redeclare IDEAS.Buildings.Data.Glazing.Ins2Kr glazing,
+      each inc=IDEAS.Types.Tilt.Wall,
+      azi={INFRAX.Data.Orientations.E,INFRAX.Data.Orientations.S},
+      A=strGndFlr.AWindows_GndFlr_KT,
+      redeclare IDEAS.Buildings.Components.Shading.None shaType,
+      each frac=strGndFlr.FrameRatio_GndFlr_KT,
+      redeclare INFRAX.Data.Frames.INFRAXWood fraType)
+      annotation (Placement(transformation(extent={{100,-72},{88,-52}})));
+
+    inner IDEAS.BoundaryConditions.SimInfoManager sim
+      annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
+    IDEAS.Buildings.Components.RectangularZoneTemplate meetingRoom2(
+      bouTypB=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      redeclare INFRAX.Data.Constructions.PlasterWall conTypB,
+      bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      bouTypC=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      bouTypD=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      redeclare INFRAX.Data.Constructions.PlasterWall conTypA,
+      redeclare INFRAX.Data.Constructions.PlasterWall conTypD,
+      redeclare INFRAX.Data.Constructions.GlassWall conTypC,
+      bouTypCei=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      redeclare INFRAX.Data.Constructions.Roof conTypCei,
+      redeclare package Medium = IDEAS.Media.Air,
+      aziA=INFRAX.Data.Orientations.N,
+      h=strGndFlr.HeightGndFlr,
+      l=strGndFlr.l_GndFlr_MT2,
+      w=strGndFlr.w_GndFlr_MT2,
+      bouTypFlo=IDEAS.Buildings.Components.Interfaces.BoundaryType.SlabOnGround,
+      redeclare INFRAX.Data.Constructions.Slab conTypFlo)
+      annotation (Placement(transformation(extent={{-2,-42},{22,-18}})));
+
+    IDEAS.Buildings.Components.Zone hall(
+      redeclare package Medium = IDEAS.Media.Air,
+      hZone=strGndFlr.HeightGndFlr,
+      V=strGndFlr.Vol_GndFlr_HR,
+      A=strGndFlr.A_GndFlr_HR,
+      nSurf=8) annotation (Placement(transformation(extent={{-76,-42},{-34,0}})));
+    IDEAS.Buildings.Components.RectangularZoneTemplate FirstAid(
+      redeclare package Medium = IDEAS.Media.Air,
+      bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      bouTypB=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      bouTypC=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      bouTypD=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      bouTypCei=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      aziA=INFRAX.Data.Orientations.N,
+      h=strGndFlr.HeightGndFlr,
+      redeclare INFRAX.Data.Constructions.SilicateWall conTypA,
+      redeclare INFRAX.Data.Constructions.SilicateWall conTypB,
+      redeclare INFRAX.Data.Constructions.SilicateWall conTypC,
+      redeclare INFRAX.Data.Constructions.SilicateWall conTypD,
+      redeclare INFRAX.Data.Constructions.Roof conTypCei,
+      l=strGndFlr.l_GndFlr_1stAid,
+      w=strGndFlr.w_GndFlr_1stAid,
+      bouTypFlo=IDEAS.Buildings.Components.Interfaces.BoundaryType.SlabOnGround,
+      redeclare INFRAX.Data.Constructions.Slab conTypFlo) "first aid room"
+      annotation (Placement(transformation(extent={{0,40},{20,60}})));
+
+    IDEAS.Buildings.Components.Zone servers(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=strGndFlr.Vol_GndFlr_SV,
+      hZone=strGndFlr.HeightGndFlr,
+      nSurf=5) "servers room"
+      annotation (Placement(transformation(extent={{46,44},{72,68}})));
+    IDEAS.Buildings.Components.OuterWall northWall_SV(
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      A=strGndFlr.AWall_GndFlr_SV) "outer wall in servers room" annotation (
+        Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={30,86})));
+    IDEAS.Buildings.Components.InternalWall internalWall_HR_SV(
+      redeclare INFRAX.Data.Constructions.SilicateWall constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      A=strGndFlr.AinternalWall_HRSV)
+      "internwall wall between hall and server rooms" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={40,28})));
+    IDEAS.Buildings.Components.RectangularZoneTemplate bathroomZone(
+      redeclare package Medium = IDEAS.Media.Air,
+      aziA=INFRAX.Data.Orientations.N,
+      bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      bouTypC=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+      redeclare INFRAX.Data.Constructions.OuterWalls conTypA,
+      redeclare INFRAX.Data.Constructions.SilicateWall conTypB,
+      redeclare INFRAX.Data.Constructions.SilicateWall conTypC,
+      bouTypB=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      bouTypD=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      redeclare INFRAX.Data.Constructions.OuterWalls conTypD,
+      redeclare INFRAX.Data.Constructions.Roof conTypCei,
+      l=strGndFlr.l_GndFlr_BRZ,
+      w=strGndFlr.w_GndFlr_BRZ,
+      h=strGndFlr.HeightGndFlr,
+      bouTypCei=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
+      bouTypFlo=IDEAS.Buildings.Components.Interfaces.BoundaryType.SlabOnGround,
+      redeclare INFRAX.Data.Constructions.Slab conTypFlo)
+      "ground floor bathroom zone"
+      annotation (Placement(transformation(extent={{-100,60},{-80,80}})));
+
+    IDEAS.Buildings.Components.Zone storage(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=strGndFlr.Vol_GndFlr_Sto,
+      hZone=strGndFlr.HeightGndFlr,
+      nSurf=3)                      "storage rooms in ground floor"
+      annotation (Placement(transformation(extent={{108,48},{128,68}})));
+    IDEAS.Buildings.Components.OuterWall northWall_sto(
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      A=strGndFlr.AWall_GndFlr_Sto) "outer wall in storage rooms" annotation (
+        Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={90,86})));
+    IDEAS.Buildings.Components.InternalWall internalWall_KT_Sto(
+      redeclare INFRAX.Data.Constructions.SilicateWall constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      A=strGndFlr.AinternalWall_KTSto)
+      "internwall wall between kitchen and storage" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={102,34})));
+    IDEAS.Buildings.Components.InternalWall internalWall_SV_Sto(
+      redeclare INFRAX.Data.Constructions.SilicateWall constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.W,
+      A=strGndFlr.AinternalWall_SVSto)
+      "internwall wall between servers and storage" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=0,
+          origin={82,60})));
+    IDEAS.Buildings.Components.Zone meetingRoom1(redeclare package Medium =
+          IDEAS.Media.Air,
+      V=strGndFlr.Vol_GndFlr_MT1,
+      hZone=strGndFlr.HeightGndFlr,
+      nSurf=3)
+      annotation (Placement(transformation(extent={{-102,-82},{-78,-58}})));
+    IDEAS.Buildings.Components.OuterWall[2] outerWall_MT1(
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      each inc=IDEAS.Types.Tilt.Wall,
+      azi={INFRAX.Data.Orientations.S,strGndFlr.orientation},
+      A=strGndFlr.AWall_GndFlr_MT1)
+      annotation (Placement(transformation(extent={{-132,-80},{-120,-60}})));
+    IDEAS.Buildings.Components.OuterWall outerWall_HR(
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=strGndFlr.orientation,
+      A=strGndFlr.AWalls_GndFlr_HR)
+      annotation (Placement(transformation(extent={{-132,-28},{-120,-8}})));
+    IDEAS.Buildings.Components.InternalWall internalWall_HR_MT1(
+      redeclare INFRAX.Data.Constructions.SilicateWall constructionType,
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      A=strGndFlr.AinternalWall_HRMT1)
+      "internwall wall between hall and meeting room1" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={-90,-40})));
+  equation
+
+    //Kitchen LunchRoom connections
+    connect(kitchen.propsBus[1], KTouterWalls[1].propsBus_a) annotation (Line(
+        points={{80,11.3333},{70,11.3333},{60,11.3333},{60,-34},{89,-34}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(kitchen.propsBus[2], KTouterWalls[2].propsBus_a);
+    connect(kitchen.propsBus[3], window[1].propsBus_a) annotation (Line(
+        points={{80,8.66667},{70,8.66667},{60,8.66667},{60,-62},{89,-62},{89,
+            -60}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(kitchen.propsBus[4], window[2].propsBus_a);
+    connect(meetingRoom2.proBusB, kitchen.propsBus[5]) annotation (Line(
+        points={{20.8,-22.8},{40,-22.8},{40,6},{80,6}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(hall.propsBus[1], meetingRoom2.proBusA) annotation (Line(
+        points={{-76,-8.925},{-76,-8.925},{-76,12},{-76,14},{4,14},{4,-19.2},{
+            2.8,-19.2}},
+        color={255,204,51},
+        thickness=0.5));
+
+    connect(hall.propsBus[2], meetingRoom2.proBusD) annotation (Line(
+        points={{-76,-9.975},{-76,-9.975},{-76,14},{-4,14},{-4,-30},{-0.8,-30}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(FirstAid.proBusC, hall.propsBus[3]) annotation (Line(
+        points={{10,41},{10,28},{-76,28},{-76,-11.025}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(FirstAid.proBusD, hall.propsBus[4]) annotation (Line(
+        points={{1,50},{-38,50},{-76,50},{-76,-12.075}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(FirstAid.proBusA, servers.propsBus[1]) annotation (Line(
+        points={{4,59},{4,62.72},{46,62.72}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(FirstAid.proBusB, servers.propsBus[2]) annotation (Line(
+        points={{19,56},{32,56},{46,56},{46,61.76}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(servers.propsBus[3], northWall_SV.propsBus_a) annotation (Line(
+        points={{46,60.8},{46,60.8},{32,60.8},{32,81}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(servers.propsBus[4], internalWall_HR_SV.propsBus_a) annotation (Line(
+        points={{46,59.84},{42,59.84},{42,33},{38,33}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(internalWall_HR_SV.propsBus_b, hall.propsBus[5]) annotation (Line(
+        points={{38,23},{-20,23},{-20,22},{-76,22},{-76,-13.125}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(bathroomZone.proBusC, hall.propsBus[6]) annotation (Line(
+        points={{-90,61},{-90,61},{-90,-12},{-76,-12},{-76,-14.175}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(storage.propsBus[1], northWall_sto.propsBus_a) annotation (Line(
+        points={{108,63.3333},{92,63.3333},{92,81}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(storage.propsBus[2], internalWall_SV_Sto.propsBus_a) annotation (Line(
+        points={{108,62},{98,62},{98,62},{87,62}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(storage.propsBus[3], internalWall_KT_Sto.propsBus_a) annotation (Line(
+        points={{108,60.6667},{100,60.6667},{100,39}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(internalWall_SV_Sto.propsBus_b, servers.propsBus[5]) annotation (Line(
+        points={{77,62},{76,62},{76,72},{76,74},{46,74},{46,58.88}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(internalWall_KT_Sto.propsBus_b, kitchen.propsBus[6]) annotation (Line(
+        points={{100,29},{80,29},{80,4.66667}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(meetingRoom1.propsBus[1], outerWall_MT1[1].propsBus_a) annotation (
+        Line(
+        points={{-102,-63.6},{-112,-63.6},{-112,-68},{-121,-68}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(meetingRoom1.propsBus[2], outerWall_MT1[2].propsBus_a) annotation (
+        Line(
+        points={{-102,-65.2},{-112,-65.2},{-112,-68},{-121,-68}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(meetingRoom1.propsBus[3], internalWall_HR_MT1.propsBus_b) annotation (
+       Line(
+        points={{-102,-66.8},{-102,-66.8},{-102,-45},{-92,-45}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(internalWall_HR_MT1.propsBus_a, hall.propsBus[7]) annotation (Line(
+        points={{-92,-35},{-92,-35},{-92,-12},{-76,-12},{-76,-15.225}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(hall.propsBus[8], outerWall_HR.propsBus_a) annotation (Line(
+        points={{-76,-16.275},{-121,-16.275},{-121,-16}},
+        color={255,204,51},
+        thickness=0.5));
+
+  end Floor0_STABLE;
+end Example;

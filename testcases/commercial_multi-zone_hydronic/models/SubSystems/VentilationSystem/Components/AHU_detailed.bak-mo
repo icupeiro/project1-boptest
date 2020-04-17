@@ -1,0 +1,335 @@
+within INFRAX.SubSystems.VentilationSystem.Components;
+model AHU_detailed
+  import INFRAX;
+
+  Modelica.Fluid.Interfaces.FluidPort_a airExhaust(redeclare package Medium =
+        IDEAS.Media.Air) annotation (Placement(transformation(extent={{130,50},
+            {150,70}}), iconTransformation(extent={{130,50},{150,70}})));
+  Modelica.Fluid.Interfaces.FluidPort_b airOutlet(redeclare package Medium =
+        IDEAS.Media.Air, h_outflow(fixed=false))
+    "Fluid connector b1 (positive design flow direction is from port_a1 to port_b1)"
+    annotation (Placement(transformation(extent={{-130,50},{-150,70}}),
+        iconTransformation(extent={{-130,50},{-150,70}})));
+  Modelica.Fluid.Interfaces.FluidPort_a airInlet(redeclare package Medium =
+        IDEAS.Media.Air) annotation (Placement(transformation(extent={{-150,
+            -70},{-130,-50}}), iconTransformation(extent={{-150,-70},{-130,
+            -50}})));
+  Modelica.Fluid.Interfaces.FluidPort_b airSupply(redeclare package Medium =
+        IDEAS.Media.Air)
+    "Fluid connector b2 (positive design flow direction is from port_a2 to port_b2)"
+    annotation (Placement(transformation(extent={{150,-70},{130,-50}}),
+        iconTransformation(extent={{150,-70},{130,-50}})));
+  Modelica.Fluid.Interfaces.FluidPort_a cooCoiIn(redeclare package Medium =
+        IDEAS.Media.Water) annotation (Placement(transformation(extent={{70,
+            -110},{90,-90}}), iconTransformation(extent={{70,-110},{90,-90}})));
+  Modelica.Fluid.Interfaces.FluidPort_b cooCoiOut(redeclare package Medium =
+        IDEAS.Media.Water) annotation (Placement(transformation(extent={{30,
+            -110},{50,-90}}), iconTransformation(extent={{30,-110},{50,-90}})));
+  Modelica.Fluid.Interfaces.FluidPort_a heaCoiIn(redeclare package Medium =
+        IDEAS.Media.Water) annotation (Placement(transformation(extent={{-50,
+            -110},{-30,-90}}), iconTransformation(extent={{-50,-110},{-30,-90}})));
+  Modelica.Fluid.Interfaces.FluidPort_b heaCoiOut(redeclare package Medium =
+        IDEAS.Media.Water) annotation (Placement(transformation(extent={{-90,
+            -110},{-70,-90}}), iconTransformation(extent={{-90,-110},{-70,-90}})));
+  IDEAS.Fluid.FixedResistances.PressureDrop dpSupply(
+    redeclare package Medium = IDEAS.Media.Air,
+    allowFlowReversal=false,
+    m_flow_nominal=mSupply_flow_nominal,
+    dp_nominal=dpSupply_fixed)
+    "pressure losses in filter, connections, etc..."
+    annotation (Placement(transformation(extent={{-110,-70},{-90,-50}})));
+  Dependencies.DryCoilCounterFlowWithLosses         heaCoi(
+    redeclare package Medium1 = IDEAS.Media.Water,
+    redeclare package Medium2 = IDEAS.Media.Air,
+    tau1=tauWater,
+    tau2=tauAir,
+    tau_m=tau_m,
+    tauLoss=tauLoss,
+    m1_flow_nominal=mHeaCoi_flow_nominal,
+    m2_flow_nominal=mSupply_flow_nominal,
+    dp1_nominal=dpWater_nominal_HeaCoi,
+    dp2_nominal=dpAir_nominal_HeaCoi,
+    UA_nominal=QHeaCoi_nominal/Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+        THeaCoiWatSup_nominal,
+        THeaCoiWatRet_nominal,
+        THeaCoiAirSup_nominal,
+        THeaCoiAirRet_nominal),
+    allowFlowReversal1=false,
+    allowFlowReversal2=false)
+              "heating coil"            annotation (Placement(transformation(
+        extent={{10,10},{-10,-10}},
+        rotation=0,
+        origin={-60,-66})));
+  Dependencies.DryCoilCounterFlowWithLosses         cooCoi(
+    redeclare package Medium1 = IDEAS.Media.Water,
+    redeclare package Medium2 = IDEAS.Media.Air,
+    m1_flow_nominal=mCooCoi_flow_nominal,
+    UA_nominal=QCooCoi_nominal/Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+        TCooCoiWatSup_nominal,
+        TCooCoiWatRet_nominal,
+        TCooCoiAirSup_nominal,
+        TCooCoiAirRet_nominal),
+    tau1=tauWater,
+    tau2=tauAir,
+    tau_m=tau_m,
+    tauLoss=tauLoss,
+    dp1_nominal=dpWater_nominal_CooCoi,
+    dp2_nominal=dpAir_nominal_CooCoi,
+    m2_flow_nominal=mSupply_flow_nominal,
+    allowFlowReversal1=false,
+    allowFlowReversal2=false)
+                          "cooling coil" annotation (Placement(transformation(
+        extent={{10,10},{-10,-10}},
+        rotation=0,
+        origin={60,-66})));
+  IDEAS.Fluid.Movers.FlowControlled_dp supplyFan(
+    redeclare package Medium = IDEAS.Media.Air,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    addPowerToMedium=false,
+    use_inputFilter=false,
+    redeclare IDEAS.Fluid.Movers.Data.INFRAX_AHU_Fans per,
+    allowFlowReversal=false,
+    inputType=IDEAS.Fluid.Types.InputType.Constant,
+    m_flow_nominal=mSupply_flow_nominal,
+    tau=60,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    dp_start=100,
+    dp_nominal=1087,
+    constantHead=380)
+    "supply fan of the air handling unit"
+    annotation (Placement(transformation(extent={{90,-70},{110,-50}})));
+  INFRAX.Data.Parameters.Hydronic hydronic
+    annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
+  IDEAS.Fluid.Movers.FlowControlled_dp exhaustFan(
+    redeclare package Medium = IDEAS.Media.Air,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    addPowerToMedium=false,
+    tau=10,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    use_inputFilter=false,
+    redeclare IDEAS.Fluid.Movers.Data.INFRAX_AHU_Fans per,
+    allowFlowReversal=false,
+    inputType=IDEAS.Fluid.Types.InputType.Constant,
+    m_flow_nominal=mExhaust_flow_nominal,
+    dp_start=80,
+    dp_nominal=788,
+    constantHead=230)
+    "supply fan of the air handling unit"
+    annotation (Placement(transformation(extent={{-70,50},{-90,70}})));
+  IDEAS.Fluid.FixedResistances.PressureDrop dpExhaust(
+    redeclare package Medium = IDEAS.Media.Air,
+    allowFlowReversal=false,
+    m_flow_nominal=mExhaust_flow_nominal,
+    dp_nominal=dpExhaust_fixed)
+                        "pressure losses in connections, filter, etc..."
+    annotation (Placement(transformation(extent={{100,50},{80,70}})));
+  Dependencies.RecoveryWithByPass rotWheel(
+    redeclare package Medium2 = IDEAS.Media.Air,
+    allowFlowReversal1=false,
+    allowFlowReversal2=false,
+    redeclare package Medium1 = IDEAS.Media.Air,
+    eps=eps,
+    m2_flow_nominal=mSupply_flow_nominal,
+    dp2_nominal_TW(displayUnit="Pa") = dpSupply_nominal_TW,
+    dp1_nominal_TW(displayUnit="Pa") = dpExhaust_nominal_TW,
+    m1_flow_nominal=mExhaust_flow_nominal,
+    tau=60) "rotatory wheel"
+    annotation (Placement(transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=0,
+        origin={2,2})));
+  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature fixedTemperature(T=TLoss)
+    annotation (Placement(transformation(extent={{-120,-20},{-100,0}})));
+  parameter Modelica.SIunits.Power QHeaCoi_nominal = min(mHeaCoi_flow_nominal*4180*(THeaCoiWatSup_nominal-THeaCoiWatRet_nominal),mSupply_flow_nominal*1005*(THeaCoiAirRet_nominal - THeaCoiAirSup_nominal))
+  "Nominal heating power"
+  annotation(Dialog(tab="General", group="Nominal power"));
+  parameter Modelica.SIunits.Power QCooCoi_nominal = max(mCooCoi_flow_nominal*4180*(TCooCoiWatSup_nominal-TCooCoiWatRet_nominal),mSupply_flow_nominal*1005*(TCooCoiAirRet_nominal - TCooCoiAirSup_nominal))
+  "Nominal cooling power"
+  annotation(Dialog(tab="General", group="Nominal power"));
+  parameter Modelica.SIunits.MassFlowRate mSupply_flow_nominal
+    "Nominal mass flow rate for air supply"
+    annotation(Dialog(tab="General", group="Mass flows"));
+  parameter Modelica.SIunits.MassFlowRate mExhaust_flow_nominal
+    "Nominal mass flow rate for air exhaust"
+    annotation(Dialog(tab="General", group="Mass flows"));
+  parameter Modelica.SIunits.MassFlowRate mHeaCoi_flow_nominal
+  "Nominal mass flow rate for water in heating coil"
+  annotation(Dialog(tab="General", group="Mass flows"));
+  parameter Modelica.SIunits.MassFlowRate mCooCoi_flow_nominal
+  "Nominal mass flow rate for water in cooling coil"
+  annotation(Dialog(tab="General", group="Mass flows"));
+  parameter Modelica.SIunits.PressureDifference dpSupply_nominal_TW
+    "Pressure difference of air supply in thermal wheel"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  parameter Modelica.SIunits.PressureDifference dpExhaust_nominal_TW
+    "Pressure difference of exhaust air in thermal wheel"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  parameter Real eps=0.7 "Heat exchanger effectiveness";
+  parameter Modelica.SIunits.Temperature TLoss
+    "Temperature for heat losses calculation";
+  parameter Modelica.SIunits.PressureDifference dpSupply_fixed
+    "Supply air pressure drop at nominal mass flow rate for filter and connection section"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  parameter Modelica.SIunits.PressureDifference dpExhaust_fixed
+    "Exhaust air pressure drop at nominal mass flow rate for filter and connection section"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+ parameter Modelica.SIunits.Temperature TCooCoiWatSup_nominal = 15+273.15
+    annotation(Dialog(tab="General", group="Nominal temperatures"));
+  parameter Modelica.SIunits.Temperature TCooCoiWatRet_nominal = 20+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+  parameter Modelica.SIunits.Temperature TCooCoiAirSup_nominal = 32+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+  parameter Modelica.SIunits.Temperature TCooCoiAirRet_nominal = 24+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+
+  parameter Modelica.SIunits.Temperature THeaCoiWatSup_nominal = 70+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+  parameter Modelica.SIunits.Temperature THeaCoiWatRet_nominal = 50+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+  parameter Modelica.SIunits.Temperature THeaCoiAirSup_nominal = -10+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+  parameter Modelica.SIunits.Temperature THeaCoiAirRet_nominal = 23+273.15
+  annotation(Dialog(tab="General", group="Nominal temperatures"));
+
+  parameter Modelica.SIunits.PressureDifference dpAir_nominal_HeaCoi
+    "Pressure difference of air in the heating coil"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  parameter Modelica.SIunits.Time tauWater=60
+    "Time constant at nominal flow for water";
+  parameter Modelica.SIunits.Time tauAir=10
+    "Time constant at nominal flow for air";
+  parameter Modelica.SIunits.Time tau_m=10
+    "Time constant of metal at nominal UA value";
+  parameter Modelica.SIunits.Time tauLoss=60
+    "Time constant for heat losses to environment";
+  parameter Modelica.SIunits.PressureDifference dpAir_nominal_CooCoi
+    "Pressure difference of air in the cooling coil"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  parameter Modelica.SIunits.PressureDifference dpWater_nominal_HeaCoi
+    "Pressure difference of water in the heating coil"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  parameter Modelica.SIunits.PressureDifference dpWater_nominal_CooCoi
+    "Pressure difference of water in the cooling coil"
+    annotation(Dialog(tab="General", group="Pressure drops"));
+  Modelica.Blocks.Interfaces.RealInput TSet annotation (Placement(
+        transformation(
+        extent={{20,-20},{-20,20}},
+        rotation=-90,
+        origin={0,-100})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort tAHUSupply(
+    tau=hydronic.sensorTau,
+    redeclare package Medium = IDEAS.Media.Air,
+    m_flow_nominal=mSupply_flow_nominal)
+                    annotation (Placement(transformation(
+        extent={{-6,-6},{6,6}},
+        rotation=0,
+        origin={124,-60})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort tAHUExhaust(
+    tau=hydronic.sensorTau,
+    redeclare package Medium = IDEAS.Media.Air,
+    m_flow_nominal=mExhaust_flow_nominal)
+                    annotation (Placement(transformation(
+        extent={{6,-6},{-6,6}},
+        rotation=0,
+        origin={120,60})));
+equation
+  connect(heaCoiOut, heaCoi.port_b1) annotation (Line(points={{-80,-100},{-80,
+          -72},{-70,-72}}, color={0,127,255}));
+  connect(heaCoiIn, heaCoi.port_a1) annotation (Line(points={{-40,-100},{-40,
+          -72},{-50,-72}}, color={0,127,255}));
+  connect(cooCoiIn, cooCoi.port_a1) annotation (Line(points={{80,-100},{80,
+          -72},{70,-72}}, color={0,127,255}));
+  connect(cooCoi.port_b1, cooCoiOut) annotation (Line(points={{50,-72},{40,
+          -72},{40,-100}}, color={0,127,255}));
+  connect(airInlet, dpSupply.port_a) annotation (Line(points={{-140,-60},{
+          -126,-60},{-110,-60}}, color={0,127,255}));
+  connect(dpSupply.port_b, heaCoi.port_a2) annotation (Line(points={{-90,-60},
+          {-80,-60},{-70,-60}}, color={0,127,255}));
+  connect(cooCoi.port_b2, supplyFan.port_a) annotation (Line(points={{70,-60},
+          {80,-60},{90,-60}}, color={0,127,255}));
+  connect(exhaustFan.port_b, airOutlet)
+    annotation (Line(points={{-90,60},{-140,60}}, color={0,127,255}));
+  connect(fixedTemperature.port, heaCoi.heatPort) annotation (Line(points={{-100,
+          -10},{-60,-10},{-60,-56}}, color={191,0,0}));
+  connect(fixedTemperature.port, cooCoi.heatPort) annotation (Line(points={{-100,
+          -10},{-80,-10},{-60,-10},{-60,-40},{60,-40},{60,-56}}, color={191,0,0}));
+  connect(TSet, rotWheel.TSet)
+    annotation (Line(points={{0,-100},{8,-100},{8,-8.8}}, color={0,0,127}));
+  connect(airSupply, airSupply) annotation (Line(points={{140,-60},{135,-60},{135,
+          -60},{140,-60}}, color={0,127,255}));
+  connect(airSupply, tAHUSupply.port_b)
+    annotation (Line(points={{140,-60},{130,-60}}, color={0,127,255}));
+  connect(tAHUSupply.port_a, supplyFan.port_b) annotation (Line(points={{118,-60},
+          {114,-60},{110,-60}}, color={0,127,255}));
+  connect(tAHUSupply.T, rotWheel.TSupply) annotation (Line(points={{124,-53.4},{
+          124,-53.4},{124,-48},{-2,-48},{-2,-8.8}}, color={0,0,127}));
+  connect(tAHUExhaust.port_a, airExhaust)
+    annotation (Line(points={{126,60},{140,60}}, color={0,127,255}));
+  connect(tAHUExhaust.port_b, dpExhaust.port_a)
+    annotation (Line(points={{114,60},{107,60},{100,60}}, color={0,127,255}));
+  connect(dpExhaust.port_b, rotWheel.port_a1) annotation (Line(points={{80,60},{
+          48,60},{48,8},{12,8}}, color={0,127,255}));
+  connect(rotWheel.port_b1, exhaustFan.port_a) annotation (Line(points={{-8,8},{
+          -38,8},{-38,60},{-70,60}}, color={0,127,255}));
+  connect(heaCoi.port_b2, rotWheel.port_a2) annotation (Line(points={{-50,-60},{
+          -30,-60},{-30,-4},{-8,-4}}, color={0,127,255}));
+  connect(cooCoi.port_a2, rotWheel.port_b2) annotation (Line(points={{50,-60},{32,
+          -60},{32,-4},{12,-4}}, color={0,127,255}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,
+            -100},{140,100}}), graphics={
+        Rectangle(
+          extent={{-140,100},{140,-100}},
+          lineColor={0,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{0,58},{-40,18},{0,-22},{40,18},{0,58}},
+          lineColor={0,0,0},
+          smooth=Smooth.None,
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{-100,60},{-26,60},{0,34},{26,60},{98,60}},
+          color={0,0,0},
+          smooth=Smooth.None),
+        Line(
+          points={{102,-62},{28,-62},{28,-26},{2,0},{-26,-28},{-26,-62},{-98,
+              -62}},
+          color={0,0,0},
+          smooth=Smooth.None),
+        Rectangle(
+          extent={{46,-32},{72,-82}},
+          lineColor={0,128,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Rectangle(
+          extent={{-76,-34},{-50,-84}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Text(
+          extent={{-68,-48},{-56,-70}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="+"),
+        Text(
+          extent={{46,-44},{72,-66}},
+          lineColor={0,0,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="-"),
+        Text(
+          extent={{46,-80},{72,-102}},
+          lineColor={0,0,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="-"),
+        Text(
+          extent={{-66,-82},{-54,-104}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="+")}), Diagram(coordinateSystem(preserveAspectRatio=
+            false, extent={{-140,-100},{140,100}})));
+end AHU_detailed;

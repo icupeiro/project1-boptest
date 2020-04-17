@@ -22,12 +22,39 @@ model VentilationSystem "detailed ventilation system for testing"
 
   replaceable IDEAS.Fluid.Interfaces.PartialTwoPortInterface[7] dp_ducts_supply "pressure drops in supply ducts"
     annotation (Placement(transformation(extent={{32,-56},{52,-36}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations supplyFan
+IDEAS.Fluid.Movers.FlowControlled_dp supplyFan(
+      allowFlowReversal=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        addPowerToMedium=false,
+        use_inputFilter=false,
+        tau=60,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=10000*1.225/3600,
+        dp_nominal(displayUnit="Pa") = 180,
+        redeclare INFRAX.Data.Parameters.INFRAX_AHU_Fans per,
+        dp_start=180,
+        redeclare package Medium = MediumAir,
+        prescribeSystemPressure=true)
     "supply fan of the air handling unit"
     annotation (Placement(transformation(extent={{-36,-56},{-16,-36}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations exhaustFan
-    "supply fan of the air handling unit"
+IDEAS.Fluid.Movers.FlowControlled_dp exhaustFan(
+      allowFlowReversal=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        addPowerToMedium=false,
+        tau=10,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        m_flow_nominal=8850*1.225/3600,
+        redeclare INFRAX.Data.Parameters.INFRAX_AHU_Fans per,
+        dp_nominal=150,
+        constantHead=150,
+        dp_start=150,
+        redeclare package Medium = MediumAir,
+        prescribeSystemPressure=true)
     annotation (Placement(transformation(extent={{-44,8},{-64,28}})));
+
+
+
   IDEAS.Fluid.Sensors.TemperatureTwoPort tAHUSupply(
     m_flow_nominal=10000*1.225/3600,
     allowFlowReversal=false,
@@ -47,7 +74,20 @@ model VentilationSystem "detailed ventilation system for testing"
   IDEAS.Fluid.HeatExchangers.BaseClasses.PartialEffectiveness[21] counterFlowHEX
     constrainedby IDEAS.Fluid.Interfaces.PartialFourPortInterface
     annotation (Placement(transformation(extent={{150,4},{128,-18}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations pump6
+IDEAS.Fluid.Movers.FlowControlled_dp pump6(
+        tau=30,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        inputType=IDEAS.Fluid.Types.InputType.Stages,
+        m_flow_nominal=hydronic.p06_m_flow,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.Stratos40slash1to12CANPN6slash10 per,
+        each dp_nominal(displayUnit="Pa") = 7.2*9804.139432,
+        dp_start=0,
+        redeclare package Medium = MediumWater)
                     "HeaCoi pump" annotation (Placement(transformation(
         extent={{-8,-8},{8,8}},
         rotation=90,
@@ -166,13 +206,39 @@ model VentilationSystem "detailed ventilation system for testing"
     THeaCoiAirSup_nominal=265.15,
     THeaCoiAirRet_nominal=274.85)
     annotation (Placement(transformation(extent={{-84,-24},{-122,14}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations pump9
+  IDEAS.Fluid.Movers.FlowControlled_dp pump9(
+        tau=30,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=hydronic.p09_m_flow,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine32slash160dash1comma1slash2
+          per,
+        each dp_nominal(displayUnit="kPa") = 14*9804.139432,
+        inputType=IDEAS.Fluid.Types.InputType.Stages,
+        redeclare package Medium = MediumGlycol)
                     "HeaCoi pump" annotation (Placement(transformation(
         extent={{6.5,-7.5},{-6.5,7.5}},
         rotation=0,
         origin={-160.5,-38.5})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations pump13
-                                                                    "CooCoi pump" annotation (Placement(transformation(
+   IDEAS.Fluid.Movers.FlowControlled_dp pump13(
+        tau=30,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=hydronic.p13_m_flow,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine40slash120dash1comma5slash2
+          per,
+        redeclare package Medium = MediumWater,
+        inputType=IDEAS.Fluid.Types.InputType.Continuous,
+        each dp_nominal(displayUnit="kPa") = 40000,
+        T_start=284.15)                                             "CooCoi pump" annotation (Placement(transformation(
         extent={{-7,-8},{7,8}},
         rotation=90,
         origin={-80,-61})));
