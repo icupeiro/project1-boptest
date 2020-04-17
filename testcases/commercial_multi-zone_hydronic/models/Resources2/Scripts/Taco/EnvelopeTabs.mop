@@ -1,0 +1,38 @@
+optimization EnvelopeTabs(objectiveIntegrand = sum(QTabs)+100000*sum(slack), startTime=0, finalTime=1e6)
+//  input Real[27] u(each free=true, each start=0, each min=0, each nominal = 5000);
+  input Real[10] slack(each free=true, each start=0, each min=0, each nominal = 1);
+  extends INFRAX.MPC.EnvelopeTabs(QTabs(each free=true));
+
+  output Real temps[10];
+ 
+constraint
+//envelope.floor3.southZone.TSensor>=295-slack[1];
+//envelope.floor2.northZone.TSensor>=295-slack[2];
+//envelope.floor2.meetingRoom1.TSensor>=295-slack[3];
+//envelope.floor2.meetingRoom2.TSensor>=295-slack[4];
+//envelope.floor2.southZone.TSensor>=295-slack[5];
+//envelope.floor1.meetingRoom1.TSensor>=295-slack[6];
+//envelope.floor1.meetingRoom2.TSensor>=295-slack[7];
+//envelope.floor1.northZone.TSensor>=295-slack[8];
+//envelope.floor1.southZone2.TSensor>=295-slack[9];
+//envelope.floor0.meetingRoom2.TSensor>=295-slack[10];
+
+temps >= ones(10)*295-slack;
+temps <= ones(10)*298+slack;
+
+equation
+temps={
+envelope.floor3.southZone.TSensor,
+envelope.floor2.northZone.TSensor,
+envelope.floor2.meetingRoom1.TSensor,
+envelope.floor2.meetingRoom2.TSensor,
+envelope.floor2.southZone.TSensor,
+envelope.floor1.meetingRoom1.TSensor,
+envelope.floor1.meetingRoom2.TSensor,
+envelope.floor1.northZone.TSensor,
+envelope.floor1.southZone2.TSensor,
+envelope.floor0.meetingRoom2.TSensor};
+  
+end EnvelopeTabs;
+
+

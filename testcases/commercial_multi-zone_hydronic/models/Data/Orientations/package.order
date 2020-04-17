@@ -1,0 +1,12 @@
+shift
+E
+N
+S
+W
+inc
+shiftOptDes
+EOptDes
+NOptDes
+SOptDes
+WOptDes
+incOptDes
