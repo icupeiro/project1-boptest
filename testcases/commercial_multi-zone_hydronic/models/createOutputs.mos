@@ -1,3 +1,0 @@
-experimentSetupOutput(inputs=false,outputs=true,auxiliaries=false,equidistant=true,events=false);
-savePath = "C:/Users/u0112721/Documents/Dymola/hybridGEOTABS/INFRAX/Inputs/preComputed";
-simulateModel("INFRAX.INFRAX_createOutput", startTime=86400, stopTime=1292400, numberOfIntervals=0, outputInterval=480, method="Euler", tolerance=1e-006, fixedstepsize=30, resultFile=savePath);
