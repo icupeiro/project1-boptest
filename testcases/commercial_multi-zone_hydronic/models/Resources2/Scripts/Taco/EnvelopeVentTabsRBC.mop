@@ -1,0 +1,145 @@
+optimization EnvelopeVentTabsRBC(timeStep=900,intervalLengths="1,1,2,4,7,10,16,32,48,64,112", truncationDelta=1e-3, objectiveIntegrand = (PEl.y+costViol)/100, startTime=0, finalTime=1e6)
+  input Real[13] slack(each free=true, each start=0, each min=0, each nominal = 1);
+  input Real[14] slackPpm(each free=true, each start=0, each min=0, each nominal = 100);
+  input Real slackTTabsSup(free=true, min=0, start=0, nominal=1);
+  input Real slackTAhuSup(free=true, min=0, start=0, nominal=1);
+  extends INFRAX.MPC.EnvelopeVentTabsRBC(enableGitLogger=false, 
+	addDummyEquation=false,
+	y_cca0(free=true),
+	y_cca1(free=true),
+	y_cca2(free=true),
+	y_cca3(free=true),
+	y_3way_tabs(free=true),
+	mode_tabs(free=true),
+	fra_flow_pump5(free=true),
+	y_bypCon(free=true),
+	y_valCon(free=true),
+	y_bypEva(free=true),
+	y_valEva(free=true),
+	THP(free=true),
+        dp_pump3(free=true),
+	m_flow_pump8(free=true),
+	y_valHeaVav(each free=true),
+	y_valHeaAhu(free=true),
+	y_valCooAhu(free=true),
+	dp_fanSup(free=true),
+	dp_fanRet(free=true),
+	y_ahu(free=true),
+	y_vav(each free=true)
+);
+  output Real costViol=c_viol*sum(slack) + ppm_viol*sum(slackPpm) + 1e5*(slackTTabsSup+slackTAhuSup); 
+  output Real P_pum = pump5.P+pump3.P;
+  output Real PHP = HP.PEl;
+  output Real QHP = HP.con.Q_flow;
+  output Real QCoo = e004.Q1_flow;
+  output Real m_flow_tabs = detailedTabsMpcWithPI.pump7.m_flow; 
+  output Real QHeaAhu = abs(ventilationSystemMpc.aHU.heaCoi.Q1_flow);
+  output Real QCooAhu = abs(ventilationSystemMpc.aHU.cooCoi.Q1_flow);
+  output Real QRecAhu = abs(ventilationSystemMpc.aHU.hexUA.Q1_flow);
+  Real QHeaVAV = sum(ventilationSystemMpc.heaCoi.Q2_flow);
+  output Real QHeaVav = QHeaVAV;
+  output Real QTabs = detailedTabsMpcWithPI.pump7.m_flow*(detailedTabsMpcWithPI.pump7.port_b.h_outflow-detailedTabsMpcWithPI.senTemRet.port_b.h_outflow);
+  output Real m_flow_ahu_sup = ventilationSystemMpc.supplyFan.m_flow;
+  output Real m_flow_ahu_ret = ventilationSystemMpc.exhaustFan.m_flow;  
+  output Real TSup_ahu = ventilationSystemMpc.tAHUSupply.T;
+  output Real TRet_ahu = ventilationSystemMpc.tAHUExtract.T;
+  output Real PFans = ventilationSystemMpc.supplyFan.P + ventilationSystemMpc.exhaustFan.P;
+  output Real eps_ahu = ventilationSystemMpc.aHU.hexUA.eps;
+  output Real TSenFlr2SZ = envelope.floor2.southZone.propsBus[9].surfRad.T - 273.15;
+  output Real TSenFlr3SZ = envelope.floor3.southZone.propsBus[11].surfRad.T - 273.15;
+  output Real solDirFlr3SZ = envelope.floor3.southZone.radDistr.iSolDir.Q_flow;
+  output Real solDirFlr2SZ = envelope.floor2.southZone.radDistr.iSolDir.Q_flow;
+  output Real TMaxOut = TMaxSched.y;
+  output Real TMinOut = TMinSched.y;
+  output Real TMinOut2 = TMinSched.y-TSlackGnd;
+  output Real ctrlShaS = scrnCtrl[1].y;
+  output Real ctrlShaW = scrnCtrl[2].y;
+  output Real ctrlShaE = scrnCtrl[3].y;
+  output Real HDirS = solDirMaxSWE[1].u1;
+  output Real HDirW = solDirMaxSWE[2].u1;
+  output Real HDirE = solDirMaxSWE[3].u1;
+  output Real dpFanSupTot = ventilationSystemMpc.supplyFan.dp_actual;
+  output Real ppm_flr1SZ=envelope.floor1.southZone2.ppm;
+  output Real ppm_flr1WZ=envelope.floor1.southZone1.ppm;
+  output Real eps_fan= ventilationSystemMpc.supplyFan.eff.eta;
+
+  Real ppmMax2 = (if schedule.y then ppmMax else 2000000);
+
+constraint
+HP.con.Q_flow/1e5>=0;
+HP.con.Q_flow/1e5<=1.4;
+HP.con.Q_flow/max(0.01,HP.con.m_flow)/4100<=5;
+abs(HP.eva.Q_flow)/max(0.01,HP.eva.m_flow)/4100<=5;
+dp_fanSup - dp_fanRet <=25;
+dp_fanRet - dp_fanSup <=1;
+
+ventilationSystemMpc.tAHUSupply.T <= (if schedule.y then 273.15+25+slackTAhuSup else 400);
+ventilationSystemMpc.tAHUSupply.T >= (if schedule.y then 273.15+16-slackTAhuSup else 200);
+ventilationSystemMpc.TSupHeaCoi <= ones(21)*(if schedule.y then 273.15+29 else 400);
+
+dp_fanSup/30>= (if schedule.y then 1 else 0);
+dp_fanRet/30>= (if schedule.y then 1 else 0);
+
+// to avoid using ventilation for cooling TABS
+e005.Q2_flow/100>=-1;
+QHeaVav/100 >=-1;
+QTabsHea/100>=-1;
+
+TTabsSup <= TTabsSupMax+slackTTabsSup;
+TTabsSup >= TTabsSupMin-slackTTabsSup;
+
+Meas_TFlr2SZ >= TMinSched.y-slack[1];
+Meas_TFlr2SZ <= TMaxSched.y+slack[1];
+Meas_TFlr2NZ >= TMinSched.y-slack[2];
+Meas_TFlr2NZ <= TMaxSched.y+slack[2];
+Meas_TFlr2MT1 >= TMinSched.y-slack[1];
+Meas_TFlr2MT1 <= TMaxSched.y+slack[1];
+Meas_TFlr2MT2 >= TMinSched.y-slack[2];
+Meas_TFlr2MT2 <= TMaxSched.y+slack[2];
+
+Meas_TFlr0MT1 >= TMinSched.y-slack[3]-TSlackGnd;
+Meas_TFlr0MT1 <= TMaxSched.y+slack[3];
+Meas_TFlr0MT2 >= TMinSched.y-slack[4]-TSlackGnd;
+Meas_TFlr0MT2 <= TMaxSched.y+slack[4];
+Meas_TFlr0caf >= TMinSched.y-slack[5]-TSlackGnd;
+Meas_TFlr0caf <= TMaxSched.y+slack[5];
+
+
+Meas_TFlr1WZ >= TMinSched.y-slack[6];
+Meas_TFlr1WZ <= TMaxSched.y+slack[6];
+Meas_TFlr1SZ >= TMinSched.y-slack[7];
+Meas_TFlr1SZ <= TMaxSched.y+slack[7];
+Meas_TFlr1MT1 >= TMinSched.y-slack[8];
+Meas_TFlr1MT1 <= TMaxSched.y+slack[8];
+Meas_TFlr1MT2 >= TMinSched.y-slack[9];
+Meas_TFlr1MT2 <= TMaxSched.y+slack[9];
+Meas_TFlr1Cel2 >= TMinSched.y-slack[10];
+Meas_TFlr1Cel2 <= TMaxSched.y+slack[10];
+
+
+Meas_TFlr3SZ >= TMinSched.y-slack[11];
+Meas_TFlr3SZ <= TMaxSched.y+slack[11];
+Meas_TFlr3MT >= TMinSched.y-slack[12];
+Meas_TFlr3MT <= TMaxSched.y+slack[12];
+Meas_TFlr3SMR >= TMinSched.y-slack[13]-TSlackGnd;
+Meas_TFlr3SMR <= TMaxSched.y+slack[13];
+
+
+Meas_ppmFlr0MT2 <= ppmMax2 + slackPpm[1];
+Meas_ppmFlr0MT1 <= ppmMax2 + slackPpm[2];
+Meas_ppmFlr0Caf <= ppmMax2 + slackPpm[3];
+Meas_ppmFlr1SZ <= ppmMax2 + slackPpm[4];
+Meas_ppmFlr1MT1 <= ppmMax2 + slackPpm[5];
+Meas_ppmFlr1MT2 <= ppmMax2 + slackPpm[6];
+//Meas_ppmFlr1NZ <= ppmMax2 + slackPpm[7];  //not occupied
+Meas_ppmFlr2SZ <= ppmMax2 + slackPpm[8];
+Meas_ppmFlr2MT1 <= ppmMax2 + slackPpm[9];
+Meas_ppmFlr2MT2 <= ppmMax2 + slackPpm[10];
+//Meas_ppmFlr2NZ <= ppmMax2 + slackPpm[11]; //error in measurement
+Meas_ppmFlr3SZ <= ppmMax2 + slackPpm[12];
+//Meas_ppmFlr3CP <= ppmMax2 + slackPpm[13]; //not occupied
+Meas_ppmFlr3SMR <= ppmMax2 + slackPpm[14];
+
+end EnvelopeVentTabsRBC;
+
+

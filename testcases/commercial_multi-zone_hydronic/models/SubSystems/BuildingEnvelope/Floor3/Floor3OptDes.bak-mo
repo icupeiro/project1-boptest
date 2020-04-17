@@ -1,0 +1,91 @@
+within INFRAX.SubSystems.BuildingEnvelope.Floor3;
+model Floor3OptDes
+  extends Floor3_noVent(    meetingRoom(redeclare
+        IDEAS.Buildings.Components.InterzonalAirFlow.n50FixedPressure
+        interzonalAirFlow, allowFlowReversal=false,
+      n50=n50,
+      redeclare Data.Constructions.OuterWallsOptDes conTypA,
+      aziA=INFRAX.Data.Orientations.NOptDes),
+                            southZone(redeclare
+        IDEAS.Buildings.Components.InterzonalAirFlow.n50FixedPressure
+        interzonalAirFlow, allowFlowReversal=false,
+      n50=n50),
+    bathroomZone(hasCavityC=true, redeclare
+        IDEAS.Buildings.Components.InterzonalAirFlow.n50FixedPressure
+        interzonalAirFlow,
+      allowFlowReversal=false,
+      n50=n50,
+      redeclare Data.Constructions.OuterWallsOptDes conTypA,
+      aziA=INFRAX.Data.Orientations.NOptDes),
+    copyRoom(hasCavityC=true, redeclare
+        IDEAS.Buildings.Components.InterzonalAirFlow.n50FixedPressure
+        interzonalAirFlow,
+      allowFlowReversal=false,
+      n50=n50,
+      redeclare Data.Constructions.OuterWallsOptDes conTypA,
+      aziA=INFRAX.Data.Orientations.NOptDes),
+    smallRoom(redeclare
+        IDEAS.Buildings.Components.InterzonalAirFlow.n50FixedPressure
+        interzonalAirFlow, allowFlowReversal=false,
+      n50=n50,
+      redeclare Data.Constructions.OuterWallsOptDes conTypA,
+      aziA=INFRAX.Data.Orientations.NOptDes),
+    southWalls(redeclare Data.Constructions.OuterWallsOptDes constructionType),
+    str3rdFlr(azi_3rdFlr_SZ={INFRAX.Data.Orientations.NOptDes,INFRAX.Data.Orientations.EOptDes,
+          INFRAX.Data.Orientations.SOptDes,INFRAX.Data.Orientations.WOptDes}),
+    staW_WallC(azi=INFRAX.Data.Orientations.NOptDes),
+    high_windows(azi=INFRAX.Data.Orientations.NOptDes));
+  parameter Boolean allowFlowReversal = true
+    "= false to simplify equations, assuming, but not enforcing, no flow reversal"
+    annotation(Dialog(tab="Assumptions"), Evaluate=true);
+  parameter Modelica.SIunits.Volume[5] VZone = {southZone.V, copyRoom.V, smallRoom.V, meetingRoom.V, bathroomZone.V};
+
+  Modelica.Fluid.Interfaces.FluidPort_b[5] airOutlet(
+    each m_flow(max=if allowFlowReversal then Modelica.Constants.inf else 0),
+    redeclare each package Medium = Medium)   "air outlet"
+    annotation (Placement(transformation(extent={{-54,90},{-34,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_a[5] airInlet(
+    each m_flow(min=if allowFlowReversal then -Modelica.Constants.inf else 0),
+    redeclare each package Medium = Medium)   "air inlet"
+    annotation (Placement(transformation(extent={{26,90},{46,110}})));
+
+  Modelica.Blocks.Interfaces.RealOutput TSensor[5] annotation (Placement(
+        transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={40,-110})));
+  parameter Real n50=1.3
+    "n50 value cfr airtightness, i.e. the ACH at a pressure diffence of 50 Pa";
+equation
+  connect(southZone.port_b, airOutlet[1]) annotation (Line(points={{-4,-20},{-4,
+          92},{-44,92}},           color={0,127,255}));
+  connect(southZone.port_a, airInlet[1]) annotation (Line(points={{4,-20},{4,92},
+          {36,92}},         color={0,127,255}));
+  connect(copyRoom.port_b, airOutlet[2]) annotation (Line(points={{-12,60},{-12,
+          96},{-44,96}},          color={0,127,255}));
+  connect(copyRoom.port_a, airInlet[2]) annotation (Line(points={{-8,60},{-8,96},
+          {36,96}},         color={0,127,255}));
+  connect(smallRoom.port_b, airOutlet[3]) annotation (Line(points={{68,60},{68,
+          100},{-44,100}},     color={0,127,255}));
+  connect(smallRoom.port_a, airInlet[3]) annotation (Line(points={{72,60},{72,
+          100},{36,100}},     color={0,127,255}));
+  connect(meetingRoom.port_b, airOutlet[4]) annotation (Line(points={{28,60},{
+          28,104},{-44,104}},      color={0,127,255}));
+  connect(meetingRoom.port_a, airInlet[4]) annotation (Line(points={{32,60},{32,
+          100},{36,100},{36,104}},
+                                 color={0,127,255}));
+  connect(bathroomZone.port_b, airOutlet[5]) annotation (Line(points={{-52,60},{
+          -54,60},{-54,108},{-44,108}}, color={0,127,255}));
+  connect(bathroomZone.port_a, airInlet[5]) annotation (Line(points={{-48,60},{
+          -48,108},{36,108}},     color={0,127,255}));
+  connect(southZone.TSensor, TSensor[1])
+    annotation (Line(points={{22,-36},{40,-36},{40,-102}}, color={0,0,127}));
+  connect(copyRoom.TSensor, TSensor[2])
+    annotation (Line(points={{1,52},{40,52},{40,-106}}, color={0,0,127}));
+  connect(smallRoom.TSensor, TSensor[3])
+    annotation (Line(points={{81,52},{40,52},{40,-110}}, color={0,0,127}));
+  connect(meetingRoom.TSensor, TSensor[4]) annotation (Line(points={{41,52},{40,
+          52},{40,-114},{40,-114}}, color={0,0,127}));
+  connect(bathroomZone.TSensor, TSensor[5])
+    annotation (Line(points={{-39,52},{40,52},{40,-118}}, color={0,0,127}));
+end Floor3OptDes;

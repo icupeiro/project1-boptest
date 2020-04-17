@@ -1,0 +1,23 @@
+within INFRAX.SubSystems.BuildingEnvelope;
+model EnvelopeSimNonGeotabs
+  extends Envelope(
+    redeclare Floor3.Floor3Sim floor3,
+    redeclare Floor2.Floor2Sim floor2,
+    redeclare Floor1.Floor1SimNonGeotabs floor1,
+    redeclare Floor0.Floor0SimNonGeotabs floor0);
+  Modelica.Fluid.Interfaces.FluidPort_a[2] airReturnExtra(redeclare package
+      Medium = Medium)    "air return"
+    annotation (Placement(transformation(extent={{70,90},{90,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_b[2] airSupplyExtra(redeclare package
+      Medium = Medium)    "air supply"
+    annotation (Placement(transformation(extent={{110,90},{130,110}})));
+equation
+  connect(airSupplyExtra[1], floor1.airSupplyExtra) annotation (Line(points={{
+          120,95},{120,-18},{14.6,-18}}, color={0,127,255}));
+  connect(airReturnExtra[1], floor1.airReturnExtra)
+    annotation (Line(points={{80,95},{80,-18},{10.6,-18}}, color={0,127,255}));
+  connect(airSupplyExtra[2], floor0.airSupplyExtra) annotation (Line(points={{
+          120,105},{120,-54},{-2,-54}}, color={0,127,255}));
+  connect(airReturnExtra[2], floor0.airReturnExtra)
+    annotation (Line(points={{80,105},{80,-54},{-6,-54}}, color={0,127,255}));
+end EnvelopeSimNonGeotabs;
