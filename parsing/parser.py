@@ -42,8 +42,11 @@ def parse_instances(model_path, file_name):
     '''
 
     # Compile fmu
-    fmu_path = compile_fmu(model_path, file_name)
+    fmu_path = compile_fmu(model_path, file_name, 
+                           compiler_log_level='w,d:log.txt', 
+                           compiler_options={'generate_html_diagnostics':True})
     # Load fmu
+    print(fmu_path)
     fmu = load_fmu(fmu_path)
     # Check version
     if fmu.get_version() != '2.0':
