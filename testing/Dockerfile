@@ -14,10 +14,10 @@ WORKDIR $HOME
 
 RUN git clone https://github.com/ibpsa/modelica-ibpsa.git $HOME/git/ibpsa/modelica-ibpsa && \
     git clone https://github.com/lbl-srg/modelica-buildings.git $HOME/git/buildings/modelica-buildings && \
-    git clone https://github.com/open-ideas/IDEAS.git $HOME/git/open-ideas/IDEAS && \
+    git clone https://github.com/icupeiro/IDEAS.git $HOME/git/open-ideas/IDEAS && \
     cd $HOME/git/ibpsa/modelica-ibpsa && \
     cd $HOME/git/buildings/modelica-buildings && \
-    cd $HOME/git/open-ideas/IDEAS && git fetch origin && git checkout -b issue1029_portVector origin/issue1029_portVector 
+    cd $HOME/git/icupeiro/IDEAS && git fetch origin && git checkout -b issue1029_portVector origin/issue1029_portVector 
 
 RUN python -m pip install --user flask-restful pandas==0.22.0 requests
 
