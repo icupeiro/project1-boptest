@@ -71,13 +71,13 @@ equation
   end for;
 
   if initialStep then
-    Connections.uniqueRoot(node, "
-The StateGraph has a wrong connection structure. Reasons:
-(1) The StateGraph is initialized at two different locations (initial steps or entry ports).
-(2) A transition is made wrongly out of a Parallel component.
-(3) A transition is made between two branches of a Parallel component.
-All these cases are not allowed.
-");
+//     Connections.uniqueRoot(node, "
+// The StateGraph has a wrong connection structure. Reasons:
+// (1) The StateGraph is initialized at two different locations (initial steps or entry ports).
+// (2) A transition is made wrongly out of a Parallel component.
+// (3) A transition is made between two branches of a Parallel component.
+// All these cases are not allowed.
+// ");
 
     node.suspend = false;
     node.resume = false;
