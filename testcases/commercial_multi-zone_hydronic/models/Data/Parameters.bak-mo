@@ -1,0 +1,176 @@
+within INFRAX.Data;
+package Parameters
+  record Structure
+    extends Modelica.Icons.Record;
+
+
+    //OuterWalls and Windows
+    parameter Modelica.SIunits.Height WindowHeight = 2.69;
+    //  SecondFloor
+    parameter Modelica.SIunits.Height Height2ndFlr = 2.94;
+    parameter Modelica.SIunits.Area WindowA = WindowHeight*(0.025+0.08+0.29+0.08+0.05+0.765+0.07);
+    parameter Modelica.SIunits.Area WindowB = WindowHeight*(0.025+0.08+0.74+0.08+0.055+0.315+0.065);
+    parameter Modelica.SIunits.Area WindowC = WindowHeight*(0.065+1.23+0.065);
+    parameter Modelica.SIunits.Area WindowD = WindowHeight*(0.065+0.73+0.065);
+    parameter Modelica.SIunits.Area GlazingA = 0.29*(WindowHeight-0.12-0.12)+0.765*(WindowHeight-0.05-0.075);
+    parameter Modelica.SIunits.Area GlazingB = 0.74*(WindowHeight-0.08-0.105)+0.315*(WindowHeight-0.05-0.075);
+    parameter Modelica.SIunits.Area GlazingC = 1.23*(WindowHeight-0.05-0.075);
+    parameter Modelica.SIunits.Area GlazingD = 0.73*(WindowHeight-0.05-0.075);
+    //    NorthZone
+    parameter Modelica.SIunits.Length w_2ndFlr_NZ = 6.15 "north zone width, till meeting rooms";
+    parameter Modelica.SIunits.Length l_2ndFlr_NZ = 18.7 "north zone length, north facade";
+    parameter Modelica.SIunits.Volume Vol_2ndFlr_NZ = Height2ndFlr*w_2ndFlr_NZ*l_2ndFlr_NZ "north zone volume";
+    parameter Modelica.SIunits.Area AWall_2ndFlr_NZ = Height2ndFlr*l_2ndFlr_NZ - AWindows_2ndFlr_NZ "north zone wall area, excluding windows";
+    parameter Modelica.SIunits.Area AWindows_2ndFlr_NZ = 7*WindowA;
+    parameter Real FrameRatio_2ndFlr_NZ = 1-GlazingA/WindowA;
+    //    SouthZone
+    parameter Modelica.SIunits.Volume Vol_2ndFlr_SZ = Height2ndFlr*(4.6*1.9+(16.2-4.6)*10.75+18.85*6.75+1.35*3.294+2.65*4.347);
+    parameter Modelica.SIunits.Area AWall_2ndFlr_SZ[4] = Height2ndFlr*{1.9, 11.1, 32.2, 16.2} - AWindows_2ndFlr_SZ;
+    parameter Modelica.SIunits.Area AWindows_2ndFlr_SZ[4] = {WindowD, 3*WindowC+WindowB, 5*(WindowC+WindowA)+WindowC, 2*(WindowC+WindowB)};
+    parameter Modelica.SIunits.Area AGlazing_2ndFlr_SZ[4] = {GlazingD, 3*GlazingC+GlazingB, 5*(GlazingC+GlazingA)+GlazingC, 2*(GlazingC+GlazingB)};
+    parameter Real FrameRatio_2ndFlr_SZ_N = 1 - AGlazing_2ndFlr_SZ[1]/AWindows_2ndFlr_SZ[1];
+    parameter Real FrameRatio_2ndFlr_SZ_E = 1 - AGlazing_2ndFlr_SZ[2]/AWindows_2ndFlr_SZ[2];
+    parameter Real FrameRatio_2ndFlr_SZ_S = 1 - AGlazing_2ndFlr_SZ[3]/AWindows_2ndFlr_SZ[3];
+    parameter Real FrameRatio_2ndFlr_SZ_W = 1 - AGlazing_2ndFlr_SZ[4]/AWindows_2ndFlr_SZ[4];
+    parameter Real FrameRatio_2ndFlr_SZ[4] = {FrameRatio_2ndFlr_SZ_N, FrameRatio_2ndFlr_SZ_E, FrameRatio_2ndFlr_SZ_S, FrameRatio_2ndFlr_SZ_W};
+
+    //  ThirdFloor
+    parameter Modelica.SIunits.Height Height3rdFlr = 2.94;
+    //    SouthZone
+    parameter Modelica.SIunits.Area AWall_3rdFlr_SZ[2] = Height3rdFlr*{1.9, 5.2}-AWindows_2ndFlr_SZ;
+    parameter Modelica.SIunits.Area AWindows_3rdFlr_SZ[2] = {0, 0};
+
+
+    //InnerWalls
+    //  SecondFloor
+    parameter Modelica.SIunits.Area AglassWall = 3.05*2*Height2ndFlr;
+
+    //RectangularZones
+    //  SecondFloor
+    //    BathroomZone
+    parameter Modelica.SIunits.Length l_2ndFlr_BRZ = 3.55;
+    parameter Modelica.SIunits.Length w_2ndFlr_BRZ = 4.3;
+    //    MeetingRoom1
+    parameter Modelica.SIunits.Length l_2ndFlr_MTR1 = 3.84;
+    parameter Modelica.SIunits.Length w_2ndFlr_MTR1 = 3.05;
+    //    MeetingRoom2
+    parameter Modelica.SIunits.Length l_2ndFlr_MTR2 = 3.84;
+    parameter Modelica.SIunits.Length w_2ndFlr_MTR2 = 3.05;
+    //    CopyRooms
+    parameter Modelica.SIunits.Length l_2ndFlr_CPR = 5.2;
+    parameter Modelica.SIunits.Length w_2ndFlr_CPR = 3.05;
+    //  ThirdFloor
+    //    SouthZone
+    parameter Modelica.SIunits.Length l_3rdFlr_SZ = 32.3;
+    parameter Modelica.SIunits.Length w_3rdFlr_SZ = 11.1;
+    //    BathroomZone
+    parameter Modelica.SIunits.Length l_3rdFlr_BRZ = 3.55;
+    parameter Modelica.SIunits.Length w_3rdFlr_BRZ = 4.3;
+    //    CopyRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_CPR = 5.24;
+    parameter Modelica.SIunits.Length w_3rdFlr_CPR = 5.0;
+    //    MeetingRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_MTR = 10.6;
+    parameter Modelica.SIunits.Length w_3rdFlr_MTR = 5.0;
+    //    SmallRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_SmaR = 2.58;
+    parameter Modelica.SIunits.Length w_3rdFlr_SmaR = 5.0;
+    //    StorageRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_StoR = 2.54;
+    parameter Modelica.SIunits.Length w_3rdFlr_StoR = 5.0;
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+          coordinateSystem(preserveAspectRatio=false)));
+  end Structure;
+
+  record Str2ndFlr
+    extends Modelica.Icons.Record;
+
+    //OuterWalls and Windows
+    parameter Modelica.SIunits.Height WindowHeight = 2.69;
+    parameter Modelica.SIunits.Height Height2ndFlr = 2.94;
+    parameter Modelica.SIunits.Area WindowA = WindowHeight*(0.025+0.08+0.29+0.08+0.05+0.765+0.07);
+    parameter Modelica.SIunits.Area WindowB = WindowHeight*(0.025+0.08+0.74+0.08+0.055+0.315+0.065);
+    parameter Modelica.SIunits.Area WindowC = WindowHeight*(0.065+1.23+0.065);
+    parameter Modelica.SIunits.Area WindowD = WindowHeight*(0.065+0.73+0.065);
+    parameter Modelica.SIunits.Area GlazingA = 0.29*(WindowHeight-0.12-0.12)+0.765*(WindowHeight-0.05-0.075);
+    parameter Modelica.SIunits.Area GlazingB = 0.74*(WindowHeight-0.08-0.105)+0.315*(WindowHeight-0.05-0.075);
+    parameter Modelica.SIunits.Area GlazingC = 1.23*(WindowHeight-0.05-0.075);
+    parameter Modelica.SIunits.Area GlazingD = 0.73*(WindowHeight-0.05-0.075);
+    //    NorthZone
+    parameter Modelica.SIunits.Length w_2ndFlr_NZ = 6.15 "north zone width, till meeting rooms";
+    parameter Modelica.SIunits.Length l_2ndFlr_NZ = 18.7 "north zone length, north facade";
+    parameter Modelica.SIunits.Volume Vol_2ndFlr_NZ = Height2ndFlr*w_2ndFlr_NZ*l_2ndFlr_NZ "north zone volume";
+    parameter Modelica.SIunits.Area AWall_2ndFlr_NZ = Height2ndFlr*l_2ndFlr_NZ - AWindows_2ndFlr_NZ "north zone wall area, excluding windows";
+    parameter Modelica.SIunits.Area AWindows_2ndFlr_NZ = 7*WindowA;
+    parameter Real FrameRatio_2ndFlr_NZ = 1-GlazingA/WindowA;
+    //    SouthZone
+    parameter Real azi_2ndFlr_SZ[4] = {IDEAS.Types.Azimuth.N,IDEAS.Types.Azimuth.E,IDEAS.Types.Azimuth.S,IDEAS.Types.Azimuth.W};
+    parameter Real inc_2ndFlr_SZ[4] = {IDEAS.Types.Tilt.Wall,IDEAS.Types.Tilt.Wall,IDEAS.Types.Tilt.Wall,IDEAS.Types.Tilt.Wall};
+    parameter Modelica.SIunits.Volume Vol_2ndFlr_SZ = Height2ndFlr*(4.6*1.9+(16.2-4.6)*10.75+18.85*6.75+1.35*3.294+2.65*4.347);
+    parameter Modelica.SIunits.Area AWall_2ndFlr_SZ[4] = Height2ndFlr*{1.9, 11.1, 32.2, 16.2} - AWindows_2ndFlr_SZ;
+    parameter Modelica.SIunits.Area AWindows_2ndFlr_SZ[4] = {WindowD, 3*WindowC+WindowB, 5*(WindowC+WindowA)+WindowC, 2*(WindowC+WindowB)};
+    parameter Modelica.SIunits.Area AGlazing_2ndFlr_SZ[4] = {GlazingD, 3*GlazingC+GlazingB, 5*(GlazingC+GlazingA)+GlazingC, 2*(GlazingC+GlazingB)};
+    parameter Real FrameRatio_2ndFlr_SZ[4] = {1 - AGlazing_2ndFlr_SZ[1]/AWindows_2ndFlr_SZ[1], 1 - AGlazing_2ndFlr_SZ[2]/AWindows_2ndFlr_SZ[2],  1 - AGlazing_2ndFlr_SZ[3]/AWindows_2ndFlr_SZ[3], 1 - AGlazing_2ndFlr_SZ[4]/AWindows_2ndFlr_SZ[4]};
+
+
+
+    //InnerWalls
+    parameter Modelica.SIunits.Area AglassWall = 3.05*2*Height2ndFlr;
+
+    //RectangularZones
+    //    BathroomZone
+    parameter Modelica.SIunits.Length l_2ndFlr_BRZ = 3.55;
+    parameter Modelica.SIunits.Length w_2ndFlr_BRZ = 4.3;
+    //    MeetingRoom1
+    parameter Modelica.SIunits.Length l_2ndFlr_MTR1 = 3.84;
+    parameter Modelica.SIunits.Length w_2ndFlr_MTR1 = 3.05;
+    //    MeetingRoom2
+    parameter Modelica.SIunits.Length l_2ndFlr_MTR2 = 3.84;
+    parameter Modelica.SIunits.Length w_2ndFlr_MTR2 = 3.05;
+    //    CopyRooms
+    parameter Modelica.SIunits.Length l_2ndFlr_CPR = 5.2;
+    parameter Modelica.SIunits.Length w_2ndFlr_CPR = 3.05;
+
+    //Floor area
+    parameter Modelica.SIunits.Area Atotal2ndFlr = l_2ndFlr_CPR*w_2ndFlr_CPR + l_2ndFlr_BRZ*w_2ndFlr_BRZ + l_2ndFlr_MTR1*w_2ndFlr_MTR1 + l_2ndFlr_MTR2*w_2ndFlr_MTR2 + Vol_2ndFlr_SZ/Height2ndFlr + Vol_2ndFlr_NZ/Height2ndFlr;
+
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+          coordinateSystem(preserveAspectRatio=false)));
+  end Str2ndFlr;
+
+  record Str3rdFlr
+    extends Modelica.Icons.Record;
+
+    //OuterWalls and Windows
+    parameter Modelica.SIunits.Height WindowHeight = 2.69;
+
+    //  ThirdFloor
+    parameter Modelica.SIunits.Height Height3rdFlr = 2.94;
+    //    SouthZone
+    parameter Modelica.SIunits.Area AWall_3rdFlr_SZ[2] = Height3rdFlr*{1.9, 5.2}-AWindows_3rdFlr_SZ;
+    parameter Modelica.SIunits.Area AWindows_3rdFlr_SZ[2] = {0, 0};
+
+
+    //RectangularZones
+    //    SouthZone
+    parameter Modelica.SIunits.Length l_3rdFlr_SZ = 32.3;
+    parameter Modelica.SIunits.Length w_3rdFlr_SZ = 11.1;
+    //    BathroomZone
+    parameter Modelica.SIunits.Length l_3rdFlr_BRZ = 3.55;
+    parameter Modelica.SIunits.Length w_3rdFlr_BRZ = 4.3;
+    //    CopyRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_CPR = 5.24;
+    parameter Modelica.SIunits.Length w_3rdFlr_CPR = 5.0;
+    //    MeetingRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_MTR = 10.6;
+    parameter Modelica.SIunits.Length w_3rdFlr_MTR = 5.0;
+    //    SmallRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_SmaR = 2.58;
+    parameter Modelica.SIunits.Length w_3rdFlr_SmaR = 5.0;
+    //    StorageRoom
+    parameter Modelica.SIunits.Length l_3rdFlr_StoR = 2.54;
+    parameter Modelica.SIunits.Length w_3rdFlr_StoR = 5.0;
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+          coordinateSystem(preserveAspectRatio=false)));
+  end Str3rdFlr;
+end Parameters;

@@ -1,77 +1,7 @@
 within INFRAX.SubSystems.VentilationSystem;
 model VentilationSystemSim
   extends VentilationSystem(
-      redeclare IDEAS.Fluid.Movers.FlowControlled_dp exhaustFan(
-      allowFlowReversal=false,
-        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        addPowerToMedium=false,
-        tau=10,
-        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        use_inputFilter=false,
-        m_flow_nominal=8850*1.225/3600,
-        redeclare INFRAX.Data.Parameters.INFRAX_AHU_Fans per,
-        dp_nominal=150,
-        constantHead=150,
-        dp_start=150,
-        redeclare package Medium = MediumAir,
-        prescribeSystemPressure=true),
-      redeclare IDEAS.Fluid.Movers.FlowControlled_dp supplyFan(
-      allowFlowReversal=false,
-        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        addPowerToMedium=false,
-        use_inputFilter=false,
-        tau=60,
-        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        m_flow_nominal=10000*1.225/3600,
-        dp_nominal(displayUnit="Pa") = 180,
-        redeclare INFRAX.Data.Parameters.INFRAX_AHU_Fans per,
-        dp_start=180,
-        redeclare package Medium = MediumAir,
-        prescribeSystemPressure=true),
-      redeclare IDEAS.Fluid.Movers.FlowControlled_dp pump13(
-        tau=30,
-        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        use_inputFilter=false,
-        allowFlowReversal=false,
-        addPowerToMedium=false,
-        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        m_flow_nominal=hydronic.p13_m_flow,
-        redeclare
-          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine40slash120dash1comma5slash2
-          per,
-        redeclare package Medium = MediumWater,
-        inputType=IDEAS.Fluid.Types.InputType.Continuous,
-        each dp_nominal(displayUnit="kPa") = 40000,
-        T_start=284.15),
-      redeclare IDEAS.Fluid.Movers.FlowControlled_dp pump6(
-        tau=30,
-        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        use_inputFilter=false,
-        allowFlowReversal=false,
-        addPowerToMedium=false,
-        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        inputType=IDEAS.Fluid.Types.InputType.Stages,
-        m_flow_nominal=hydronic.p06_m_flow,
-        redeclare
-          IDEAS.Fluid.Movers.Data.Pumps.Wilo.Stratos40slash1to12CANPN6slash10 per,
-        each dp_nominal(displayUnit="Pa") = 7.2*9804.139432,
-        dp_start=0,
-        redeclare package Medium = MediumWater),
-      redeclare IDEAS.Fluid.Movers.FlowControlled_dp pump9(
-        tau=30,
-        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        use_inputFilter=false,
-        allowFlowReversal=false,
-        addPowerToMedium=false,
-        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-        m_flow_nominal=hydronic.p09_m_flow,
-        redeclare
-          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine32slash160dash1comma1slash2
-          per,
-        each dp_nominal(displayUnit="kPa") = 14*9804.139432,
-        inputType=IDEAS.Fluid.Types.InputType.Stages,
-        redeclare package Medium = MediumGlycol),
-        redeclare IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent dp_ducts_supply(
+  redeclare IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent dp_ducts_supply(
       allowFlowReversal=false,
           m_flow_nominal=air.m_nominal_supply_duct,
           redeclare package Medium = MediumAir,
@@ -79,7 +9,7 @@ model VentilationSystemSim
           dpFixed_nominal=100,
       dpValve_nominal=50,
       use_inputFilter=false),
-        redeclare IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent dp_ducts_extract(
+             redeclare IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent dp_ducts_extract(
       allowFlowReversal=false,
           m_flow_nominal=air.m_nominal_extract_duct,
           redeclare package Medium = MediumAir,

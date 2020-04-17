@@ -1,0 +1,124 @@
+within INFRAX.SubSystems.VentilationSystem.Components.Dependencies;
+block Derivative "Approximated derivative block"
+  import Modelica.Blocks.Types.Init;
+  parameter Boolean use_onOff = false;
+  parameter Real k(unit="1")=1 "Gains";
+  parameter Modelica.SIunits.Time T(min=Modelica.Constants.small)=0.01
+    "Time constants (T>0 required; T=0 is ideal derivative block)";
+  parameter Modelica.Blocks.Types.Init initType=Modelica.Blocks.Types.Init.NoInit
+    "Type of initialization (1: no init, 2: steady state, 3: initial state, 4: initial output)"
+                                                                                    annotation(Evaluate=true,
+      Dialog(group="Initialization"));
+  parameter Real x_start=0 "Initial or guess value of state"
+    annotation (Dialog(group="Initialization"));
+  parameter Real y_start=0 "Initial value of output (= state)"
+    annotation(Dialog(enable=initType == Init.InitialOutput, group=
+          "Initialization"));
+  extends Modelica.Blocks.Interfaces.SISO;
+
+  output Real x(start=x_start) "State of block";
+
+protected
+  parameter Boolean zeroGain = abs(k) < Modelica.Constants.eps;
+
+  Modelica.Blocks.Interfaces.BooleanOutput onOff_internal;
+public
+  Modelica.Blocks.Interfaces.BooleanInput onOff if use_onOff
+    annotation (Placement(transformation(extent={{-140,60},{-100,100}})));
+initial equation
+  if initType == Init.SteadyState then
+    der(x) = 0;
+  elseif initType == Init.InitialState then
+    x = x_start;
+  elseif initType == Init.InitialOutput then
+    if zeroGain then
+       x = u;
+    else
+       y = y_start;
+    end if;
+  end if;
+equation
+  if not use_onOff then
+    onOff_internal = true;
+  else
+    connect(onOff_internal,onOff);
+  end if;
+
+  der(x) = if zeroGain then 0 else (u - x)/T;
+  y = if zeroGain then 0 else (k/T)*(u - x);
+
+  when edge(onOff_internal) then
+    reinit(x,x_start);
+  end when;
+  annotation (
+    Documentation(info="<html>
+<p>
+This blocks defines the transfer function between the
+input u and the output y
+(element-wise) as <i>approximated derivative</i>:
+</p>
+<pre>
+             k * s
+     y = ------------ * u
+            T * s + 1
+</pre>
+<p>
+If you would like to be able to change easily between different
+transfer functions (FirstOrder, SecondOrder, ... ) by changing
+parameters, use the general block <b>TransferFunction</b> instead
+and model a derivative block with parameters<br>
+b = {k,0}, a = {T, 1}.
+</p>
+
+<p>
+If k=0, the block reduces to y=0.
+</p>
+</html>"), Icon(
+    coordinateSystem(preserveAspectRatio=true,
+        extent={{-100.0,-100.0},{100.0,100.0}},
+      initialScale=0.1),
+      graphics={
+    Line(visible=true,
+        points={{-80.0,78.0},{-80.0,-90.0}},
+      color={192,192,192}),
+  Polygon(visible=true,
+      lineColor={192,192,192},
+    fillColor={192,192,192},
+    fillPattern=FillPattern.Solid,
+    points={{-80.0,90.0},{-88.0,68.0},{-72.0,68.0},{-80.0,90.0}}),
+  Line(visible=true,
+      points={{-90.0,-80.0},{82.0,-80.0}},
+    color={192,192,192}),
+  Polygon(visible=true,
+      lineColor={192,192,192},
+    fillColor={192,192,192},
+    fillPattern=FillPattern.Solid,
+    points={{90.0,-80.0},{68.0,-72.0},{68.0,-88.0},{90.0,-80.0}}),
+  Line(visible = true,
+    origin = {-24.667,-27.333},
+    points = {{-55.333,87.333},{-19.333,-40.667},{86.667,-52.667}},
+    color = {0,0,127},
+    smooth = Smooth.Bezier),
+  Text(visible=true,
+      lineColor={192,192,192},
+    extent={{-30.0,14.0},{86.0,60.0}},
+    textString="DT1"),
+  Text(visible=true,
+      extent={{-150.0,-150.0},{150.0,-110.0}},
+    textString="k=%k")}),
+    Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}}), graphics={
+        Text(
+          extent={{-54,52},{50,10}},
+          lineColor={0,0,0},
+          textString="k s"),
+        Text(
+          extent={{-54,-6},{52,-52}},
+          lineColor={0,0,0},
+          textString="T s + 1"),
+        Line(points={{-50,0},{50,0}}, color={0,0,0}),
+        Rectangle(extent={{-60,60},{60,-60}}, lineColor={0,0,255}),
+        Line(points={{-100,0},{-60,0}}, color={0,0,255}),
+        Line(points={{60,0},{100,0}}, color={0,0,255})}));
+end Derivative;

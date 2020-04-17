@@ -1,0 +1,11 @@
+RunScript("$DYMOLA/insert/displayunit.mos", true);
+openModel("/home/u0112721/Git/air-models/Air/package.mo")
+openModel("/home/u0112721/Git/modelica-buildings/Buildings/package.mo");
+openModel("/home/u0112721/Git/Infrax/INFRAX/package.mo");
+OutputCPUtime:=true;
+Evaluate:=true;
+Advanced.AssertInsideMinMaxNonReversibleLimit=4;
+Advanced.OutputModelicaCodeWithJacobians = true;
+Advanced.InvisibleConnections = true;
+Advanced.CompileWith64=2;
+cd SimulationResults;
