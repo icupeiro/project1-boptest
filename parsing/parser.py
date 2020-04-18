@@ -42,9 +42,7 @@ def parse_instances(model_path, file_name):
     '''
 
     # Compile fmu
-    fmu_path = compile_fmu(model_path, file_name, 
-                           compiler_log_level='w,d:log.txt', 
-                           compiler_options={'generate_html_diagnostics':True})
+    fmu_path = compile_fmu(model_path, file_name)
     # Load fmu
     print(fmu_path)
     fmu = load_fmu(fmu_path)
