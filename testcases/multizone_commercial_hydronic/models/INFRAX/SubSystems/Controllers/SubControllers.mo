@@ -209,6 +209,23 @@ package SubControllers "Individual controller modules"
   //    annotation (Placement(transformation(extent={{60,50},{80,70}})));
     IDEAS.Utilities.Math.Max max(nin=3) "maximum of the required setpoints"
       annotation (Placement(transformation(extent={{-14,70},{-34,90}})));
+    OverwriteInteger overwriteInteger(
+      description="HP1 pump signal",
+      min=0,
+      max=1,
+      unit="1") annotation (Placement(transformation(extent={{88,26},{96,34}})));
+    OverwriteInteger overwriteInteger1(
+      description="HP2 pump signal",
+      min=0,
+      max=1,
+      unit="1")
+      annotation (Placement(transformation(extent={{76,-54},{84,-46}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+          "HP set-point", u(
+        min=293.15,
+        max=323.15,
+        unit="K"))
+      annotation (Placement(transformation(extent={{-48,70},{-68,90}})));
   equation
     connect(hysteresis.y,not1. u)
       annotation (Line(points={{-9,50},{-2,50}},color={255,0,255}));
@@ -231,12 +248,6 @@ package SubControllers "Individual controller modules"
       annotation (Line(points={{-29,-50},{-22,-50}}, color={255,0,255}));
     connect(sleep.y, HP2.u)
       annotation (Line(points={{31,-50},{38,-50}}, color={255,0,255}));
-    connect(HP2.y, signalBus.HP2_signal) annotation (Line(points={{61,-50},{100,
-            -50},{100,0}}, color={255,127,0}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
     connect(dataBus.T2, sleep1.u) annotation (Line(
         points={{-99.9,0.1},{-100,0.1},{-100,10},{-62,10}},
         color={255,204,51},
@@ -261,12 +272,6 @@ package SubControllers "Individual controller modules"
             30,30}}, color={255,0,255}));
     connect(or1.y, HP1.u)
       annotation (Line(points={{53,30},{58,30}}, color={255,0,255}));
-    connect(HP1.y, signalBus.HP1_signal) annotation (Line(points={{81,30},{100,
-            30},{100,0}}, color={255,127,0}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
         //  connect(hpMod.y, signalBus.HP_mod)
         // annotation (Line(points={{81,60},{100,60},{
     //        100,0}}, color={0,0,127}), Text(
@@ -294,8 +299,26 @@ package SubControllers "Individual controller modules"
         index=1,
         extent={{6,3},{6,3}},
         horizontalAlignment=TextAlignment.Left));
-    connect(max.y, add.u2) annotation (Line(points={{-35,80},{-80,80},{-80,44},{-62,
-            44}}, color={0,0,127}));
+    connect(HP1.y, overwriteInteger.u)
+      annotation (Line(points={{81,30},{87.2,30}}, color={255,127,0}));
+    connect(overwriteInteger.y, signalBus.HP1_signal) annotation (Line(points={
+            {96.8,30},{100,30},{100,0},{100,0}}, color={255,127,0}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(HP2.y, overwriteInteger1.u)
+      annotation (Line(points={{61,-50},{75.2,-50}}, color={255,127,0}));
+    connect(overwriteInteger1.y, signalBus.HP2_signal) annotation (Line(points=
+            {{84.8,-50},{100,-50},{100,0}}, color={255,127,0}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(max.y, overwrite.u)
+      annotation (Line(points={{-35,80},{-46,80}}, color={0,0,127}));
+    connect(overwrite.y, add.u2) annotation (Line(points={{-69,80},{-80,80},{
+            -80,44},{-62,44}}, color={0,0,127}));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Rectangle(
             extent={{-100,100},{100,-100}},
@@ -706,7 +729,7 @@ package SubControllers "Individual controller modules"
     Modelica.Blocks.Tables.CombiTable1D curve_HP(table=[273.15 + 15,273.15 + 24;
           273.15 + 23,273.15 + 32])
       "HP setpoint depending on AHU required temperature"
-      annotation (Placement(transformation(extent={{72,166},{92,186}})));
+      annotation (Placement(transformation(extent={{78,166},{98,186}})));
     Modelica.Blocks.Logical.Switch switch2
       annotation (Placement(transformation(extent={{16,94},{36,74}})));
     Modelica.Blocks.Sources.Constant bypass(k=1)
@@ -736,6 +759,30 @@ package SubControllers "Individual controller modules"
       annotation (Placement(transformation(extent={{-120,-170},{-80,-130}})));
     Modelica.Blocks.Logical.Or or1
       annotation (Placement(transformation(extent={{36,98},{16,118}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+          "AHU supply temperature set-point", u(
+        min=288.15,
+        max=297.15,
+        unit="K"))
+      annotation (Placement(transformation(extent={{48,170},{60,182}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite1(description=
+          "AHU recovery by-pass", u(
+        min=0,
+        max=1,
+        unit="1"))
+      annotation (Placement(transformation(extent={{58,78},{70,90}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite2(description=
+          "AHU supply differential pressure", u(
+        min=0,
+        max=300,
+        unit="Pa"))
+      annotation (Placement(transformation(extent={{52,-152},{64,-140}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite3(description=
+          "AHU supply differential pressure", u(
+        min=0,
+        max=300,
+        unit="Pa"))
+      annotation (Placement(transformation(extent={{62,-180},{74,-168}})));
   equation
 
       connect(con3wayCoo.y, signalBus.CooCoi_3way_signal) annotation (Line(points={{11,48},
@@ -775,9 +822,6 @@ package SubControllers "Individual controller modules"
       annotation (Line(points={{-23,138},{-16,138}}, color={0,0,127}));
     connect(abs.y, thermalWheelByPass.u)
       annotation (Line(points={{7,138},{14,138}},  color={0,0,127}));
-    connect(limiter.y, con3wayCoo.u_s) annotation (Line(points={{41,176},{58,
-            176},{58,200},{-72,200},{-72,48},{-12,48}},
-                                                   color={0,0,127}));
     connect(dataBus.TAirSupplyAHU, con3wayCoo.u_m) annotation (Line(
         points={{-99.9,0.1},{-100,0.1},{-100,28},{0,28},{0,36}},
         color={255,204,51},
@@ -827,19 +871,6 @@ package SubControllers "Individual controller modules"
     connect(not1.y, P04_signal.u) annotation (Line(points={{58.6,-32},{62,-32},
             {62,-58},{66,-58}},
                             color={255,0,255}));
-    connect(supplySP.y, signalBus.AHUsupply) annotation (Line(points={{13.1,
-            -146},{100,-146},{100,0}},
-                                 color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
-    connect(extractSP.y, signalBus.AHUextract) annotation (Line(points={{11,-175},
-            {100,-175},{100,0}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
     connect(P08P09signal.y, signalBus.P08_signal) annotation (Line(points={{43.1,
             -90},{100,-90},{100,0}},
                                 color={255,127,0}), Text(
@@ -867,15 +898,7 @@ package SubControllers "Individual controller modules"
         index=1,
         extent={{6,3},{6,3}},
         horizontalAlignment=TextAlignment.Left));
-    connect(limiter.y, curve_HP.u[1])
-      annotation (Line(points={{41,176},{70,176}}, color={0,0,127}));
-    connect(limiter.y, signalBus.T_AHU) annotation (Line(points={{41,176},{58,
-            176},{58,156},{100,156},{100,0}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
-    connect(curve_HP.y[1], signalBus.T_AHU_HP) annotation (Line(points={{93,176},
+    connect(curve_HP.y[1], signalBus.T_AHU_HP) annotation (Line(points={{99,176},
             {100,176},{100,0}}, color={0,0,127}), Text(
         string="%second",
         index=1,
@@ -885,12 +908,6 @@ package SubControllers "Individual controller modules"
             {-10,76},{14,76}}, color={0,0,127}));
     connect(con3wayTW.y, switch2.u3) annotation (Line(points={{-5,110},{4,110},
             {4,92},{14,92}}, color={0,0,127}));
-    connect(switch2.y, signalBus.TW_bypass) annotation (Line(points={{37,84},{
-            100,84},{100,0}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
     connect(con3wayTW.u_s, diff_sp.y)
       annotation (Line(points={{-28,110},{-35.4,110}}, color={0,0,127}));
     connect(feedback1.y, abs1.u)
@@ -913,6 +930,42 @@ package SubControllers "Individual controller modules"
             -150},{-66,-160},{78,-160},{78,100},{38,100}}, color={255,0,255}));
     connect(or1.y, switch2.u2) annotation (Line(points={{15,108},{-2,108},{-2,
             84},{14,84}}, color={255,0,255}));
+    connect(limiter.y, overwrite.u)
+      annotation (Line(points={{41,176},{46.8,176}}, color={0,0,127}));
+    connect(overwrite.y, curve_HP.u[1])
+      annotation (Line(points={{60.6,176},{76,176}}, color={0,0,127}));
+    connect(overwrite.y, con3wayCoo.u_s) annotation (Line(points={{60.6,176},{
+            66,176},{66,202},{-72,202},{-72,48},{-12,48}}, color={0,0,127}));
+    connect(overwrite.y, signalBus.T_AHU) annotation (Line(points={{60.6,176},{
+            66,176},{66,142},{100,142},{100,0}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(switch2.y, overwrite1.u)
+      annotation (Line(points={{37,84},{56.8,84}}, color={0,0,127}));
+    connect(overwrite1.y, signalBus.TW_bypass) annotation (Line(points={{70.6,
+            84},{100,84},{100,0}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(supplySP.y, overwrite2.u)
+      annotation (Line(points={{13.1,-146},{50.8,-146}}, color={0,0,127}));
+    connect(overwrite2.y, signalBus.AHUsupply) annotation (Line(points={{64.6,
+            -146},{100,-146},{100,0}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(overwrite3.u, extractSP.y) annotation (Line(points={{60.8,-174},{36,
+            -174},{36,-175},{11,-175}}, color={0,0,127}));
+    connect(overwrite3.y, signalBus.AHUextract) annotation (Line(points={{74.6,
+            -174},{100,-174},{100,0}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -200},{100,200}}),                                  graphics={
             Rectangle(
@@ -1274,7 +1327,7 @@ package SubControllers "Individual controller modules"
               -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
     Modelica.Blocks.Sources.Constant TSetLea(k=273.15 + 29)
       "Setpoint for leaving temperature"
-                   annotation (Placement(transformation(extent={{-60,-60},{-40,
+                   annotation (Placement(transformation(extent={{-78,-60},{-58,
               -40}})));
     inner IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Ceiling,
           0},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S},{IDEAS.Types.Tilt.Wall,
@@ -1311,6 +1364,12 @@ package SubControllers "Individual controller modules"
       controllerType=Modelica.Blocks.Types.SimpleController.PI,
       k=2,
       Ti=40) annotation (Placement(transformation(extent={{-24,-60},{-4,-40}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+          "Cooling tower leaving water temperature set-point", u(
+        min=288.15,
+        max=323.15,
+        unit="K"))
+      annotation (Placement(transformation(extent={{-48,-56},{-36,-44}})));
   equation
     connect(sim.weaBus, weaBus) annotation (Line(
         points={{-81,93},{-78,93},{-78,70},{-70,70}},
@@ -1349,8 +1408,6 @@ package SubControllers "Individual controller modules"
             -66},{22,-66}}, color={0,0,127}));
     connect(booleanExpression.y, switch1.u2) annotation (Line(points={{-43,0},{
             -16,0},{8,0},{8,-58},{22,-58}}, color={255,0,255}));
-    connect(TSetLea.y, conFan.u_s) annotation (Line(points={{-39,-50},{-32,-50},
-            {-26,-50}}, color={0,0,127}));
     connect(conFan.y, switch1.u1)
       annotation (Line(points={{-3,-50},{22,-50}}, color={0,0,127}));
     connect(conFan.u_m, dataBus.T27) annotation (Line(points={{-14,-62},{-14,
@@ -1358,6 +1415,10 @@ package SubControllers "Individual controller modules"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
+    connect(TSetLea.y, overwrite.u)
+      annotation (Line(points={{-57,-50},{-49.2,-50}}, color={0,0,127}));
+    connect(overwrite.y, conFan.u_s)
+      annotation (Line(points={{-35.4,-50},{-26,-50}}, color={0,0,127}));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Rectangle(
             extent={{-100,100},{100,-100}},
@@ -1391,13 +1452,12 @@ package SubControllers "Individual controller modules"
       annotation (Placement(transformation(extent={{-10,-20},{10,0}})));
     Pumps.RBCBaseline.P5_baseline p5Con "Pump for passive cooling"
       annotation (Placement(transformation(extent={{-10,-60},{10,-40}})));
+    OverwriteInteger overwriteInteger(
+      description="TABS pump signal",
+      min=0,
+      max=1,
+      unit="1") annotation (Placement(transformation(extent={{52,60},{72,80}})));
   equation
-    connect(p7Con.y, signalBus.P07_signal) annotation (Line(points={{11,70},{
-            100,70},{100,0}}, color={255,127,0}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}},
-        horizontalAlignment=TextAlignment.Left));
     connect(twoWayTABSCon.signalBus, signalBus) annotation (Line(
         points={{10.2,30},{100,30},{100,0}},
         color={255,204,51},
@@ -1442,6 +1502,14 @@ package SubControllers "Individual controller modules"
         points={{10.2,-50},{100,-50},{100,0}},
         color={255,204,51},
         thickness=0.5), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(p7Con.y, overwriteInteger.u)
+      annotation (Line(points={{11,70},{50,70}}, color={255,127,0}));
+    connect(overwriteInteger.y, signalBus.P07_signal) annotation (Line(points={
+            {74,70},{100,70},{100,0}}, color={255,127,0}), Text(
         string="%second",
         index=1,
         extent={{6,3},{6,3}},
@@ -1714,7 +1782,7 @@ package SubControllers "Individual controller modules"
       Modelica.Blocks.Logical.Not not1
         annotation (Placement(transformation(extent={{68,54},{80,66}})));
       Modelica.Blocks.Logical.Switch isOffCheck "P01 is off"
-        annotation (Placement(transformation(extent={{72,22},{90,40}})));
+        annotation (Placement(transformation(extent={{66,22},{84,40}})));
       Modelica.Blocks.Sources.Constant off(k=0) "HPs are off"
         annotation (Placement(transformation(extent={{52,34},{60,42}})));
       Modelica.Blocks.Math.IntegerToReal realToInteger[2]
@@ -1726,6 +1794,12 @@ package SubControllers "Individual controller modules"
       Modelica.Blocks.Math.RealToBoolean    P05signal(threshold=0.01)
                                                       "Check if P06 is on"
         annotation (Placement(transformation(extent={{78,88},{68,98}})));
+      IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+            "evaporator pump speed", u(
+          min=0,
+          max=1,
+          unit="1"))
+        annotation (Placement(transformation(extent={{90,28},{96,34}})));
     equation
       connect(dataBus.T1, add.u1) annotation (Line(
           points={{-99.9,0.1},{-99.9,56},{-52,56}},
@@ -1761,18 +1835,15 @@ package SubControllers "Individual controller modules"
       connect(Off.y, not1.u)
         annotation (Line(points={{56.9,60},{66.8,60}}, color={255,0,255}));
 
-      connect(not1.y, isOffCheck.u2) annotation (Line(points={{80.6,60},{86,60},{86,
-              46},{50,46},{50,31},{70.2,31}}, color={255,0,255}));
-      connect(off.y, isOffCheck.u1) annotation (Line(points={{60.4,38},{65.25,38},{65.25,
-              38.2},{70.2,38.2}}, color={0,0,127}));
-      connect(switch1.y, isOffCheck.u3) annotation (Line(points={{73,0},{80,0},{80,16},
-              {60,16},{60,23.8},{70.2,23.8}}, color={0,0,127}));
-      connect(isOffCheck.y, signalBus.P0102_mod) annotation (Line(points={{90.9,31},
-              {100,31},{100,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}},
-          horizontalAlignment=TextAlignment.Left));
+      connect(not1.y, isOffCheck.u2) annotation (Line(points={{80.6,60},{86,60},
+              {86,46},{50,46},{50,31},{64.2,31}},
+                                              color={255,0,255}));
+      connect(off.y, isOffCheck.u1) annotation (Line(points={{60.4,38},{65.25,
+              38},{65.25,38.2},{64.2,38.2}},
+                                  color={0,0,127}));
+      connect(switch1.y, isOffCheck.u3) annotation (Line(points={{73,0},{80,0},
+              {80,16},{60,16},{60,23.8},{64.2,23.8}},
+                                              color={0,0,127}));
       connect(realToInteger[1].u, signalBus.HP1_signal) annotation (Line(points={{96,
               -60},{100,-60},{100,0}}, color={255,127,0}), Text(
           string="%second",
@@ -1811,6 +1882,14 @@ package SubControllers "Individual controller modules"
           index=1,
           extent={{6,3},{6,3}},
           horizontalAlignment=TextAlignment.Left));
+      connect(isOffCheck.y, overwrite.u) annotation (Line(points={{84.9,31},{
+              87.45,31},{87.45,31},{89.4,31}}, color={0,0,127}));
+      connect(overwrite.y, signalBus.P0102_mod) annotation (Line(points={{96.3,
+              31},{96.3,32},{100,32},{100,0}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{-3,-6},{-3,-6}},
+          horizontalAlignment=TextAlignment.Right));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
               extent={{-100,100},{100,-100}},
@@ -1840,6 +1919,12 @@ package SubControllers "Individual controller modules"
         annotation (Placement(transformation(extent={{-50,20},{-30,40}})));
       Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=12*9806.38)
         annotation (Placement(transformation(extent={{12,-10},{32,10}})));
+      IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+            "condenser pump pressure difference", u(
+          min=0,
+          max=120000,
+          unit="Pa"))
+        annotation (Placement(transformation(extent={{70,22},{86,38}})));
     equation
 
 
@@ -1861,12 +1946,6 @@ package SubControllers "Individual controller modules"
           index=-1,
           extent={{-3,-6},{-3,-6}},
           horizontalAlignment=TextAlignment.Right));
-      connect(HPSwitch.y, signalBus.P03_mod) annotation (Line(points={{61,30},{
-              80,30},{80,0},{100,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}},
-          horizontalAlignment=TextAlignment.Left));
       connect(setPoiIfHPisOn.y, HPSwitch.u1) annotation (Line(points={{1,46},{
               14,46},{14,38},{38,38}}, color={0,0,127}));
       connect(hpIsOn.y, HPSwitch.u2)
@@ -1883,6 +1962,14 @@ package SubControllers "Individual controller modules"
         annotation (Line(points={{10,0},{-1,0}}, color={0,0,127}));
       connect(limiter.y, HPSwitch.u3) annotation (Line(points={{33,0},{34,0},{
               34,22},{38,22}}, color={0,0,127}));
+      connect(HPSwitch.y, overwrite.u)
+        annotation (Line(points={{61,30},{68.4,30}}, color={0,0,127}));
+      connect(overwrite.y, signalBus.P03_mod) annotation (Line(points={{86.8,30},
+              {96,30},{96,0},{100,0}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}},
+          horizontalAlignment=TextAlignment.Left));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
               extent={{-100,100},{100,-100}},
@@ -2695,7 +2782,7 @@ package SubControllers "Individual controller modules"
           reverseAction=true,
           k=10,
           Ti(displayUnit="s") = 45) "Controller for TABS pump"
-          annotation (Placement(transformation(extent={{60,40},{80,60}})));
+          annotation (Placement(transformation(extent={{72,40},{92,60}})));
         Modelica.Blocks.Logical.GreaterThreshold greaterThreshold
           annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
         Modelica.Blocks.Math.BooleanToReal compensationFactor(realTrue=1.5, realFalse=
@@ -2721,10 +2808,16 @@ package SubControllers "Individual controller modules"
           annotation (Placement(transformation(extent={{28,78},{44,94}})));
         IDEAS.Controls.ControlHeating.RunningMeanTemperatureEN15251 rmot
           annotation (Placement(transformation(extent={{-96,40},{-76,60}})));
+        IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+              "TABS supply cooling temperature", u(
+            min=289.15,
+            max=297.15,
+            unit="K"))
+          annotation (Placement(transformation(extent={{52,44},{64,56}})));
       equation
 
         connect(dataBus.T17, conP05.u_m) annotation (Line(
-            points={{-99.9,0.1},{-99.9,20},{70,20},{70,38}},
+            points={{-99.9,0.1},{-99.9,20},{82,20},{82,38}},
             color={255,204,51},
             thickness=0.5), Text(
             string="%first",
@@ -2763,12 +2856,10 @@ package SubControllers "Individual controller modules"
                 {-14,-6},{-14,38},{-6,38}}, color={0,0,127}));
         connect(add.y, dewProt.u2)
           annotation (Line(points={{17,44},{24,44}}, color={0,0,127}));
-        connect(dewProt.y, conP05.u_s)
-          annotation (Line(points={{47,50},{58,50}}, color={0,0,127}));
         connect(DewPoiThre.y, dewProt.u1) annotation (Line(points={{17,70},{20,70},{20,
                 56},{24,56}}, color={0,0,127}));
-        connect(conP05.y, product1.u2) annotation (Line(points={{81,50},{86,50},
-                {86,66},{44,66},{44,74},{58,74}}, color={0,0,127}));
+        connect(conP05.y, product1.u2) annotation (Line(points={{93,50},{94,50},
+                {94,66},{44,66},{44,74},{58,74}}, color={0,0,127}));
         connect(product1.y, signalBus.P05_mod) annotation (Line(points={{81,80},
                 {100,80},{100,0}}, color={0,0,127}), Text(
             string="%second",
@@ -2787,6 +2878,10 @@ package SubControllers "Individual controller modules"
             horizontalAlignment=TextAlignment.Right));
         connect(rmot.TRm, cooCurve_TABS.u[1])
           annotation (Line(points={{-75.4,50},{-66,50}}, color={0,0,127}));
+        connect(dewProt.y, overwrite.u)
+          annotation (Line(points={{47,50},{50.8,50}}, color={0,0,127}));
+        connect(overwrite.y, conP05.u_s)
+          annotation (Line(points={{64.6,50},{70,50}}, color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
                 Rectangle(
                 extent={{-100,100},{100,-100}},
@@ -4405,7 +4500,7 @@ package SubControllers "Individual controller modules"
           annotation (Placement(transformation(extent={{-90,-30},{-70,-10}})));
         Modelica.Blocks.Tables.CombiTable1D floorSetPoint(table=[1,3; 2,2; 3,1])
           "TABS temperature difference setpoint (per floor)"
-          annotation (Placement(transformation(extent={{-4,-18},{16,2}})));
+          annotation (Placement(transformation(extent={{-8,-18},{12,2}})));
         IDEAS.Controls.Continuous.LimPID valvePID(
           controllerType=Modelica.Blocks.Types.SimpleController.PI,
           k=1,
@@ -4413,12 +4508,12 @@ package SubControllers "Individual controller modules"
           y_start=1,
           reverseAction=true,
           yMin=0.05)
-          annotation (Placement(transformation(extent={{24,-18},{44,2}})));
+          annotation (Placement(transformation(extent={{36,-18},{56,2}})));
         Modelica.Blocks.Math.Add deltaTABS(k2=-1)
           "TABS temperature difference (per floor)"
           annotation (Placement(transformation(extent={{-40,-80},{-20,-60}})));
         Modelica.Blocks.Logical.Switch neutralCheck
-          annotation (Placement(transformation(extent={{60,-10},{80,10}})));
+          annotation (Placement(transformation(extent={{68,-10},{88,10}})));
         Modelica.Blocks.Sources.Constant neutralOpen(k=0.2)
           "Valve opening in neutral mode or absence of demand"
           annotation (Placement(transformation(extent={{20,12},{40,32}})));
@@ -4430,10 +4525,13 @@ package SubControllers "Individual controller modules"
         Modelica.Blocks.Math.Abs abs1
                                      "Absolute value of deltaTABS"
           annotation (Placement(transformation(extent={{-32,-18},{-12,2}})));
+        IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+              "TABS temperature difference set-point", u(
+            min=-5,
+            max=5,
+            unit="K"))
+          annotation (Placement(transformation(extent={{18,-14},{30,-2}})));
       equation
-        connect(floorSetPoint.y[1], valvePID.u_s)
-          annotation (Line(points={{17,-8},{22,-8}},
-                                                   color={0,0,127}));
         connect(dataBus.T24, deltaTABS.u1) annotation (Line(
             points={{-99.9,0.1},{-99.9,-64},{-42,-64}},
             color={255,204,51},
@@ -4446,14 +4544,14 @@ package SubControllers "Individual controller modules"
                 {-68,-20},{-68,-14},{-62,-14}}, color={0,0,127}));
         connect(deltaTABS.y, abs.u)
           annotation (Line(points={{-19,-70},{-2,-70}}, color={0,0,127}));
-        connect(abs.y, valvePID.u_m) annotation (Line(points={{21,-70},{34,-70},
-                {34,-20}}, color={0,0,127}));
-        connect(valvePID.y, neutralCheck.u3) annotation (Line(points={{45,-8},{
-                58,-8}},                                   color={0,0,127}));
+        connect(abs.y, valvePID.u_m) annotation (Line(points={{21,-70},{46,-70},
+                {46,-20}}, color={0,0,127}));
+        connect(valvePID.y, neutralCheck.u3) annotation (Line(points={{57,-8},{
+                66,-8}},                                   color={0,0,127}));
         connect(neutralOpen.y, neutralCheck.u1) annotation (Line(points={{41,22},
-                {42,22},{42,8},{58,8}}, color={0,0,127}));
+                {42,22},{42,8},{66,8}}, color={0,0,127}));
         connect(signalBus.restMode, neutralCheck.u2) annotation (Line(
-            points={{100,0},{100,-20},{50,-20},{50,0},{58,0}},
+            points={{100,0},{100,-20},{58,-20},{58,0},{66,0}},
             color={255,204,51},
             thickness=0.5), Text(
             string="%first",
@@ -4471,7 +4569,11 @@ package SubControllers "Individual controller modules"
         connect(deltaSetPoint.y, abs1.u)
           annotation (Line(points={{-39,-8},{-34,-8}}, color={0,0,127}));
         connect(abs1.y, floorSetPoint.u[1])
-          annotation (Line(points={{-11,-8},{-6,-8}}, color={0,0,127}));
+          annotation (Line(points={{-11,-8},{-10,-8}},color={0,0,127}));
+        connect(floorSetPoint.y[1], overwrite.u)
+          annotation (Line(points={{13,-8},{16.8,-8}}, color={0,0,127}));
+        connect(overwrite.y, valvePID.u_s)
+          annotation (Line(points={{30.6,-8},{34,-8}}, color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end TwoWayValveCCAbaseline;
@@ -4481,7 +4583,7 @@ package SubControllers "Individual controller modules"
       model TwoWayValveCCA0
         extends BaseClasses.TwoWayValveCCAbaseline(FloorAvg(nin=6));
       equation
-        connect(neutralCheck.y, signalBus.CCA0_val) annotation (Line(points={{81,0},{
+        connect(neutralCheck.y, signalBus.CCA0_val) annotation (Line(points={{89,0},{
                 86,0},{86,0},{100,0}},
                                     color={0,0,127}), Text(
             string="%second",
@@ -4652,7 +4754,7 @@ package SubControllers "Individual controller modules"
         extends BaseClasses.TwoWayValveCCAbaseline(FloorAvg(nin=4));
       equation
 
-        connect(neutralCheck.y, signalBus.CCA3_val) annotation (Line(points={{81,0},{
+        connect(neutralCheck.y, signalBus.CCA3_val) annotation (Line(points={{89,0},{
                 100,0}},
                      color={0,0,127}), Text(
             string="%second",
@@ -4793,12 +4895,12 @@ package SubControllers "Individual controller modules"
           k=5,
           Ti(displayUnit="min") = 60,
           y_start=1)                  "Controller for 3-way valve"
-          annotation (Placement(transformation(extent={{0,40},{20,60}})));
+          annotation (Placement(transformation(extent={{26,40},{46,60}})));
         Modelica.Blocks.Tables.CombiTable1D heaCurve_TABS(table=[273.15 - 8,
               273.15 + 26; 273.15,273.15 + 23.5; 273.15 + 5,273.15 + 22.5;
               273.15 + 15,273.15 + 21])
           "Infrax TABS heating curve"
-          annotation (Placement(transformation(extent={{-62,40},{-42,60}})));
+          annotation (Placement(transformation(extent={{-66,40},{-46,60}})));
         Modelica.Blocks.Sources.Constant cooMode(k=1)
           "In cooling mode, valve is opened"
           annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
@@ -4814,6 +4916,12 @@ package SubControllers "Individual controller modules"
           annotation (Placement(transformation(extent={{-36,40},{-16,60}})));
         IDEAS.Controls.ControlHeating.RunningMeanTemperatureEN15251 rmot
           annotation (Placement(transformation(extent={{-96,40},{-76,60}})));
+        IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+              "TABS supply heating temperature", u(
+            min=293.15,
+            max=313.15,
+            unit="K"))
+          annotation (Placement(transformation(extent={{0,44},{12,56}})));
       equation
 
         connect(signalBus.heatMode, heaCheck.u2) annotation (Line(
@@ -4843,19 +4951,17 @@ package SubControllers "Individual controller modules"
         connect(cooMode.y, heaCheck.u3)
           annotation (Line(points={{-39,-10},{-12,-10}}, color={0,0,127}));
         connect(dataBus.T24, con3WayHea.u_m) annotation (Line(
-            points={{-99.9,0.1},{-99.9,26},{10,26},{10,38}},
+            points={{-99.9,0.1},{-99.9,26},{36,26},{36,38}},
             color={255,204,51},
             thickness=0.5), Text(
             string="%first",
             index=-1,
             extent={{-3,-6},{-3,-6}},
             horizontalAlignment=TextAlignment.Right));
-        connect(con3WayHea.y, heaCheck.u1) annotation (Line(points={{21,50},{50,
+        connect(con3WayHea.y, heaCheck.u1) annotation (Line(points={{47,50},{50,
                 50},{50,24},{-18,24},{-18,6},{-12,6}}, color={0,0,127}));
         connect(limiter.u, heaCurve_TABS.y[1])
-          annotation (Line(points={{-38,50},{-41,50}}, color={0,0,127}));
-        connect(limiter.y, con3WayHea.u_s)
-          annotation (Line(points={{-15,50},{-2,50}}, color={0,0,127}));
+          annotation (Line(points={{-38,50},{-45,50}}, color={0,0,127}));
         connect(limiter.y, signalBus.T_TABS) annotation (Line(points={{-15,50},
                 {-8,50},{-8,82},{100,82},{100,0}}, color={0,0,127}), Text(
             string="%second",
@@ -4863,7 +4969,11 @@ package SubControllers "Individual controller modules"
             extent={{6,3},{6,3}},
             horizontalAlignment=TextAlignment.Left));
         connect(rmot.TRm, heaCurve_TABS.u[1])
-          annotation (Line(points={{-75.4,50},{-64,50}}, color={0,0,127}));
+          annotation (Line(points={{-75.4,50},{-68,50}}, color={0,0,127}));
+        connect(limiter.y, overwrite.u)
+          annotation (Line(points={{-15,50},{-1.2,50}}, color={0,0,127}));
+        connect(overwrite.y, con3WayHea.u_s)
+          annotation (Line(points={{12.6,50},{24,50}}, color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end ThreeWayValveTABS_baseline;
@@ -4885,13 +4995,21 @@ package SubControllers "Individual controller modules"
         annotation (Placement(transformation(extent={{0,-10},{20,10}})));
       CoolingTower cooTowCon
         annotation (Placement(transformation(extent={{0,-50},{20,-30}})));
+      OverwriteBoolean overwriteBoolean2(
+        description="Heat dissipattion boolean",
+        min=0,
+        max=1,
+        unit="1")
+        annotation (Placement(transformation(extent={{-36,2},{-32,6}})));
+      OverwriteBoolean overwriteBoolean1(
+        description="Relief borefield load boolean",
+        min=0,
+        max=1,
+        unit="1")
+        annotation (Placement(transformation(extent={{-34,-4},{-30,0}})));
+      Modelica.Blocks.Sources.BooleanConstant booleanConstant(k=false)
+        annotation (Placement(transformation(extent={{-20,-12},{-14,-6}})));
     equation
-      connect(sitSel.sit1, comCon.sit1) annotation (Line(points={{-41,2},{-41,4},
-              {-20,4},{0,4}}, color={255,0,255}));
-      connect(sitSel.sit2, comCon.sit2) annotation (Line(points={{-41,-2},{-20,
-              -2},{-20,0},{0,0}}, color={255,0,255}));
-      connect(sitSel.sit3, comCon.sit3) annotation (Line(points={{-41,-6},{-41,
-              -4},{0,-4}}, color={255,0,255}));
       connect(dataBus, sitSel.dataBus) annotation (Line(
           points={{-100,0},{-80,0},{-62,0}},
           color={255,204,51},
@@ -4906,10 +5024,6 @@ package SubControllers "Individual controller modules"
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(sitSel.sit3, cooTowCon.sit3) annotation (Line(points={{-41,-6},{-18,
-              -6},{-18,-12},{15,-12},{15,-30}}, color={255,0,255}));
-      connect(sitSel.sit2, cooTowCon.sit2) annotation (Line(points={{-41,-2},{-22,
-              -2},{-22,-16},{11,-16},{11,-30}}, color={255,0,255}));
       connect(cooTowCon.sit1, comCon.sit1) annotation (Line(points={{7.2,-30},{
               8,-30},{8,-20},{-26,-20},{-26,4},{0,4}}, color={255,0,255}));
       connect(dataBus, cooTowCon.dataBus) annotation (Line(
@@ -4949,6 +5063,20 @@ package SubControllers "Individual controller modules"
           index=1,
           extent={{6,3},{6,3}},
           horizontalAlignment=TextAlignment.Left));
+      connect(sitSel.sit1, overwriteBoolean2.u) annotation (Line(points={{-41,2},
+              {-38,2},{-38,4},{-36.4,4}}, color={255,0,255}));
+      connect(overwriteBoolean2.y, comCon.sit1)
+        annotation (Line(points={{-31.6,4},{0,4}}, color={255,0,255}));
+      connect(overwriteBoolean1.y, cooTowCon.sit2) annotation (Line(points={{
+              -29.6,-2},{-10,-2},{-10,-18},{11,-18},{11,-30}}, color={255,0,255}));
+      connect(overwriteBoolean1.y, comCon.sit2) annotation (Line(points={{-29.6,
+              -2},{-16,-2},{-16,0},{0,0}}, color={255,0,255}));
+      connect(sitSel.sit2, overwriteBoolean1.u)
+        annotation (Line(points={{-41,-2},{-34.4,-2}}, color={255,0,255}));
+      connect(booleanConstant.y, comCon.sit3) annotation (Line(points={{-13.7,
+              -9},{-8.85,-9},{-8.85,-4},{0,-4}}, color={255,0,255}));
+      connect(cooTowCon.sit3, booleanConstant.y) annotation (Line(points={{15,
+              -30},{15,-12},{-13.7,-12},{-13.7,-9}}, color={255,0,255}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(extent={{-100,100},{100,-100}}, lineColor={28,108,200}),
                                                                              Text(
@@ -6271,165 +6399,6 @@ Tower")}),                                                           Diagram(
           coordinateSystem(preserveAspectRatio=false)));
   end NightVentilation;
 
-  model SunShading "sunshading control"
-
-    DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{
-              -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
-
-    Modelica.Blocks.Sources.BooleanExpression east_on(y=if clock.hour > 7 and
-          clock.hour < 13 then true else false)
-      "Time frame for which the east windows can activate the shading device"
-      annotation (Placement(transformation(extent={{-40,80},{-20,100}})));
-    Modelica.Blocks.Logical.GreaterEqualThreshold greaterEqualThreshold(threshold=
-         10)
-      annotation (Placement(transformation(extent={{8,-40},{28,-20}})));
-    inner IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Ceiling,
-          0},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S},{IDEAS.Types.Tilt.Wall,
-          IDEAS.Types.Azimuth.W},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.N},{
-          IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.E}})
-      annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-    IDEAS.Buildings.Components.Interfaces.WeaBus weaBus(numSolBus=5)
-      annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
-    Modelica.Blocks.Math.Add altAng(k2=-1) "Altitude angle of sun"
-      annotation (Placement(transformation(extent={{-40,-60},{-20,-40}})));
-    Modelica.Blocks.Logical.Hysteresis hysteresis(uLow=273.15 + 21, uHigh=
-          273.15 + 22.5)
-      "External temperature for which the shading device can be on"
-      annotation (Placement(transformation(extent={{-32,-20},{-12,0}})));
-    Modelica.Blocks.MathBoolean.And east2nd(nu=2)
-      annotation (Placement(transformation(extent={{40,80},{60,100}})));
-    Modelica.Blocks.Sources.BooleanExpression south_on(y=if clock.hour > 10
-           and clock.hour < 19 then true else false)
-      "Time frame for which the south windows can activate the shading device"
-      annotation (Placement(transformation(extent={{-40,60},{-20,80}})));
-    Modelica.Blocks.Sources.BooleanExpression west_on(y=if clock.hour > 14 and
-          clock.hour < 20 then true else false)
-      "Time frame for which the west windows can activate the shading device"
-      annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
-    Modelica.Blocks.Sources.Constant ninety_degrees(k=Modelica.Constants.pi/2)
-      annotation (Placement(transformation(extent={{-100,-40},{-80,-20}})));
-    Modelica.Blocks.Math.Gain radiansToDegrees(k=180/Modelica.Constants.pi)
-      annotation (Placement(transformation(extent={{-14,-54},{-6,-46}})));
-    Modelica.Blocks.Logical.GreaterEqualThreshold greaterEqualThreshold1(threshold=
-         20)
-      annotation (Placement(transformation(extent={{8,-80},{28,-60}})));
-    Modelica.Blocks.MathBoolean.And south(nu=2)
-      annotation (Placement(transformation(extent={{40,60},{60,80}})));
-    Modelica.Blocks.MathBoolean.And west(nu=2)
-      annotation (Placement(transformation(extent={{40,40},{60,60}})));
-    Modelica.Blocks.Logical.LessEqualThreshold    greaterEqualThreshold2(threshold=
-         30)
-      annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
-    Modelica.Blocks.Logical.LessEqualThreshold    greaterEqualThreshold3(threshold=
-         22)
-      annotation (Placement(transformation(extent={{40,-80},{60,-60}})));
-    Modelica.Blocks.Math.BooleanToReal booleanToReal
-      annotation (Placement(transformation(extent={{-130,-20},{-120,-10}})));
-    Modelica.Blocks.Math.BooleanToReal booleanToReal1
-      annotation (Placement(transformation(extent={{-130,10},{-120,20}})));
-    Modelica.Blocks.Math.BooleanToReal booleanToReal2
-      annotation (Placement(transformation(extent={{-130,-6},{-120,4}})));
-    Modelica.Blocks.MathBoolean.And east3rd(nu=2)
-      annotation (Placement(transformation(extent={{40,100},{60,120}})));
-    Modelica.Blocks.Math.BooleanToReal booleanToReal3
-      annotation (Placement(transformation(extent={{-130,26},{-120,36}})));
-    Components.Clock           clock
-      annotation (Placement(transformation(extent={{80,80},{100,100}})));
-    Modelica.Blocks.Math.Add sum2nd3rd "Altitude angle of sun"
-      annotation (Placement(transformation(extent={{-68,-20},{-48,0}})));
-    Modelica.Blocks.Math.Gain avg(k=1/2)
-      annotation (Placement(transformation(extent={{-44,-14},{-36,-6}})));
-  equation
-
-    connect(ninety_degrees.y, altAng.u1) annotation (Line(points={{-79,-30},{-60,
-            -30},{-60,-44},{-42,-44}}, color={0,0,127}));
-    connect(altAng.y, radiansToDegrees.u)
-      annotation (Line(points={{-19,-50},{-14.8,-50}}, color={0,0,127}));
-    connect(west_on.y, west.u[1]) annotation (Line(points={{-19,50},{40,50},{40,
-            53.5}},  color={255,0,255}));
-    connect(south_on.y, south.u[1]) annotation (Line(points={{-19,70},{40,70},{
-            40,73.5}},  color={255,0,255}));
-    connect(east_on.y, east2nd.u[1]) annotation (Line(points={{-19,90},{40,90},
-            {40,93.5}},  color={255,0,255}));
-    connect(hysteresis.y, west.u[2]) annotation (Line(points={{-11,-10},{0,-10},
-            {0,46.5},{40,46.5}},                color={255,0,255}));
-    connect(hysteresis.y, south.u[2]) annotation (Line(points={{-11,-10},{0,-10},
-            {0,66.5},{40,66.5}},   color={255,0,255}));
-    connect(hysteresis.y, east2nd.u[2]) annotation (Line(points={{-11,-10},{0,
-            -10},{0,86.5},{40,86.5}},
-                                   color={255,0,255}));
-    connect(radiansToDegrees.y, greaterEqualThreshold.u) annotation (Line(
-          points={{-5.6,-50},{0,-50},{0,-30},{6,-30}}, color={0,0,127}));
-    connect(radiansToDegrees.y, greaterEqualThreshold2.u) annotation (Line(
-          points={{-5.6,-50},{34,-50},{34,-30},{38,-30}}, color={0,0,127}));
-    connect(radiansToDegrees.y, greaterEqualThreshold1.u) annotation (Line(
-          points={{-5.6,-50},{0,-50},{0,-70},{6,-70}}, color={0,0,127}));
-    connect(radiansToDegrees.y, greaterEqualThreshold3.u) annotation (Line(
-          points={{-5.6,-50},{-5.6,-50},{34,-50},{34,-70},{38,-70}}, color={0,0,
-            127}));
-    connect(east2nd.y, booleanToReal1.u) annotation (Line(points={{61.5,90},{62,
-            90},{62,104},{-122,104},{-138,104},{-138,15},{-131,15}}, color={255,
-            0,255}));
-    connect(south.y, booleanToReal2.u) annotation (Line(points={{61.5,70},{61.5,
-            102},{-136,102},{-136,-1},{-131,-1}}, color={255,0,255}));
-    connect(booleanToReal2.y, dataBus.southShading) annotation (Line(points={{
-            -119.5,-1},{-110.75,-1},{-110.75,0.1},{-99.9,0.1}}, color={0,0,127}),
-        Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}}));
-    connect(west.y, booleanToReal.u) annotation (Line(points={{61.5,50},{62,50},
-            {62,104},{62,106},{-140,106},{-140,-15},{-131,-15}}, color={255,0,
-            255}));
-    connect(booleanToReal.y, dataBus.westShading) annotation (Line(points={{
-            -119.5,-15},{-99.9,-15},{-99.9,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}}));
-    connect(booleanToReal1.y, dataBus.eastShading2nd) annotation (Line(points={
-            {-119.5,15},{-99.9,15},{-99.9,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}}));
-    connect(east_on.y, east3rd.u[1]) annotation (Line(points={{-19,90},{-8,90},
-            {-8,113.5},{40,113.5}},   color={255,0,255}));
-    connect(hysteresis.y, east3rd.u[2]) annotation (Line(points={{-11,-10},{-6,
-            -10},{-6,106.5},{40,106.5}},   color={255,0,255}));
-    connect(east3rd.y, booleanToReal3.u) annotation (Line(points={{61.5,110},{
-            61.5,126},{-131,126},{-131,31}}, color={255,0,255}));
-    connect(booleanToReal3.y, dataBus.eastShading3rd) annotation (Line(points={
-            {-119.5,31},{-99.9,31},{-99.9,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{6,3},{6,3}}));
-    connect(weaBus.angZen, altAng.u2) annotation (Line(
-        points={{-69.95,70.05},{-70,70.05},{-70,-56},{-42,-56}},
-        color={255,204,51},
-        thickness=0.5));
-    connect(sim.weaBus, weaBus) annotation (Line(
-        points={{-81,93},{-78,93},{-78,70},{-70,70}},
-        color={255,204,51},
-        thickness=0.5));
-    connect(sum2nd3rd.y, avg.u)
-      annotation (Line(points={{-47,-10},{-44.8,-10}}, color={0,0,127}));
-    connect(sum2nd3rd.u1, dataBus.Tavg_3rdFlr) annotation (Line(points={{-70,-4},
-            {-80,-4},{-80,0.1},{-99.9,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{-6,3},{-6,3}},
-        horizontalAlignment=TextAlignment.Right));
-    connect(sum2nd3rd.u2, dataBus.Tavg_2ndFlr) annotation (Line(points={{-70,
-            -16},{-80,-16},{-80,0.1},{-99.9,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{-6,3},{-6,3}},
-        horizontalAlignment=TextAlignment.Right));
-    connect(hysteresis.u, avg.y)
-      annotation (Line(points={{-34,-10},{-35.6,-10}}, color={0,0,127}));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-          coordinateSystem(preserveAspectRatio=false)));
-  end SunShading;
-
   model VAV_baseline "Controls of AHU loop for baseline"
 
     SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{
@@ -6463,7 +6432,7 @@ Tower")}),                                                           Diagram(
           rotation=90,
           origin={-80,-70})));
     Modelica.Blocks.Logical.Switch heaDemand[21]
-      annotation (Placement(transformation(extent={{74,48},{94,28}})));
+      annotation (Placement(transformation(extent={{80,48},{100,28}})));
     Modelica.Blocks.Logical.Hysteresis hysteresisHea[21](            uHigh=-0.25, uLow=-1)
       annotation (Placement(transformation(extent={{-60,60},{-40,80}})));
     Modelica.Blocks.Logical.Not not1[21]
@@ -6482,7 +6451,7 @@ Tower")}),                                                           Diagram(
       each Ti=100,
       each reset=IDEAS.Types.Reset.Disabled)
       "Controller for heating coils in air ducts"
-      annotation (Placement(transformation(extent={{44,20},{64,40}})));
+      annotation (Placement(transformation(extent={{54,20},{74,40}})));
     IDEAS.Utilities.Math.Max max[15](nin=3)
       "Maximum of the setpoints is the setpoint for the damper" annotation (
         Placement(transformation(
@@ -6547,6 +6516,18 @@ Tower")}),                                                           Diagram(
       annotation (Placement(transformation(extent={{10,100},{32,120}})));
     Modelica.Blocks.Logical.And and1
       annotation (Placement(transformation(extent={{42,94},{54,106}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite[21](description="Heating coil supply temperature set-point",
+        u(
+        min=288.15,
+        max=305.15,
+        unit="K"))
+      annotation (Placement(transformation(extent={{40,26},{48,34}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite1[15](description="VAV damper position",
+        u(
+        min=0,
+        max=1,
+        unit="1"))
+      annotation (Placement(transformation(extent={{16,-64},{24,-56}})));
   equation
 
     connect(tracking.y, conVAV.u_s)
@@ -6738,13 +6719,11 @@ Tower")}),                                                           Diagram(
     connect(hysteresisHea.y, not1.u)
       annotation (Line(points={{-39,70},{-21.2,70}}, color={255,0,255}));
     connect(not1.y, heaDemand.u2) annotation (Line(points={{-7.4,70},{66,70},{66,38},
-            {72,38}},                   color={255,0,255}));
+            {78,38}},                   color={255,0,255}));
     connect(supplySetpoint.y[1], limiter.u)
       annotation (Line(points={{11,30},{14,30}},color={0,0,127}));
-    connect(conHeaCoi.u_s, limiter.y)
-      annotation (Line(points={{42,30},{37,30}}, color={0,0,127}));
     connect(dataBus.TAirSupplyVAV, conHeaCoi.u_m) annotation (Line(
-        points={{-99.9,0.1},{54,0.1},{54,18}},
+        points={{-99.9,0.1},{64,0.1},{64,18}},
         color={255,204,51},
         thickness=0.5), Text(
         string="%first",
@@ -6754,12 +6733,6 @@ Tower")}),                                                           Diagram(
     connect(flush.y, max.u[1])
       annotation (Line(points={{19,-26},{-10,-26},{-10,-32},{-11.3333,-32}},
                                                               color={0,0,127}));
-    connect(max.y, signalBus.VAV_signal) annotation (Line(points={{-10,-55},{-10,-60},
-            {100.1,-60},{100.1,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{-3,-6},{-3,-6}},
-        horizontalAlignment=TextAlignment.Right));
 
 
 
@@ -6782,33 +6755,28 @@ Tower")}),                                                           Diagram(
 
 
 
-    connect(heaDemand.y, signalBus.Heacoils_signal) annotation (Line(points={{95,38},
+    connect(heaDemand.y, signalBus.Heacoils_signal) annotation (Line(points={{101,38},
             {100.1,38},{100.1,0.1}}, color={0,0,127}), Text(
         string="%second",
         index=1,
         extent={{6,3},{6,3}},
         horizontalAlignment=TextAlignment.Left));
-    connect(max[1].y, signalBus.VAV_signal_extract[1]) annotation (Line(points={{-10,-55},
-            {-10,-60},{100.1,-60},{100.1,0.1}}, color={0,0,127}), Text(
-        string="%second",
-        index=1,
-        extent={{-3,-6},{-3,-6}},
-        horizontalAlignment=TextAlignment.Right));
-    connect(max[2].y, signalBus.VAV_signal_extract[2]);
-    connect(max[3].y, signalBus.VAV_signal_extract[3]);
-    connect(max[4].y, signalBus.VAV_signal_extract[4]);
-    connect(max[5].y, signalBus.VAV_signal_extract[5]);
-    connect(max[6].y, signalBus.VAV_signal_extract[6]);
-    connect(max[7].y, signalBus.VAV_signal_extract[7]);
-    connect(max[8].y, signalBus.VAV_signal_extract[8]);
-    connect(max[9].y, signalBus.VAV_signal_extract[9]);
-    connect(max[11].y, signalBus.VAV_signal_extract[10]);
-    connect(max[12].y, signalBus.VAV_signal_extract[11]);
-    connect(max[13].y, signalBus.VAV_signal_extract[12]);
-    connect(max[14].y, signalBus.VAV_signal_extract[13]);
-    connect(max[15].y, signalBus.VAV_signal_extract[14]);
+    connect(overwrite1[1].y, signalBus.VAV_signal_extract[1]);
+    connect(overwrite1[2].y, signalBus.VAV_signal_extract[2]);
+    connect(overwrite1[3].y, signalBus.VAV_signal_extract[3]);
+    connect(overwrite1[4].y, signalBus.VAV_signal_extract[4]);
+    connect(overwrite1[5].y, signalBus.VAV_signal_extract[5]);
+    connect(overwrite1[6].y, signalBus.VAV_signal_extract[6]);
+    connect(overwrite1[7].y, signalBus.VAV_signal_extract[7]);
+    connect(overwrite1[8].y, signalBus.VAV_signal_extract[8]);
+    connect(overwrite1[9].y, signalBus.VAV_signal_extract[9]);
+    connect(overwrite1[11].y, signalBus.VAV_signal_extract[10]);
+    connect(overwrite1[12].y, signalBus.VAV_signal_extract[11]);
+    connect(overwrite1[13].y, signalBus.VAV_signal_extract[12]);
+    connect(overwrite1[14].y, signalBus.VAV_signal_extract[13]);
+    connect(overwrite1[15].y, signalBus.VAV_signal_extract[14]);
 
-    connect(max[10].y, signalBus.VAV_signal_extract[15]); //dummy connection
+    connect(overwrite1[10].y, signalBus.VAV_signal_extract[15]); //dummy connection
 
     connect(not1.y, or1.u[1:21]) annotation (Line(points={{-7.4,70},{8,70},{8,
             90},{20,90}}, color={255,0,255}));
@@ -6820,9 +6788,9 @@ Tower")}),                                                           Diagram(
         extent={{6,3},{6,3}},
         horizontalAlignment=TextAlignment.Left));
     connect(conHeaCoi.y, heaDemand.u1)
-      annotation (Line(points={{65,30},{72,30}}, color={0,0,127}));
-    connect(heaDemand.u3, tracking.y) annotation (Line(points={{72,46},{-54,46},
-            {-54,30},{-59,30}}, color={0,0,127}));
+      annotation (Line(points={{75,30},{78,30}}, color={0,0,127}));
+    connect(heaDemand.u3, tracking.y) annotation (Line(points={{78,46},{-54,46},{-54,
+            30},{-59,30}},      color={0,0,127}));
     connect(max1.y, curve_HP.u[1])
       annotation (Line(points={{36.8,58},{40.4,58}}, color={0,0,127}));
     connect(curve_HP.y[1], signalBus.T_VAV) annotation (Line(points={{58.8,58},
@@ -6983,8 +6951,6 @@ Tower")}),                                                           Diagram(
 
     connect(hysteresisVAV.y, airDemand.u2) annotation (Line(points={{-61.1,89},
             {-10,89},{-10,6}}, color={255,0,255}));
-    connect(limiter.y, max1.u) annotation (Line(points={{37,30},{38,30},{38,48},
-            {12,48},{12,58},{18.4,58}}, color={0,0,127}));
     connect(and1.y, P06_signal.u)
       annotation (Line(points={{54.6,100},{62.4,100}}, color={255,0,255}));
     connect(or1.y, and1.u2) annotation (Line(points={{32.9,94},{38,94},{38,95.2},
@@ -6993,6 +6959,20 @@ Tower")}),                                                           Diagram(
             100},{40.8,100}}, color={255,0,255}));
     connect(hysteresisHea.u, supplySetpoint.u[1]) annotation (Line(points={{-62,
             70},{-72,70},{-72,52},{-16,52},{-16,30},{-12,30}}, color={0,0,127}));
+    connect(overwrite.y, conHeaCoi.u_s)
+      annotation (Line(points={{48.4,30},{52,30}}, color={0,0,127}));
+    connect(overwrite.u, limiter.y)
+      annotation (Line(points={{39.2,30},{37,30}}, color={0,0,127}));
+    connect(overwrite.u, max1.u) annotation (Line(points={{39.2,30},{38,30},{38,48},
+            {8,48},{8,58},{18.4,58}}, color={0,0,127}));
+    connect(max.y, overwrite1.u) annotation (Line(points={{-10,-55},{-10,-60},{15.2,
+            -60}}, color={0,0,127}));
+    connect(overwrite1.y, signalBus.VAV_signal) annotation (Line(points={{24.4,-60},
+            {100.1,-60},{100.1,0.1}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-120},
               {100,120}}),                                        graphics={
             Rectangle(
@@ -7006,4 +6986,199 @@ Tower")}),                                                           Diagram(
               false, extent={{-100,-120},{100,120}})));
   end VAV_baseline;
 
+  model SunShading "sunshading control"
+
+    DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{
+              -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
+
+    Modelica.Blocks.Sources.BooleanExpression east_on(y=if clock.hour > 7 and
+          clock.hour < 13 then true else false)
+      "Time frame for which the east windows can activate the shading device"
+      annotation (Placement(transformation(extent={{-40,80},{-20,100}})));
+    Modelica.Blocks.Logical.GreaterEqualThreshold greaterEqualThreshold(threshold=
+         10)
+      annotation (Placement(transformation(extent={{8,-40},{28,-20}})));
+    inner IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Ceiling,
+          0},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S},{IDEAS.Types.Tilt.Wall,
+          IDEAS.Types.Azimuth.W},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.N},{
+          IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.E}})
+      annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    IDEAS.Buildings.Components.Interfaces.WeaBus weaBus(numSolBus=5)
+      annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
+    Modelica.Blocks.Math.Add altAng(k2=-1) "Altitude angle of sun"
+      annotation (Placement(transformation(extent={{-40,-60},{-20,-40}})));
+    Modelica.Blocks.Logical.Hysteresis hysteresis(uLow=273.15 + 21, uHigh=
+          273.15 + 22.5)
+      "External temperature for which the shading device can be on"
+      annotation (Placement(transformation(extent={{-32,-20},{-12,0}})));
+    Modelica.Blocks.MathBoolean.And east2nd(nu=2)
+      annotation (Placement(transformation(extent={{40,80},{60,100}})));
+    Modelica.Blocks.Sources.BooleanExpression south_on(y=if clock.hour > 10
+           and clock.hour < 19 then true else false)
+      "Time frame for which the south windows can activate the shading device"
+      annotation (Placement(transformation(extent={{-40,60},{-20,80}})));
+    Modelica.Blocks.Sources.BooleanExpression west_on(y=if clock.hour > 14 and
+          clock.hour < 20 then true else false)
+      "Time frame for which the west windows can activate the shading device"
+      annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
+    Modelica.Blocks.Sources.Constant ninety_degrees(k=Modelica.Constants.pi/2)
+      annotation (Placement(transformation(extent={{-100,-40},{-80,-20}})));
+    Modelica.Blocks.Math.Gain radiansToDegrees(k=180/Modelica.Constants.pi)
+      annotation (Placement(transformation(extent={{-14,-54},{-6,-46}})));
+    Modelica.Blocks.Logical.GreaterEqualThreshold greaterEqualThreshold1(threshold=
+         20)
+      annotation (Placement(transformation(extent={{8,-80},{28,-60}})));
+    Modelica.Blocks.MathBoolean.And south(nu=2)
+      annotation (Placement(transformation(extent={{40,60},{60,80}})));
+    Modelica.Blocks.MathBoolean.And west(nu=2)
+      annotation (Placement(transformation(extent={{40,40},{60,60}})));
+    Modelica.Blocks.Logical.LessEqualThreshold    greaterEqualThreshold2(threshold=
+         30)
+      annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
+    Modelica.Blocks.Logical.LessEqualThreshold    greaterEqualThreshold3(threshold=
+         22)
+      annotation (Placement(transformation(extent={{40,-80},{60,-60}})));
+    Modelica.Blocks.Math.BooleanToReal booleanToReal
+      annotation (Placement(transformation(extent={{-148,-20},{-138,-10}})));
+    Modelica.Blocks.Math.BooleanToReal booleanToReal1
+      annotation (Placement(transformation(extent={{-148,10},{-138,20}})));
+    Modelica.Blocks.Math.BooleanToReal booleanToReal2
+      annotation (Placement(transformation(extent={{-148,-6},{-138,4}})));
+    Modelica.Blocks.MathBoolean.And east3rd(nu=2)
+      annotation (Placement(transformation(extent={{40,100},{60,120}})));
+    Modelica.Blocks.Math.BooleanToReal booleanToReal3
+      annotation (Placement(transformation(extent={{-148,26},{-138,36}})));
+    Components.Clock           clock
+      annotation (Placement(transformation(extent={{80,80},{100,100}})));
+    Modelica.Blocks.Math.Add sum2nd3rd "Altitude angle of sun"
+      annotation (Placement(transformation(extent={{-68,-20},{-48,0}})));
+    Modelica.Blocks.Math.Gain avg(k=1/2)
+      annotation (Placement(transformation(extent={{-44,-14},{-36,-6}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite(description=
+          "Shading control of 3rd floor east windows", u(
+        min=0,
+        max=1,
+        unit="1"))
+      annotation (Placement(transformation(extent={{-130,26},{-120,36}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite1(description=
+          "Shading control of 2nd floor east windows", u(
+        min=0,
+        max=1,
+        unit="1"))
+      annotation (Placement(transformation(extent={{-130,10},{-120,20}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite2(description=
+          "Shading control of south windows", u(
+        min=0,
+        max=1,
+        unit="1"))
+      annotation (Placement(transformation(extent={{-130,-6},{-120,4}})));
+    IBPSA.Utilities.IO.SignalExchange.Overwrite overwrite3(description=
+          "Shading control of south windows", u(
+        min=0,
+        max=1,
+        unit="1"))
+      annotation (Placement(transformation(extent={{-130,-20},{-120,-10}})));
+  equation
+
+    connect(ninety_degrees.y, altAng.u1) annotation (Line(points={{-79,-30},{-60,
+            -30},{-60,-44},{-42,-44}}, color={0,0,127}));
+    connect(altAng.y, radiansToDegrees.u)
+      annotation (Line(points={{-19,-50},{-14.8,-50}}, color={0,0,127}));
+    connect(west_on.y, west.u[1]) annotation (Line(points={{-19,50},{40,50},{40,
+            53.5}},  color={255,0,255}));
+    connect(south_on.y, south.u[1]) annotation (Line(points={{-19,70},{40,70},{
+            40,73.5}},  color={255,0,255}));
+    connect(east_on.y, east2nd.u[1]) annotation (Line(points={{-19,90},{40,90},
+            {40,93.5}},  color={255,0,255}));
+    connect(hysteresis.y, west.u[2]) annotation (Line(points={{-11,-10},{0,-10},
+            {0,46.5},{40,46.5}},                color={255,0,255}));
+    connect(hysteresis.y, south.u[2]) annotation (Line(points={{-11,-10},{0,-10},
+            {0,66.5},{40,66.5}},   color={255,0,255}));
+    connect(hysteresis.y, east2nd.u[2]) annotation (Line(points={{-11,-10},{0,
+            -10},{0,86.5},{40,86.5}},
+                                   color={255,0,255}));
+    connect(radiansToDegrees.y, greaterEqualThreshold.u) annotation (Line(
+          points={{-5.6,-50},{0,-50},{0,-30},{6,-30}}, color={0,0,127}));
+    connect(radiansToDegrees.y, greaterEqualThreshold2.u) annotation (Line(
+          points={{-5.6,-50},{34,-50},{34,-30},{38,-30}}, color={0,0,127}));
+    connect(radiansToDegrees.y, greaterEqualThreshold1.u) annotation (Line(
+          points={{-5.6,-50},{0,-50},{0,-70},{6,-70}}, color={0,0,127}));
+    connect(radiansToDegrees.y, greaterEqualThreshold3.u) annotation (Line(
+          points={{-5.6,-50},{-5.6,-50},{34,-50},{34,-70},{38,-70}}, color={0,0,
+            127}));
+    connect(east2nd.y, booleanToReal1.u) annotation (Line(points={{61.5,90},{62,
+            90},{62,104},{-138,104},{-138,15},{-149,15}},            color={255,
+            0,255}));
+    connect(south.y, booleanToReal2.u) annotation (Line(points={{61.5,70},{61.5,
+            102},{-136,102},{-136,-1},{-149,-1}}, color={255,0,255}));
+    connect(west.y, booleanToReal.u) annotation (Line(points={{61.5,50},{62,50},
+            {62,106},{-140,106},{-140,-15},{-149,-15}},          color={255,0,
+            255}));
+    connect(east_on.y, east3rd.u[1]) annotation (Line(points={{-19,90},{-8,90},
+            {-8,113.5},{40,113.5}},   color={255,0,255}));
+    connect(hysteresis.y, east3rd.u[2]) annotation (Line(points={{-11,-10},{-6,
+            -10},{-6,106.5},{40,106.5}},   color={255,0,255}));
+    connect(east3rd.y, booleanToReal3.u) annotation (Line(points={{61.5,110},{
+            61.5,126},{-149,126},{-149,31}}, color={255,0,255}));
+    connect(weaBus.angZen, altAng.u2) annotation (Line(
+        points={{-69.95,70.05},{-70,70.05},{-70,-56},{-42,-56}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(sim.weaBus, weaBus) annotation (Line(
+        points={{-81,93},{-78,93},{-78,70},{-70,70}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(sum2nd3rd.y, avg.u)
+      annotation (Line(points={{-47,-10},{-44.8,-10}}, color={0,0,127}));
+    connect(sum2nd3rd.u1, dataBus.Tavg_3rdFlr) annotation (Line(points={{-70,-4},
+            {-80,-4},{-80,0.1},{-99.9,0.1}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{-6,3},{-6,3}},
+        horizontalAlignment=TextAlignment.Right));
+    connect(sum2nd3rd.u2, dataBus.Tavg_2ndFlr) annotation (Line(points={{-70,-16},
+            {-80,-16},{-80,0.1},{-99.9,0.1}},      color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{-6,3},{-6,3}},
+        horizontalAlignment=TextAlignment.Right));
+    connect(hysteresis.u, avg.y)
+      annotation (Line(points={{-34,-10},{-35.6,-10}}, color={0,0,127}));
+    connect(overwrite.u, booleanToReal3.y)
+      annotation (Line(points={{-131,31},{-137.5,31}}, color={0,0,127}));
+    connect(overwrite.y, dataBus.eastShading3rd) annotation (Line(points={{
+            -119.5,31},{-99.9,31},{-99.9,0.1}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(booleanToReal1.y, overwrite1.u)
+      annotation (Line(points={{-137.5,15},{-131,15}}, color={0,0,127}));
+    connect(overwrite1.y, dataBus.eastShading2nd) annotation (Line(points={{
+            -119.5,15},{-119.5,8.5},{-99.9,8.5},{-99.9,0.1}}, color={0,0,127}),
+        Text(
+        string="%second",
+        index=1,
+        extent={{-3,-6},{-3,-6}},
+        horizontalAlignment=TextAlignment.Right));
+    connect(overwrite2.u, booleanToReal2.y)
+      annotation (Line(points={{-131,-1},{-137.5,-1}}, color={0,0,127}));
+    connect(overwrite2.y, dataBus.southShading) annotation (Line(points={{
+            -119.5,-1},{-112.75,-1},{-112.75,0.1},{-99.9,0.1}}, color={0,0,127}),
+        Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    connect(overwrite3.u, booleanToReal.y) annotation (Line(points={{-131,-15},
+            {-134.5,-15},{-134.5,-15},{-137.5,-15}}, color={0,0,127}));
+    connect(overwrite3.y, dataBus.westShading) annotation (Line(points={{-119.5,
+            -15},{-99.9,-15},{-99.9,0.1}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+          coordinateSystem(preserveAspectRatio=false)));
+  end SunShading;
 end SubControllers;

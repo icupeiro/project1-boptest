@@ -4,16 +4,19 @@ model IBPSA_BOPTEST
     "Model that handles time and weather data"
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
 
-   SubSystems.BuildingEnvelope.EnvelopeSim buiEnv(T_start=296.65)
+   SubSystems.BuildingEnvelope.EnvelopeBOPTEST
+                                           buiEnv(T_start=296.65)
     "Envelope of the building"
     annotation (Placement(transformation(extent={{-50,56},{-8,86}})));
 
-  SubSystems.HeatingSystem.HeatingSystem heaSys
+  SubSystems.HeatingSystem.HeatingSystemBOPTEST
+                                         heaSys
     "Heating system of the building"
     annotation (Placement(transformation(extent={{18,14},{60,40}})));
-  SubSystems.Controllers.RBCbaseline buiCon "Building controller"
+  SubSystems.Controllers.RBC_BOPTEST buiCon "Building controller"
     annotation (Placement(transformation(extent={{-40,20},{-20,40}})));
-  SubSystems.VentilationSystem.VentilationSystemSim venSys
+  SubSystems.VentilationSystem.VentilationSystemBOPTEST
+                                                    venSys
     "Ventilation system of the building"
     annotation (Placement(transformation(extent={{60,68},{98,88}})));
   SubSystems.Occupancy.OccupantwithCalendar buiOcc(

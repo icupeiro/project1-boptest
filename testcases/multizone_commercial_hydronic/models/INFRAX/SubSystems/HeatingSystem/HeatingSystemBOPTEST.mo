@@ -46,27 +46,27 @@ model HeatingSystemBOPTEST
   IBPSA.Utilities.IO.SignalExchange.Read pumPow7(
     description="Power of hydraulic pump7 ",
     KPIs=IBPSA.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.ElectricPower,
-
     y(unit="W")) "hydraulic pump 7 power"
     annotation (Placement(transformation(extent={{70,100},{54,116}})));
+
   IBPSA.Utilities.IO.SignalExchange.Read pumPow10(
     description="Power of hydraulic pump 10",
     KPIs=IBPSA.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.ElectricPower,
-
     y(unit="W")) "hydraulic pump 10 power"
     annotation (Placement(transformation(extent={{244,86},{260,102}})));
+
   IBPSA.Utilities.IO.SignalExchange.Read pumPow11(
     description="Power of hydraulic pump 11",
     KPIs=IBPSA.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.ElectricPower,
-
     y(unit="W")) "hydraulic pump 11 power"
     annotation (Placement(transformation(extent={{244,62},{260,78}})));
+
   IBPSA.Utilities.IO.SignalExchange.Read cooTowPow(
     description="Power of the cooling tower",
     KPIs=IBPSA.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.ElectricPower,
-
     y(unit="W")) "cooling tower power"
     annotation (Placement(transformation(extent={{230,116},{246,132}})));
+
 equation
    connect(heaPum1.P, heaPumPow1.u) annotation (Line(points={{-114,83},{-114,150},
           {-100,150}}, color={0,0,127}));
