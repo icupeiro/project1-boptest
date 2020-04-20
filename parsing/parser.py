@@ -44,6 +44,7 @@ def parse_instances(model_path, file_name):
     # Compile fmu
     fmu_path = compile_fmu(model_path, file_name)
     # Load fmu
+    print(fmu_path)
     fmu = load_fmu(fmu_path)
     # Check version
     if fmu.get_version() != '2.0':

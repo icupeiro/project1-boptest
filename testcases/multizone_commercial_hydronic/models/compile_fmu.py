@@ -14,7 +14,7 @@ The following libraries must be on the MODELICAPATH:
 from parsing import parser
 from pymodelica import environ
 
-environ['JVM_ARGS'] = '-Xmx16384m'
+environ['JVM_ARGS'] = '-Xmx65536m'
 
 def compile_fmu():
     '''Compile the fmu.
