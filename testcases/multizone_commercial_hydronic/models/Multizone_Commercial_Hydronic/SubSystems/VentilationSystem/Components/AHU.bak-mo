@@ -1,0 +1,211 @@
+within INFRAX.SubSystems.VentilationSystem.Components;
+model AHU "air handling unit of INFRAX"
+
+  replaceable package MediumAir = IDEAS.Media.Air;
+  replaceable package MediumWater = IDEAS.Media.Water;
+
+    extends INFRAX.SubSystems.VentilationSystem.Components.Dependencies.PartialAHU;
+
+  INFRAX.SubSystems.VentilationSystem.Components.Dependencies.DryCoilCounterFlowWithLosses
+    cooCoi(
+    UA_nominal=QCooCoi_nominal/Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+        TCooCoiWatSup_nominal,
+        TCooCoiWatRet_nominal,
+        TCooCoiAirSup_nominal,
+        TCooCoiAirRet_nominal),
+    redeclare package Medium1 = MediumWater,
+    redeclare package Medium2 = MediumAir,
+    m1_flow_nominal=mFlowWatCooCoi_nominal,
+    m2_flow_nominal=mFlowAirSup_nominal,
+    waterSideFlowDependent=true,
+    tau1=tau,
+    tau2=tau,
+    tau_m=tau,
+    tauLoss=tauLoss,
+    airSideFlowDependent=true,
+    nEle=3,
+    dp1_nominal=dpWatCooCoi_nominal,
+    dp2_nominal=dpAirCooCoi_nominal)
+    annotation (Placement(transformation(extent={{-72,-16},{-48,-46}})));
+  INFRAX.SubSystems.VentilationSystem.Components.Dependencies.DryCoilCounterFlowWithLosses
+    heaCoi(
+    redeclare package Medium1 = MediumWater,
+    redeclare package Medium2 = MediumAir,
+    m1_flow_nominal=mFlowWatHeaCoi_nominal,
+    m2_flow_nominal=mFlowAirSup_nominal,
+    UA_nominal=QHeaCoi_nominal/Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+        THeaCoiWatSup_nominal,
+        THeaCoiWatRet_nominal,
+        THeaCoiAirSup_nominal,
+        THeaCoiAirRet_nominal),
+    waterSideFlowDependent=true,
+    tau_m=tau,
+    tauLoss=tauLoss,
+    airSideFlowDependent=true,
+    tau1=tauWater,
+    tau2=tauAir,
+    nEle=3,
+    dp1_nominal=dpWatHeaCoi_nominal,
+    dp2_nominal=dpAirHeaCoi_nominal)
+    annotation (Placement(transformation(extent={{48,-16},{72,-46}})));
+  replaceable
+    INFRAX.SubSystems.VentilationSystem.Components.Dependencies.RecoveryWithByPass
+    recoveryWithByPass(
+    redeclare package Medium1 = MediumAir,
+    redeclare package Medium2 = MediumAir,
+    m1_flow_nominal=mFlowAirRet_nominal,
+    m2_flow_nominal=mFlowAirSup_nominal,
+    eps=epsRecovery,
+    dT_nominal=dTRecovery_nominal,
+    tau=tau,
+    dp1_nominal_TW=dpAirRetTW_nominal,
+    dp2_nominal_TW=dpAirSupTW_nominal) constrainedby
+    INFRAX.SubSystems.VentilationSystem.Components.Dependencies.RecoveryWithByPass(
+    redeclare package Medium1 = MediumAir,
+    redeclare package Medium2 = MediumAir,
+    m1_flow_nominal=mFlowAirRet_nominal,
+    m2_flow_nominal=mFlowAirSup_nominal,
+    eps=epsRecovery,
+    allowFlowReversal1=false,
+    allowFlowReversal2=false,
+    dT_nominal=dTRecovery_nominal,
+    tau=tau) annotation (Placement(transformation(extent={{-14,-8},{16,30}})));
+
+
+  IDEAS.Fluid.Actuators.Valves.Simplified.ThreeWayValveSwitch TWV_TW_ByPass(
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    tau=200,
+    redeclare package Medium = IDEAS.Media.Air,
+    m_flow_nominal=12100/3600)                      annotation (Placement(
+        transformation(
+        extent={{-10,10},{10,-10}},
+        rotation=180,
+        origin={-30,-22})));
+
+  IDEAS.Fluid.Sensors.TemperatureTwoPort tInWheel(
+    allowFlowReversal=false,
+    redeclare package Medium = MediumAir,
+    m_flow_nominal=m2_flow_nominal,
+    tau=tauAir) annotation (Placement(transformation(
+        extent={{-6,6},{6,-6}},
+        rotation=180,
+        origin={38,-22})));
+equation
+
+  connect(port_a2, heaCoi.port_a2) annotation (Line(points={{100,-60},{100,
+          -60},{100,-22},{72,-22}},           color={0,127,255}));
+  connect(cooCoi.port_b2, port_b2) annotation (Line(points={{-72,-22},{-100,
+          -22},{-100,-60}}, color={0,127,255}));
+  connect(portCooCoi_a1, cooCoi.port_a1) annotation (Line(points={{-80,-100},
+          {-80,-40},{-72,-40}}, color={0,127,255}));
+  connect(portCooCoi_b1, cooCoi.port_b1) annotation (Line(points={{-40,-100},
+          {-40,-40},{-48,-40}}, color={0,127,255}));
+  connect(portHeaCoi_b1, heaCoi.port_b1) annotation (Line(points={{80,-100},{
+          80,-40},{72,-40}}, color={0,127,255}));
+  connect(portHeaCoi_a1, heaCoi.port_a1) annotation (Line(points={{40,-100},{
+          40,-40},{48,-40}}, color={0,127,255}));
+  connect(cooCoi.heatPort, heatPort) annotation (Line(points={{-60,-16},{-60,
+          -16},{-60,80},{-40,80},{-40,100}}, color={191,0,0}));
+  connect(heaCoi.heatPort, heatPort) annotation (Line(points={{60,-16},{60,80},
+          {-40,80},{-40,100}}, color={191,0,0}));
+  connect(port_b1, recoveryWithByPass.port_b1) annotation (Line(points={{100,
+          60},{100,60},{100,22.4},{16,22.4}}, color={0,127,255}));
+  connect(port_a1, recoveryWithByPass.port_a1) annotation (Line(points={{-100,
+          60},{-100,22.4},{-14,22.4}}, color={0,127,255}));
+  connect(cooCoi.port_a2, TWV_TW_ByPass.port_b) annotation (Line(points={{-48,
+          -22},{-44,-22},{-40,-22}}, color={0,127,255}));
+  connect(TWV_TW_ByPass.port_a1, recoveryWithByPass.port_b2) annotation (Line(
+        points={{-20,-22},{-18,-22},{-18,-0.4},{-14,-0.4}}, color={0,127,255}));
+  connect(TWV_TW_ByPass.port_a2, recoveryWithByPass.port_a2) annotation (Line(
+        points={{-30,-32},{20,-32},{20,-0.4},{16,-0.4}},
+        color={0,127,255}));
+  connect(TSupply, recoveryWithByPass.TSupply) annotation (Line(points={{40,
+          108},{40,-16},{7,-16},{7,-9.52}}, color={0,0,127}));
+  connect(recoveryWithByPass.TSet, signalBus.T_AHU) annotation (Line(points={{-8,
+          -9.52},{-8,-16},{-80,-16},{-80,100}},
+                                            color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(TWV_TW_ByPass.switch, signalBus.TW_bypass) annotation (Line(points={{-30,-14},
+          {-30,56},{-80,56},{-80,100}},                    color={255,0,255}),
+      Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(heaCoi.port_b2, tInWheel.port_a)
+    annotation (Line(points={{48,-22},{44,-22}}, color={0,127,255}));
+  connect(tInWheel.port_b, recoveryWithByPass.port_a2) annotation (Line(points=
+          {{32,-22},{20,-22},{20,-0.4},{16,-0.4}}, color={0,127,255}));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}})),           Icon(coordinateSystem(
+          preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={
+        Rectangle(
+          extent={{-100,100},{100,-100}},
+          lineColor={0,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{0,58},{-40,18},{0,-22},{40,18},{0,58}},
+          lineColor={0,0,0},
+          smooth=Smooth.None,
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{-100,60},{-26,60},{0,34},{26,60},{98,60}},
+          color={0,0,0},
+          smooth=Smooth.None),
+        Line(
+          points={{100,-62},{26,-62},{26,-26},{0,0},{-28,-28},{-28,-62},{-100,
+              -62}},
+          color={0,0,0},
+          smooth=Smooth.None),
+        Rectangle(
+          extent={{-76,-36},{-50,-86}},
+          lineColor={0,128,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Rectangle(
+          extent={{52,-34},{78,-84}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Text(
+          extent={{58,-50},{70,-72}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="+"),
+        Text(
+          extent={{-76,-48},{-50,-70}},
+          lineColor={0,0,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="-"),
+        Line(
+          points={{-38,-60},{-38,-84},{0,-100}},
+          color={0,0,255},
+          smooth=Smooth.None,
+          pattern=LinePattern.Dash),
+        Text(
+          extent={{-42,-40},{-32,-60}},
+          lineColor={0,0,0},
+          pattern=LinePattern.Dash,
+          textString="T"),
+        Text(
+          extent={{-74,-82},{-48,-104}},
+          lineColor={0,0,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="-"),
+        Text(
+          extent={{54,-82},{66,-104}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="+")}),
+              Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+end AHU;

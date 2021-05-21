@@ -1,0 +1,672 @@
+within INFRAX.SubSystems.BuildingEnvelope;
+package TestFloor
+
+  model FloorTesting
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+
+    inner IDEAS.BoundaryConditions.SimInfoManager sim(
+      incAndAziInBus={{IDEAS.Types.Tilt.Floor,0},{IDEAS.Types.Tilt.Ceiling,0},{
+          IDEAS.Types.Tilt.Wall,0},{IDEAS.Types.Tilt.Wall,INFRAX.Data.Orientations.E},
+          {IDEAS.Types.Tilt.Wall,INFRAX.Data.Orientations.W},{IDEAS.Types.Tilt.Wall,
+          INFRAX.Data.Orientations.N}},
+      nWindow=5,
+      nLayWin=3) "Data reader"
+      annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
+
+    INFRAX.Data.Parameters.Structure structure
+      annotation (Placement(transformation(extent={{120,-100},{140,-80}})));
+    INFRAX.Data.Parameters.Str2ndFlr str2ndFlr
+      annotation (Placement(transformation(extent={{120,-80},{140,-60}})));
+    IDEAS.Buildings.Components.Zone westStairs(
+      redeclare package Medium = IDEAS.Media.Air,
+      nSurf=17,
+      V=structure.Vol_westStair,
+      hZone=structure.h)
+               annotation (Placement(transformation(extent={{-80,34},{-60,54}})));
+    IDEAS.Buildings.Components.OuterWall westStairs_OW(
+      azi=INFRAX.Data.Orientations.N,
+      inc=IDEAS.Types.Tilt.Wall,
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      A=structure.h*4.85 - structure.AWindows_westStair) "north wall of stairs"
+      annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={-70,88})));
+    IDEAS.Buildings.Components.Window windowStaW(
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      frac=1 - structure.GlazingD/structure.WindowD,
+      redeclare IDEAS.Buildings.Components.Shading.None shaType,
+      redeclare IDEAS.Buildings.Data.Glazing.Ins2Kr glazing,
+      redeclare INFRAX.Data.Frames.INFRAXWood fraType,
+      A=structure.AWindows_westStair) "windows from western stairs" annotation (
+       Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={-90,88})));
+    IDEAS.Buildings.Components.Zone eastStairs(
+      redeclare package Medium = IDEAS.Media.Air,
+      nSurf=14,
+      V=structure.Vol_eastStair,
+      hZone=structure.h)
+               annotation (Placement(transformation(extent={{60,34},{80,54}})));
+    IDEAS.Buildings.Components.OuterWall[2] eastStairs_OW(
+      each inc=IDEAS.Types.Tilt.Wall,
+      azi={INFRAX.Data.Orientations.N,INFRAX.Data.Orientations.E},
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType,
+      A=structure.h*{2.55,5} - {structure.AWindows_eastStair,0})
+      "outer walls from eastern stairs" annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={90,88})));
+    IDEAS.Buildings.Components.Window windowStaE(
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      redeclare IDEAS.Buildings.Components.Shading.None shaType,
+      redeclare IDEAS.Buildings.Data.Glazing.Ins2Kr glazing,
+      redeclare INFRAX.Data.Frames.INFRAXWood fraType,
+      A=structure.AWindows_eastStair) "windows from eastern stairs" annotation (
+       Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={70,88})));
+    Deprecated.Subsystems.Floors.Floor3 floor3
+      annotation (Placement(transformation(extent={{-12,50},{16,70}})));
+    Deprecated.Subsystems.Floors.Floor2 floor2
+      annotation (Placement(transformation(extent={{-12,8},{16,28}})));
+    IDEAS.Buildings.Components.InternalWall[8] Floor_2_3(
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=structure.A_2Flr_3Flr,
+      redeclare INFRAX.Data.Constructions.InnerFloor constructionType)
+                               annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={4,38})));
+    INFRAX.Data.Parameters.Str3rdFlr str3rdFlr
+      annotation (Placement(transformation(extent={{120,-60},{140,-40}})));
+    Deprecated.Subsystems.Floors.Floor1 floor1
+      annotation (Placement(transformation(extent={{-12,-38},{16,-18}})));
+    IDEAS.Buildings.Components.InternalWall[7] Floor_1_2(
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=structure.A_1Flr_2Flr,
+      redeclare INFRAX.Data.Constructions.InnerFloor constructionType)
+                               annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={4,-4})));
+    INFRAX.Data.Parameters.Str1stFlr str1stFlr
+      annotation (Placement(transformation(extent={{98,-80},{118,-60}})));
+    INFRAX.Data.Parameters.StrGndFlr strGndFlr
+      annotation (Placement(transformation(extent={{98,-100},{118,-80}})));
+    Deprecated.Subsystems.Floors.Floor0 floor0
+      annotation (Placement(transformation(extent={{-12,-74},{16,-54}})));
+    IDEAS.Buildings.Components.InternalWall[8] floor_0_garage(
+      redeclare INFRAX.Data.Constructions.Floor constructionType,
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=strGndFlr.Areas_GndFlr) annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={4,-84})));
+    IDEAS.Buildings.Components.Zone basement(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=structure.HeightFlr*structure.A_Grg,
+      hZone=structure.HeightFlr,
+      nSurf=14) "parking of INFRAX"
+      annotation (Placement(transformation(extent={{-40,-92},{-20,-72}})));
+    IDEAS.Buildings.Components.SlabOnGround slabOnGround(redeclare
+        INFRAX.Data.Constructions.Slab constructionType,
+                                                  A=structure.A_Grg)
+      annotation (Placement(transformation(extent={{-60,-98},{-48,-78}})));
+    IDEAS.Buildings.Components.BoundaryWall boundaryWall(
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=0,
+      use_T_in=true,
+      redeclare INFRAX.Data.Constructions.GarageWall constructionType,
+      A=structure.AWall_Grg_Soil)
+      annotation (Placement(transformation(extent={{-58,-70},{-46,-50}})));
+    Modelica.Blocks.Sources.Constant soiltemp(k=273.15 + 10.8)
+      "constant temperature of soil"
+      annotation (Placement(transformation(extent={{-100,-68},{-86,-54}})));
+    IDEAS.Buildings.Components.InternalWall[16] Floor_0_1(
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      redeclare INFRAX.Data.Constructions.InnerFloor constructionType,
+      A=structure.A_GndFlr_1stFlr)
+                               annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={4,-46})));
+    IDEAS.Buildings.Components.InternalWall eastStairs_garage(
+      redeclare INFRAX.Data.Constructions.Floor constructionType,
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=structure.A_eastStair) "wall between garage and eastern stairs"
+      annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={94,22})));
+    IDEAS.Buildings.Components.InternalWall westStairs_garage(
+      redeclare INFRAX.Data.Constructions.Floor constructionType,
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=structure.A_westStair) "inner wall between garage and western stairs"
+      annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={-102,26})));
+    IDEAS.Buildings.Components.OuterWall roof_westStairs(
+      redeclare INFRAX.Data.Constructions.Roof constructionType,
+      inc=IDEAS.Types.Tilt.Ceiling,
+      azi=0,
+      A=structure.A_westStair) "roof of western stairs" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={-106,64})));
+    IDEAS.Buildings.Components.OuterWall roof_eastStairs(
+      redeclare INFRAX.Data.Constructions.Roof constructionType,
+      inc=IDEAS.Types.Tilt.Ceiling,
+      azi=0,
+      A=structure.A_eastStair) "roof of east stairs" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={100,60})));
+    IDEAS.Buildings.Components.InternalWall Floor_0_2(
+      redeclare INFRAX.Data.Constructions.InnerFloor constructionType,
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=structure.A_hall_2SZ) "floor between ground and second floor"
+      annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={-34,-16})));
+    IDEAS.Buildings.Components.Window[2] brandkoepels(
+      redeclare IDEAS.Buildings.Components.Shading.None shaType,
+      inc=IDEAS.Types.Tilt.Ceiling,
+      azi=0,
+      frac=0,
+      A=structure.A_stairs_koepel,
+      redeclare IDEAS.Buildings.Data.Frames.None fraType,
+      redeclare
+        IDEAS.Buildings.Data.Glazing.Specialized.Insulating_Ar_1_471_59_2301
+        glazing) "domes from stairs (cupulas)" annotation (Placement(
+          transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={0,88})));
+    IDEAS.Buildings.Components.OuterWall[2] Grg_OuterWalls(
+      redeclare INFRAX.Data.Constructions.GarageWallWithIns constructionType,
+      inc={IDEAS.Types.Tilt.Wall,IDEAS.Types.Tilt.Ceiling},
+      azi={INFRAX.Data.Orientations.W,0},
+      A={structure.AWall_Grg_Out,structure.A_Grg_OutRoof})
+      "garage outer walls, west and roof side"
+      annotation (Placement(transformation(extent={{-90,-96},{-78,-76}})));
+  equation
+    //Stairs connections
+      //Connection to outer walls and windows
+    connect(westStairs.propsBus[1],westStairs_OW. propsBus_a) annotation (Line(
+        points={{-80,49.8824},{-84,49.8824},{-84,70},{-68,70},{-68,83}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs.propsBus[2], windowStaW.propsBus_a) annotation (Line(
+        points={{-80,49.6471},{-84,49.6471},{-84,70},{-88,70},{-88,83}},
+        color={255,204,51},
+        thickness=0.5));
+
+    connect(eastStairs.propsBus[1], eastStairs_OW[1].propsBus_a) annotation (Line(
+        points={{60,49.8571},{60,49.8571},{60,74},{92,74},{92,83}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[2], eastStairs_OW[2].propsBus_a) annotation (Line(
+        points={{60,49.5714},{60,49.5714},{60,74},{92,74},{92,83}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[3], windowStaE.propsBus_a) annotation (Line(
+        points={{60,49.2857},{60,49.2857},{60,83},{72,83}},
+        color={255,204,51},
+        thickness=0.5));
+      //Connection to floors
+          //Floor 3
+    connect(floor3.staW[1], westStairs.propsBus[3]) annotation (Line(
+        points={{-12,61.7333},{-46,61.7333},{-46,62},{-80,62},{-80,49.4118}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor3.staW[2], westStairs.propsBus[4]);
+    connect(floor3.staW[3], westStairs.propsBus[5]);
+    connect(floor3.staE[1], eastStairs.propsBus[4]) annotation (Line(
+        points={{17,60},{38,60},{38,49},{60,49}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor3.staE[2], eastStairs.propsBus[5]);
+          //Floor 2
+    connect(floor2.staW[1], westStairs.propsBus[6]) annotation (Line(
+        points={{-12,19.7333},{-24,19.7333},{-24,20},{-40,20},{-80,20},{-80,
+            48.7059}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor2.staW[2], westStairs.propsBus[7]);
+    connect(floor2.staW[3], westStairs.propsBus[8]);
+    connect(floor2.staE[1], eastStairs.propsBus[6]) annotation (Line(
+        points={{17,18},{22,18},{30,18},{30,48.4286},{60,48.4286}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor2.staE[2], eastStairs.propsBus[7]);
+          //Floor 1
+    connect(floor1.staW[1], westStairs.propsBus[9]) annotation (Line(
+        points={{-12,-26.2667},{-46,-26.2667},{-46,-26},{-80,-26},{-80,48}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1.staW[2], westStairs.propsBus[10]);
+    connect(floor1.staW[3], westStairs.propsBus[11]);
+    connect(floor1.staE[1], eastStairs.propsBus[8]) annotation (Line(
+        points={{17,-28},{17,-28},{60,-28},{60,47.8571}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1.staE[2], eastStairs.propsBus[9]);
+           //Floor 0
+    connect(floor0.staW[1], westStairs.propsBus[12]) annotation (Line(
+        points={{-12,-62.2667},{-12,-40.8},{-80,-40.8},{-80,47.2941}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor0.staW[2], westStairs.propsBus[13]);
+    connect(floor0.staW[3], westStairs.propsBus[14]);
+    connect(floor0.staE[1], eastStairs.propsBus[10]) annotation (Line(
+        points={{17,-64},{17,-62},{60,-62},{60,47.2857}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor0.staE[2], eastStairs.propsBus[11]);
+      //Roof and floors
+
+    //Floor 3 to 2
+    connect(floor3.flo, Floor_2_3.propsBus_a) annotation (Line(
+        points={{2,50},{2,50},{2,43}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(Floor_2_3.propsBus_b, floor2.cei) annotation (Line(
+        points={{2,33},{2,33},{2,28}},
+        color={255,204,51},
+        thickness=0.5));
+
+    //Floor 2 to 1
+    connect(floor1.cei, Floor_1_2.propsBus_b) annotation (Line(
+        points={{2,-18},{2,-9}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(Floor_1_2.propsBus_a, floor2.flo) annotation (Line(
+        points={{2,1},{2,4.5},{2,8}},
+        color={255,204,51},
+        thickness=0.5));
+
+    //Floor 1 to 0
+    connect(floor0.cei, Floor_0_1.propsBus_b) annotation (Line(
+        points={{2,-54},{2,-51}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(Floor_0_1.propsBus_a, floor1.flo) annotation (Line(
+        points={{2,-41},{2,-38}},
+        color={255,204,51},
+        thickness=0.5));
+
+
+    //Floor 0 to -1 (garage)
+    connect(floor_0_garage.propsBus_a, floor0.flo) annotation (Line(
+        points={{2,-79},{2,-74}},
+        color={255,204,51},
+        thickness=0.5));
+
+    connect(floor_0_garage[1].propsBus_b, basement.propsBus[1]) annotation (Line(
+        points={{2,-89},{2,-89},{2,-96},{-40,-96},{-40,-76.1429}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(basement.propsBus[2], floor_0_garage[2].propsBus_b);
+    connect(basement.propsBus[3], floor_0_garage[3].propsBus_b);
+    connect(basement.propsBus[4], floor_0_garage[4].propsBus_b);
+    connect(basement.propsBus[5], floor_0_garage[5].propsBus_b);
+    connect(basement.propsBus[6], floor_0_garage[6].propsBus_b);
+    connect(basement.propsBus[7], floor_0_garage[7].propsBus_b);
+    connect(basement.propsBus[8], floor_0_garage[8].propsBus_b);
+
+    //Floor and walls of garage
+    connect(basement.propsBus[9], slabOnGround.propsBus_a) annotation (Line(
+        points={{-40,-78.4286},{-44,-78.4286},{-44,-86},{-49,-86}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(basement.propsBus[10], boundaryWall.propsBus_a) annotation (Line(
+        points={{-40,-78.7143},{-40,-58},{-47,-58}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(boundaryWall.T, soiltemp.y) annotation (Line(points={{-62.6,-58},{
+            -68,-58},{-68,-61},{-85.3,-61}},
+                               color={0,0,127}));
+    connect(westStairs.propsBus[15], roof_westStairs.propsBus_a) annotation (Line(
+        points={{-80,46.5882},{-92,46.5882},{-104,46.5882},{-104,59}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs.propsBus[16], westStairs_garage.propsBus_a) annotation (
+        Line(
+        points={{-80,46.3529},{-104,46.3529},{-104,31}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[12], roof_eastStairs.propsBus_a) annotation (Line(
+        points={{60,46.7143},{60,55},{102,55}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[13], eastStairs_garage.propsBus_a) annotation (
+        Line(
+        points={{60,46.4286},{60,46.4286},{60,24},{60,27},{92,27}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs_garage.propsBus_b, basement.propsBus[11]) annotation (Line(
+        points={{-104,21},{-104,-46},{-40,-46},{-40,-79}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs_garage.propsBus_b, basement.propsBus[12]) annotation (Line(
+        points={{92,17},{60,17},{60,20},{60,-96},{-40,-96},{-40,-79.2857}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor0.sndcei, Floor_0_2.propsBus_b) annotation (Line(
+        points={{-2,-54},{-2,-54},{-36,-54},{-36,-21}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(Floor_0_2.propsBus_a, floor2.gflo) annotation (Line(
+        points={{-36,-11},{-36,8},{-2,8}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor0.glasswall, floor1.glasswall) annotation (Line(
+        points={{-8,-54},{-10,-54},{-10,-38}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(brandkoepels[1].propsBus_a, westStairs.propsBus[17]) annotation (
+        Line(
+        points={{2,83},{2,76},{-54,76},{-54,62},{-80,62},{-80,46.1176}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(brandkoepels[2].propsBus_a, eastStairs.propsBus[14]) annotation (
+        Line(
+        points={{2,83},{2,76},{60,76},{60,46.1429}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(Grg_OuterWalls[1].propsBus_a, basement.propsBus[13]) annotation (
+        Line(
+        points={{-79,-84},{-76,-84},{-76,-76},{-40,-76},{-40,-79.5714}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(Grg_OuterWalls[2].propsBus_a, basement.propsBus[14]) annotation (
+        Line(
+        points={{-79,-84},{-76,-84},{-76,-76},{-74,-76},{-74,-76},{-40,-76},{
+            -40,-76},{-40,-80},{-40,-79.8571},{-40,-79.8571}},
+        color={255,204,51},
+        thickness=0.5));
+
+
+
+   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,-100},
+              {140,100}}),                                        graphics={
+          Ellipse(lineColor = {75,138,73},
+                  fillColor={255,255,255},
+                  fillPattern = FillPattern.Solid,
+                  extent = {{-100,-100},{100,100}}),
+          Polygon(lineColor = {0,0,255},
+                  fillColor = {75,138,73},
+                  pattern = LinePattern.None,
+                  fillPattern = FillPattern.Solid,
+                  points = {{-36,60},{64,0},{-36,-60},{-36,60}})}),Diagram(
+          coordinateSystem(preserveAspectRatio=false, extent={{-140,-100},{140,100}})));
+  end FloorTesting;
+
+  model GarageTesting
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+    import INFRAX;
+
+    inner IDEAS.BoundaryConditions.SimInfoManager sim
+      annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    Deprecated.Subsystems.Floors.Floor0 floor0_1
+      annotation (Placement(transformation(extent={{-14,20},{14,40}})));
+    IDEAS.Buildings.Components.InternalWall[8] internalWall(
+      redeclare INFRAX.Data.Constructions.Floor constructionType,
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A=strGndFlr.Areas_GndFlr)
+             annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={2,-4})));
+    INFRAX.Data.Parameters.StrGndFlr strGndFlr
+      annotation (Placement(transformation(extent={{80,-100},{100,-80}})));
+    IDEAS.Buildings.Components.Zone garage(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=structure.HeightFlr*structure.A_Grg,
+      hZone=structure.HeightFlr,
+      nSurf=10)
+               "garage of INFRAX"
+      annotation (Placement(transformation(extent={{4,-40},{24,-20}})));
+    INFRAX.Data.Parameters.Structure structure
+      annotation (Placement(transformation(extent={{80,-80},{100,-60}})));
+    IDEAS.Buildings.Components.SlabOnGround slabOnGround(redeclare
+        INFRAX.Data.Constructions.Slab constructionType,
+                                                  A=structure.A_Grg)
+      annotation (Placement(transformation(extent={{-20,-80},{-8,-60}})));
+    IDEAS.Buildings.Components.BoundaryWall boundaryWall(
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=0,
+      use_T_in=true,
+      A=structure.AWall_Grg,
+      redeclare INFRAX.Data.Constructions.GarageWall constructionType)
+      annotation (Placement(transformation(extent={{-28,-38},{-16,-18}})));
+    Modelica.Blocks.Sources.Constant soiltemp(k=273.15 + 10.8)
+      "constant temperature of soil"
+      annotation (Placement(transformation(extent={{-54,-34},{-38,-18}})));
+    IDEAS.Buildings.Components.Zone westStairs(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=structure.A_westStair*3,
+      hZone=3,
+      nSurf=8) annotation (Placement(transformation(extent={{-80,-2},{-60,18}})));
+    IDEAS.Buildings.Components.Zone eastStairs(
+      redeclare package Medium = IDEAS.Media.Air,
+      V=3*structure.A_eastStair,
+      hZone=3,
+      nSurf=7) annotation (Placement(transformation(extent={{60,0},{80,20}})));
+    IDEAS.Buildings.Components.Window windowStaE(
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      A=structure.WindowHeight*1.8,
+      redeclare IDEAS.Buildings.Components.Shading.None shaType,
+      redeclare IDEAS.Buildings.Data.Glazing.Ins2Kr glazing,
+      redeclare INFRAX.Data.Frames.INFRAXWood fraType)
+      "windows from eastern stairs" annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={70,54})));
+    IDEAS.Buildings.Components.OuterWall[2] eastStairs_OW(
+      each inc=IDEAS.Types.Tilt.Wall,
+      azi={INFRAX.Data.Orientations.N,INFRAX.Data.Orientations.E},
+      A=6*{2.55,5} - {0,0},
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType)
+      "outer walls from eastern stairs" annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={90,54})));
+    IDEAS.Buildings.Components.OuterWall westStairs_NW(
+      azi=INFRAX.Data.Orientations.N,
+      A=6*4.85 - 2*structure.WindowD,
+      inc=IDEAS.Types.Tilt.Wall,
+      redeclare INFRAX.Data.Constructions.OuterWalls constructionType)
+      "north wall of stairs" annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={-70,54})));
+    IDEAS.Buildings.Components.Window windowStaW(
+      inc=IDEAS.Types.Tilt.Wall,
+      azi=INFRAX.Data.Orientations.N,
+      frac=1 - structure.GlazingD/structure.WindowD,
+      redeclare IDEAS.Buildings.Components.Shading.None shaType,
+      A=2*structure.WindowD,
+      redeclare IDEAS.Buildings.Data.Glazing.Ins2Kr glazing,
+      redeclare INFRAX.Data.Frames.INFRAXWood fraType)
+      "windows from western stairs" annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={-90,54})));
+    IDEAS.Buildings.Components.OuterWall[7] eastStairs_OW1(
+      redeclare INFRAX.Data.Constructions.Roof constructionType,
+      each inc=IDEAS.Types.Tilt.Ceiling,
+      azi=0,
+      A={1,1,1,1,1,1,1})
+      "outer walls from eastern stairs" annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=-90,
+          origin={-2,94})));
+    Deprecated.Subsystems.Floors.Floor1 floor1_1
+      annotation (Placement(transformation(extent={{-14,60},{14,80}})));
+    IDEAS.Buildings.Components.InternalWall[15] internalWall1(
+      inc=IDEAS.Types.Tilt.Floor,
+      azi=0,
+      A={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+      redeclare INFRAX.Data.Constructions.InnerFloor constructionType)
+             annotation (Placement(transformation(
+          extent={{-6,-10},{6,10}},
+          rotation=90,
+          origin={2,50})));
+  equation
+    connect(floor0_1.flo, internalWall.propsBus_a) annotation (Line(
+        points={{0,20},{0,1}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(slabOnGround.propsBus_a, garage.propsBus[9]) annotation (Line(
+        points={{-9,-68},{-8,-68},{-8,-27.4},{4,-27.4}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(internalWall[1].propsBus_b, garage.propsBus[1]) annotation (Line(
+        points={{0,-9},{0,-24.2},{4,-24.2}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(garage.propsBus[2], internalWall[2].propsBus_b);
+    connect(garage.propsBus[3], internalWall[3].propsBus_b);
+    connect(garage.propsBus[4], internalWall[4].propsBus_b);
+    connect(garage.propsBus[5], internalWall[5].propsBus_b);
+    connect(garage.propsBus[6], internalWall[6].propsBus_b);
+    connect(garage.propsBus[7], internalWall[7].propsBus_b);
+    connect(garage.propsBus[8], internalWall[8].propsBus_b);
+    connect(soiltemp.y, boundaryWall.T) annotation (Line(points={{-37.2,-26},{-38,
+            -26},{-32.6,-26}}, color={0,0,127}));
+    connect(garage.propsBus[10], boundaryWall.propsBus_a) annotation (Line(
+        points={{4,-27.8},{-7,-26},{-17,-26}},
+        color={255,204,51},
+        thickness=0.5));
+
+    //Stairs conenections
+    connect(westStairs.propsBus[2],windowStaW.propsBus_a) annotation (Line(
+        points={{-80,13.25},{-84,13.25},{-84,36},{-88,36},{-88,49}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs.propsBus[1],westStairs_NW.propsBus_a) annotation (Line(
+        points={{-80,13.75},{-84,13.75},{-84,36},{-68,36},{-68,49}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[1],eastStairs_OW[1].propsBus_a);
+    connect(eastStairs.propsBus[2],eastStairs_OW[2].propsBus_a) annotation (Line(
+        points={{60,15.1429},{60,15.1429},{60,40},{92,40},{92,49}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[3],windowStaE. propsBus_a) annotation (Line(
+        points={{60,14.5714},{60,14.5714},{60,49},{72,49}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs.propsBus[3], floor0_1.staW[1]) annotation (Line(
+        points={{-80,12.75},{-80,12.75},{-80,31.7333},{-14,31.7333}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs.propsBus[4], floor0_1.staW[2]) annotation (Line(
+        points={{-80,12.25},{-80,30.4},{-14,30.4}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(westStairs.propsBus[5], floor0_1.staW[3]) annotation (Line(
+        points={{-80,11.75},{-78,11.75},{-78,29.0667},{-14,29.0667}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[4], floor0_1.staE[1]) annotation (Line(
+        points={{60,14},{60,14},{60,32},{60,30},{15,30}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(eastStairs.propsBus[5], floor0_1.staE[2]) annotation (Line(
+        points={{60,13.4286},{60,13.4286},{60,30},{13,30}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor0_1.cei, internalWall1.propsBus_b) annotation (Line(
+        points={{0,40},{0,45}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(internalWall1.propsBus_a, floor1_1.flo) annotation (Line(
+        points={{0,55},{0,57.5},{0,60}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1_1.cei, eastStairs_OW1.propsBus_a) annotation (Line(
+        points={{0,80},{0,89}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1_1.staW[1], westStairs.propsBus[6]) annotation (Line(
+        points={{-14,71.7333},{-48,71.7333},{-48,11.25},{-80,11.25}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1_1.staW[2], westStairs.propsBus[7]) annotation (Line(
+        points={{-14,70.4},{-48,70.4},{-48,10.75},{-80,10.75}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1_1.staW[3], westStairs.propsBus[8]) annotation (Line(
+        points={{-14,69.0667},{-46,69.0667},{-46,10.25},{-80,10.25}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1_1.staE[1], eastStairs.propsBus[6]) annotation (Line(
+        points={{15,70},{38,70},{38,12.8571},{60,12.8571}},
+        color={255,204,51},
+        thickness=0.5));
+    connect(floor1_1.staE[2], eastStairs.propsBus[7]) annotation (Line(
+        points={{13,70},{38,70},{38,12.2857},{60,12.2857}},
+        color={255,204,51},
+        thickness=0.5));
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+          Ellipse(lineColor = {75,138,73},
+                  fillColor={255,255,255},
+                  fillPattern = FillPattern.Solid,
+                  extent = {{-100,-100},{100,100}}),
+          Polygon(lineColor = {0,0,255},
+                  fillColor = {75,138,73},
+                  pattern = LinePattern.None,
+                  fillPattern = FillPattern.Solid,
+                  points = {{-36,60},{64,0},{-36,-60},{-36,60}})}), Diagram(
+          coordinateSystem(preserveAspectRatio=false)));
+  end GarageTesting;
+end TestFloor;

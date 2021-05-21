@@ -1,0 +1,100 @@
+within INFRAX.SubSystems.HeatingSystem;
+model HS1stAttempt
+
+  Modelica.Blocks.Sources.Constant HPSP(k=273.15 + 32) "Heat Pump setpoint"
+    annotation (Placement(transformation(extent={{-194,50},{-184,60}})));
+  Data.Parameters.Hydronic hydronic
+    annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
+  inner IDEAS.BoundaryConditions.SimInfoManager sim
+    annotation (Placement(transformation(extent={{-200,80},{-180,100}})));
+  IDEAS.Fluid.Production.HP_WaterWater_TSet HP1(
+    redeclare package Medium1 = IDEAS.Media.Water,
+    redeclare package Medium2 = IDEAS.Media.Water,
+    use_onOffSignal=true,
+    uLow=-2,
+    uHigh=1,
+    redeclare Data.Parameters.DYNACIAT_LG_LGP_200 heatPumpData,
+    T_max=328.15,
+    T_min=253.15) "HeatPump 1" annotation (Placement(transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=90,
+        origin={-150,50})));
+  IDEAS.Fluid.HeatExchangers.GroundHeatExchangers.Borefield.MultipleBoreHoles2UTube
+    borFie(
+    redeclare package Medium = IDEAS.Media.Water,
+    dp_nominal=800,
+    redeclare
+      IDEAS.Fluid.HeatExchangers.GroundHeatExchangers.Borefield.Data.BorefieldData.SandStone_Bentonite_c8x1_h110_b5_d600_T283_2UTubeParallel_2Series
+      bfData,
+    m_flow_nominal=14150/3600)
+              "borefield of INFRAX"
+    annotation (Placement(transformation(extent={{-120,-64},{-140,-44}})));
+  IDEAS.Fluid.Movers.FlowControlled_m_flow P01(redeclare package Medium =
+        IDEAS.Media.Water,
+    redeclare IDEAS.Fluid.Movers.Data.Pumps.Wilo.Stratos40slash1to12 per,
+    m_flow_nominal=14150/3600,
+    nominalValuesDefineDefaultPressureCurve=true)
+    "Pump 01 in the hydronic scheme" annotation (Placement(transformation(
+        extent={{-6,-6},{6,6}},
+        rotation=90,
+        origin={-170,-12})));
+  IDEAS.Fluid.Movers.FlowControlled_dp P03(
+    redeclare package Medium = IDEAS.Media.Water,
+    m_flow_nominal=24000/3600,
+    dp_nominal(displayUnit="kPa") = 12000000,
+    redeclare IDEAS.Fluid.Movers.Data.Pumps.Wilo.Stratos25slash1to8 per)
+                                              "pump 3 on the hydronic scheme"
+    annotation (Placement(transformation(
+        extent={{-5,-5},{5,5}},
+        rotation=90,
+        origin={-115,23})));
+  Modelica.Blocks.Sources.Constant const(k=1)
+    annotation (Placement(transformation(extent={{-194,20},{-186,28}})));
+  Modelica.Blocks.Sources.Constant const1(k=1)
+    annotation (Placement(transformation(extent={{-140,8},{-132,16}})));
+  Modelica.Blocks.Sources.BooleanExpression booleanExpression(y=true)
+    annotation (Placement(transformation(extent={{-198,28},{-178,48}})));
+  IDEAS.Fluid.MixingVolumes.MixingVolume vol(
+    redeclare package Medium = IDEAS.Media.Water,
+    m_flow_nominal=24000/3600,
+    V=2.5,
+    nPorts=2) annotation (Placement(transformation(
+        extent={{-10,10},{10,-10}},
+        rotation=90,
+        origin={-54,24})));
+  Modelica.Thermal.HeatTransfer.Components.ThermalConductor theCon(G=0.026*0.04)
+    "Thermal conductor"
+    annotation (Placement(transformation(extent={{-42,-52},{-22,-32}})));
+  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature TAmb(T=293.15)
+    "Ambient temperature"
+    annotation (Placement(transformation(extent={{-72,-52},{-52,-32}})));
+equation
+  connect(HPSP.y, HP1.TSet) annotation (Line(points={{-183.5,55},{-172,55},{-160,
+          55}}, color={0,0,127}));
+  connect(P03.port_b, HP1.port_a2) annotation (Line(points={{-115,28},{-114,28},
+          {-114,36},{-144,36},{-144,40}}, color={0,127,255}));
+  connect(borFie.port_b, P01.port_a) annotation (Line(points={{-140,-54},{-146,-54},
+          {-170,-54},{-170,-18}}, color={0,127,255}));
+  connect(P01.port_b, HP1.port_a1) annotation (Line(points={{-170,-6},{-170,-6},
+          {-170,66},{-156,66},{-156,60}}, color={0,127,255}));
+  connect(HP1.port_b1, borFie.port_a) annotation (Line(points={{-156,40},{-158,40},
+          {-158,-26},{-158,-40},{-104,-40},{-104,-54},{-120,-54}}, color={0,127,
+          255}));
+  connect(const.y, P01.m_flow_in) annotation (Line(points={{-185.6,24},{-186,24},
+          {-186,-12.12},{-177.2,-12.12}}, color={0,0,127}));
+  connect(const1.y, P03.dp_in) annotation (Line(points={{-131.6,12},{-124,12},{-124,
+          22.9},{-121,22.9}}, color={0,0,127}));
+  connect(booleanExpression.y, HP1.on) annotation (Line(points={{-177,38},{-174,
+          38},{-174,52},{-160.8,52}}, color={255,0,255}));
+  connect(P03.port_a, vol.ports[1]) annotation (Line(points={{-115,18},{-114,18},
+          {-114,-2},{-114,-8},{-64,-8},{-64,22}}, color={0,127,255}));
+  connect(vol.ports[2], HP1.port_b2) annotation (Line(points={{-64,26},{-64,64},
+          {-144,64},{-144,60}}, color={0,127,255}));
+  connect(TAmb.port, theCon.port_a)
+    annotation (Line(points={{-52,-42},{-47,-42},{-42,-42}}, color={191,0,0}));
+  connect(theCon.port_b, vol.heatPort) annotation (Line(points={{-22,-42},{-22,
+          -42},{-22,0},{-22,2},{-54,2},{-54,14}}, color={191,0,0}));
+annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+            {200,100}})),                                      Diagram(
+      coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{200,100}})));
+end HS1stAttempt;

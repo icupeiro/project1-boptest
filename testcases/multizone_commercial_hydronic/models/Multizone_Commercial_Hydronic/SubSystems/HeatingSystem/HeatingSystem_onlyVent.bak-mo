@@ -1,0 +1,680 @@
+within INFRAX.SubSystems.HeatingSystem;
+model HeatingSystem_onlyVent
+  import INFRAX;
+  import INFRAX;
+
+  Controllers.SignalBus signalBus annotation (Placement(transformation(extent={{-218,
+            -40},{-178,0}}),       iconTransformation(extent={{-210,-30},{-190,-10}})));
+  IDEAS.Fluid.Production.HP_WaterWater_OnOff e001(
+    redeclare package Medium2 = IDEAS.Media.Water,
+    redeclare INFRAX.Data.Parameters.DYNACIAT_LG_LGP_200 heatPumpData,
+    allowFlowReversal1=false,
+    allowFlowReversal2=false,
+    computeFlowResistance=false,
+    onOff=true,
+    use_onOffSignal=true,
+    use_modulationSignal=true,
+    show_T=true,
+    use_modulation_security=true,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    mSenFac=200,
+    redeclare package Medium1 = IDEAS.Media.Water) "HeatPump 1"
+                                       annotation (Placement(transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=90,
+        origin={-110,50})));
+  INFRAX.Data.Parameters.Hydronic hydronic
+    annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
+  IDEAS.Fluid.Movers.FlowControlled_m_flow
+                                       p01p02(
+    redeclare IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine50slash150dash4slash2
+      per,
+    allowFlowReversal=false,
+    addPowerToMedium=false,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    filteredSpeed=false,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    m_flow_nominal=28300/3600,
+    redeclare package Medium = IDEAS.Media.Water)             "pumps 01 and 02"
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={-170,24})));
+  IDEAS.Fluid.Sources.Boundary_pT source(
+    use_T_in=false,
+    nPorts=1,
+    p=200000,
+    redeclare package Medium = IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{-10,10},{10,-10}},
+        rotation=180,
+        origin={-140,-10})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t7(
+                           m_flow_nominal=14150/3600,
+    tau=hydronic.sensorTau,
+    redeclare package Medium = IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{-126,-88},{-134,-80}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t1(
+                           m_flow_nominal=14150/3600,
+    tau=hydronic.sensorTau,
+    redeclare package Medium = IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{-5,-5},{5,5}},
+        rotation=90,
+        origin={-169,1})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t14(redeclare package Medium =
+        IDEAS.Media.Water, m_flow_nominal=24000/3600,
+    tau=hydronic.sensorTau)
+    annotation (Placement(transformation(extent={{-52,6},{-62,16}})));
+  IDEAS.Fluid.Sources.Boundary_pT sink(use_T_in=false, redeclare package Medium =
+        IDEAS.Media.Water,
+    nPorts=1,
+    p=150000)              annotation (Placement(transformation(
+        extent={{10,10},{-10,-10}},
+        rotation=180,
+        origin={-56,42})));
+  IDEAS.Fluid.MixingVolumes.MixingVolume buffTank(
+    redeclare package Medium = IDEAS.Media.Water,
+    m_flow_nominal=24000/3600,
+    nPorts=2,
+    V=hydronic.VolTank,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    allowFlowReversal=false,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    T_start=303.15)     annotation (Placement(transformation(
+        extent={{-10,10},{10,-10}},
+        rotation=180,
+        origin={4,16})));
+  Components.Collector supplyCollector(
+    redeclare package Medium = IDEAS.Media.Water,
+    V=0.5,
+    m_flow_nominal=hydronic.sink_m_flow,
+    nPorts=4,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    T_start=305.15) "supply collector"
+    annotation (Placement(transformation(extent={{40,12},{180,0}})));
+  Components.Collector returnCollector(
+    redeclare package Medium = IDEAS.Media.Water,
+    V=0.5,
+    m_flow_nominal=hydronic.sink_m_flow,
+    nPorts=4,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    T_start=301.15) "return collector"
+    annotation (Placement(transformation(extent={{40,-28},{180,-40}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t19(redeclare package Medium =
+        IDEAS.Media.Water, m_flow_nominal=24000/3600,
+    tau=hydronic.sensorTau)
+    annotation (Placement(transformation(extent={{-42,64},{-32,74}})));
+  Controllers.DataBus dataBus annotation (Placement(transformation(extent={{-220,
+            0},{-180,40}}), iconTransformation(extent={{-210,4},{-190,24}})));
+  IBPSA.Fluid.Geothermal.Borefields.TwoUTubes
+    borField(
+    allowFlowReversal=false,
+    dynFil=false,
+    dp_nominal=100,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    redeclare package Medium = IDEAS.Media.Water)
+                     "borefield from INFRAX"
+    annotation (Placement(transformation(extent={{-140,-94},{-160,-74}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t2(
+                           m_flow_nominal=14150/3600,
+    tau=hydronic.sensorTau,
+    redeclare package Medium = IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{-4,-4},{4,4}},
+        rotation=0,
+        origin={-132,68})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t5(
+                           m_flow_nominal=14150/3600,
+    tau=hydronic.sensorTau,
+    redeclare package Medium = IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{4,-4},{-4,4}},
+        rotation=90,
+        origin={-116,22})));
+  inner IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Ceiling,
+        0},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S},{IDEAS.Types.Tilt.Wall,
+        IDEAS.Types.Azimuth.W},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.N},{
+        IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.E}})
+    annotation (Placement(transformation(extent={{-200,80},{-180,100}})));
+  Deprecated.Subsystems.CoolingTower coolingTower
+    annotation (Placement(transformation(extent={{98,60},{138,80}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t6(
+                           m_flow_nominal=14150/3600,
+    tau=hydronic.sensorTau,
+    allowFlowReversal=false,
+    redeclare package Medium = IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{4,-4},{-4,4}},
+        rotation=90,
+        origin={-116,-72})));
+  IDEAS.Fluid.Actuators.Valves.Simplified.ThreeWayValveMotor TWVHP(
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    tau=200,
+    m_flow_nominal=hydronic.source_m_flow,
+    redeclare package Medium = IDEAS.Media.Water)
+                                           annotation (Placement(transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=0,
+        origin={-154,68})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t8(
+                           m_flow_nominal=28300/3600,
+    redeclare package Medium = IDEAS.Media.Water,
+    tau=hydronic.sensorTau)
+    annotation (Placement(transformation(extent={{-108,-6},{-100,2}})));
+  IDEAS.Fluid.Movers.FlowControlled_m_flow p04(
+    tau=30,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    filteredSpeed=false,
+    dp_nominal(displayUnit="kPa"),
+    allowFlowReversal=false,
+    m_flow_nominal=hydronic.p04_m_flow,
+    addPowerToMedium=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    T_start=284.15)                     "active cooling pump"
+    annotation (Placement(transformation(extent={{-96,-10},{-82,4}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t9(
+                           m_flow_nominal=28300/3600,
+    redeclare package Medium = IDEAS.Media.Water,
+    tau=hydronic.sensorTau)
+    annotation (Placement(transformation(extent={{-100,-22},{-108,-14}})));
+  Buildings.Fluid.HeatExchangers.DryCoilEffectivenessNTU e003(
+    redeclare package Medium1 = IDEAS.Media.Water,
+    m1_flow_nominal=30300/3600,
+    m2_flow_nominal=27100/3600,
+    dp1_nominal=48700,
+    dp2_nominal=49300,
+    Q_flow_nominal(displayUnit="W") = 106000,
+    configuration=Buildings.Fluid.Types.HeatExchangerConfiguration.CounterFlow,
+    r_nominal=0.461/0.593,
+    redeclare package Medium2 = IDEAS.Media.Water,
+    T_a1_nominal=288.15,
+    T_a2_nominal=284.15) "cooling heat exchanger" annotation (Placement(
+        transformation(
+        extent={{-8,7},{8,-7}},
+        rotation=90,
+        origin={-71,-10})));
+
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t16(
+                           m_flow_nominal=hydronic.p13_m_flow,
+    redeclare package Medium = IDEAS.Media.Water,
+    tau=hydronic.sensorTau)                                    annotation (
+      Placement(transformation(
+        extent={{-4,4},{4,-4}},
+        rotation=180,
+        origin={-54,-22})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t15(
+                           m_flow_nominal=hydronic.p13_m_flow,
+    redeclare package Medium = IDEAS.Media.Water,
+    tau=hydronic.sensorTau)                                    annotation (
+      Placement(transformation(
+        extent={{-4,-4},{4,4}},
+        rotation=0,
+        origin={-54,-6})));
+  IDEAS.Fluid.Movers.FlowControlled_m_flow p13(
+    tau=30,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    filteredSpeed=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    dp_nominal(displayUnit="kPa"),
+    addPowerToMedium=false,
+    m_flow_nominal=hydronic.p07_m_flow,
+    allowFlowReversal=false)
+    annotation (Placement(transformation(extent={{-46,-12},{-34,0}})));
+  Modelica.Fluid.Interfaces.FluidPort_b portCooCoi_b(redeclare package Medium =
+        IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{-30,90},{-10,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_a portCooCoi_a(redeclare package Medium =
+        IDEAS.Media.Water)
+    annotation (Placement(transformation(extent={{10,90},{30,110}})));
+  IDEAS.Fluid.Movers.FlowControlled_m_flow p09(
+    tau=30,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    filteredSpeed=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    dp_nominal(displayUnit="kPa"),
+    addPowerToMedium=false,
+    allowFlowReversal=false,
+    m_flow_nominal=hydronic.p09_m_flow,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState)
+                                        annotation (Placement(transformation(
+        extent={{7,8},{-7,-8}},
+        rotation=90,
+        origin={70,71})));
+  Buildings.Fluid.HeatExchangers.DryCoilEffectivenessNTU e005(
+    redeclare package Medium1 = IDEAS.Media.Water,
+    redeclare package Medium2 = IDEAS.Media.Water,
+    configuration=Buildings.Fluid.Types.HeatExchangerConfiguration.CounterFlow,
+    Q_flow_nominal(displayUnit="W") = 34000,
+    r_nominal=0.473/0.619,
+    m1_flow_nominal=7600/3600,
+    m2_flow_nominal=7400/3600,
+    dp1_nominal=49900,
+    dp2_nominal=47200,
+    T_a1_nominal=301.15,
+    T_a2_nominal=306.15) "ahu(+) heat exchanger" annotation (Placement(
+        transformation(
+        extent={{8,-8},{-8,8}},
+        rotation=180,
+        origin={58,58})));
+
+  IDEAS.Fluid.Movers.FlowControlled_m_flow p08(
+    tau=30,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    filteredSpeed=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    dp_nominal(displayUnit="kPa"),
+    allowFlowReversal=false,
+    addPowerToMedium=false,
+    m_flow_nominal=hydronic.p08_m_flow,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    T_start=284.15)                     "TABS pump" annotation (Placement(
+        transformation(
+        extent={{-7,-8},{7,8}},
+        rotation=90,
+        origin={44,23})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t29(redeclare package Medium =
+        IDEAS.Media.Water, m_flow_nominal=hydronic.p08_m_flow,
+    tau=hydronic.sensorTau)                                    annotation (
+      Placement(transformation(
+        extent={{-6,-5},{6,5}},
+        rotation=90,
+        origin={43,46})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort t30(redeclare package Medium =
+        IDEAS.Media.Water, m_flow_nominal=hydronic.p08_m_flow,
+    tau=hydronic.sensorTau)                                    annotation (
+      Placement(transformation(
+        extent={{5,-5},{-5,5}},
+        rotation=90,
+        origin={73,45})));
+  Modelica.Fluid.Interfaces.FluidPort_a portHeaCoi_a1(redeclare package Medium =
+        IDEAS.Media.Water)
+    "Fluid connector a1 (positive design flow direction is from port_a1 to port_b1)"
+    annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_b portHeaCoi_b1(redeclare package Medium =
+        IDEAS.Media.Water)
+    "Fluid connector b1 (positive design flow direction is from port_a1 to port_b1)"
+    annotation (Placement(transformation(extent={{-70,90},{-50,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_a portVAVCoi_a(redeclare package Medium =
+        IDEAS.Media.Water) "supply to VAV coils"
+    annotation (Placement(transformation(extent={{170,90},{190,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_b portVAVCoi_b(redeclare package Medium =
+        IDEAS.Media.Water) "return from the VAV coils"
+    annotation (Placement(transformation(extent={{130,90},{150,110}})));
+equation
+  connect(t1.port_b, p01p02.port_a)
+    annotation (Line(points={{-169,6},{-170,6},{-170,14}}, color={0,127,255}));
+  connect(returnCollector.ports[1], buffTank.ports[1]) annotation (Line(points={{104.167,
+          -28},{104.167,-20},{0,-20},{0,6},{6,6}},
+                                             color={0,127,255}));
+  connect(buffTank.ports[2], t14.port_a) annotation (Line(points={{2,6},{-16,6},
+          {-34,6},{-34,11},{-52,11}},
+                              color={0,127,255}));
+  connect(t14.port_b, e001.port_a2) annotation (Line(points={{-62,11},{-80,11},
+          {-80,40},{-104,40}},color={0,127,255}));
+  connect(e001.port_b2, t19.port_a) annotation (Line(points={{-104,60},{-104,69},
+          {-42,69}}, color={0,127,255}));
+  connect(t19.port_b, supplyCollector.ports[1]) annotation (Line(points={{-32,69},
+          {0,69},{0,66},{0,40},{40,40},{40,12},{104.167,12}},
+                                       color={0,127,255}));
+  connect(sink.ports[1], t14.port_a) annotation (Line(points={{-46,42},{-34,42},
+          {-34,6},{-34,11},{-52,11}},         color={0,127,255}));
+  connect(borField.port_a, t7.port_b) annotation (Line(points={{-140,-84},{-140,
+          -84},{-134,-84}}, color={0,127,255}));
+  connect(borField.port_b, t1.port_a) annotation (Line(points={{-160,-84},{-169,
+          -84},{-169,-4}}, color={0,127,255}));
+  //Data from sensor connections
+  connect(t14.T, dataBus.T14);
+
+  connect(t1.T, dataBus.T1);
+  connect(t7.T, dataBus.T7);
+
+  //Signal connections
+  connect(e001.on, signalBus.HP_onoff);
+  connect(e001.mod, signalBus.HP_mod);
+
+  //////
+  connect(source.ports[1], t1.port_b)
+    annotation (Line(points={{-150,-10},{-158,-10},{-158,6},{-169,6}},
+                                                 color={0,127,255}));
+  connect(e001.port_b1, t5.port_a)
+    annotation (Line(points={{-116,40},{-116,26}}, color={0,127,255}));
+  connect(p01p02.m_flow_in, signalBus.P0102_mod) annotation (Line(points={{-182,24},
+          {-184,24},{-184,-16},{-184,-20},{-198,-20}},               color={0,0,127},
+      visible=false),
+                 Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+
+  connect(coolingTower.TLvg, dataBus.T27) annotation (Line(
+      points={{140,64},{-38,64},{-38,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(coolingTower.port_b, returnCollector.ports[2]) annotation (Line(
+        points={{132,60},{132,-28},{108.056,-28}}, color={0,127,255}));
+  connect(supplyCollector.ports[2], coolingTower.port_a) annotation (Line(
+        points={{108.056,12},{118,12},{118,60}}, color={0,127,255}));
+  connect(t7.port_a, t6.port_b) annotation (Line(points={{-126,-84},{-124,-84},
+          {-116,-84},{-116,-76}}, color={0,127,255}));
+  connect(t6.port_a, t5.port_b) annotation (Line(points={{-116,-68},{-116,-68},
+          {-116,18}}, color={0,127,255}));
+  connect(t6.port_a, coolingTower.port_a1) annotation (Line(points={{-116,-68},
+          {-116,-68},{142,-68},{142,70},{138.2,70}},
+                                                   color={0,127,255}));
+  connect(t6.port_b, coolingTower.port_b1) annotation (Line(points={{-116,-76},
+          {-116,-76},{148,-76},{148,74},{138,74}},
+                                                 color={0,127,255}));
+  connect(signalBus.Twet, coolingTower.TAir) annotation (Line(
+      points={{-198,-20},{-60,-20},{-60,66},{60,66},{60,78},{98,78}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(coolingTower.y, signalBus.CT_signal) annotation (Line(
+      points={{98,74},{-58,74},{-58,-20},{-198,-20}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(coolingTower.TWVCooling, signalBus.CC_3way_signal) annotation (Line(
+      points={{98,66},{-56,66},{-56,-20},{-198,-20}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(coolingTower.TWVHX, signalBus.Hex_3way_signal) annotation (Line(
+      points={{98,62},{-60,62},{-60,-20},{-198,-20}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(signalBus.P10_signal, coolingTower.y10) annotation (Line(
+      points={{-198,-20},{-52,-20},{-52,59.2},{107,59.2}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(signalBus.P11_signal, coolingTower.y11) annotation (Line(
+      points={{-198,-20},{-50,-20},{-50,59.2},{111,59.2}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(TWVHP.port_a2, t5.port_b) annotation (Line(points={{-154,58},{-154,12},
+          {-116,12},{-116,18}}, color={0,127,255}));
+  connect(TWVHP.ctrl, signalBus.HP_3way_signal) annotation (Line(
+      points={{-154,78.8},{-198,78.8},{-198,-20}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+
+  connect(t5.T, dataBus.T5) annotation (Line(
+      points={{-120.4,22},{-158,22},{-158,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(TWVHP.port_b, p01p02.port_b) annotation (Line(points={{-164,68},{-170,
+          68},{-170,34}}, color={0,127,255}));
+  connect(TWVHP.port_a1, t2.port_a)
+    annotation (Line(points={{-144,68},{-136,68}}, color={0,127,255}));
+  connect(t2.port_b, e001.port_a1) annotation (Line(points={{-128,68},{-116,68},
+          {-116,60}}, color={0,127,255}));
+  connect(t2.T, dataBus.T2) annotation (Line(
+      points={{-132,72.4},{-162,72.4},{-162,70},{-199.9,70},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t16.port_b, e003.port_a1) annotation (Line(points={{-58,-22},{-64,-22},
+          {-66.8,-22},{-66.8,-18}}, color={0,127,255}));
+  connect(e003.port_b1, t15.port_a) annotation (Line(points={{-66.8,-2},{-66.8,
+          -2},{-58,-2},{-58,-6}}, color={0,127,255}));
+  connect(e003.port_b2, t9.port_a) annotation (Line(points={{-75.2,-18},{-75.2,
+          -18},{-100,-18}}, color={0,127,255}));
+  connect(t9.port_b, t5.port_b) annotation (Line(points={{-108,-18},{-116,-18},
+          {-116,18}}, color={0,127,255}));
+  connect(t8.port_a, t5.port_b) annotation (Line(points={{-108,-2},{-116,-2},{
+          -116,18}}, color={0,127,255}));
+  connect(t8.port_b, p04.port_a) annotation (Line(points={{-100,-2},{-98,-2},{
+          -98,-3},{-96,-3}}, color={0,127,255}));
+  connect(e003.port_a2, p04.port_b) annotation (Line(points={{-75.2,-2},{-82,-2},
+          {-82,-3}}, color={0,127,255}));
+  connect(t15.port_b, p13.port_a)
+    annotation (Line(points={{-50,-6},{-46,-6}},          color={0,127,255}));
+  connect(t8.T, dataBus.T8) annotation (Line(
+      points={{-104,2.4},{-150,2.4},{-150,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t9.T, dataBus.T9) annotation (Line(
+      points={{-104,-13.6},{-154,-13.6},{-154,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t15.T, dataBus.T15) annotation (Line(
+      points={{-54,-1.6},{-126,-1.6},{-126,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t16.T, dataBus.T16) annotation (Line(
+      points={{-54,-17.6},{-128,-17.6},{-128,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t14.T, dataBus.T14) annotation (Line(
+      points={{-57,16.5},{-126.5,16.5},{-126.5,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t19.T, dataBus.T19) annotation (Line(
+      points={{-37,74.5},{-120.5,74.5},{-120.5,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(p13.port_b, portCooCoi_a) annotation (Line(points={{-34,-6},{-8,-6},{
+          20,-6},{20,100}}, color={0,127,255}));
+  connect(t16.port_a, portCooCoi_b) annotation (Line(points={{-50,-22},{-34,-22},
+          {-20,-22},{-20,100}}, color={0,127,255}));
+  connect(e005.port_a2,p09. port_b)
+    annotation (Line(points={{66,62.8},{66,64},{70,64}},  color={0,127,255}));
+  connect(t29.port_b,e005. port_a1) annotation (Line(points={{43,52},{44,52},{
+          44,53.2},{50,53.2}},color={0,127,255}));
+  connect(p08.port_b,t29. port_a)
+    annotation (Line(points={{44,30},{44,40},{43,40}},    color={0,127,255}));
+  connect(e005.port_b1,t30. port_a) annotation (Line(points={{66,53.2},{70,53.2},
+          {70,50},{73,50}},   color={0,127,255}));
+  connect(p08.port_a, supplyCollector.ports[3]) annotation (Line(points={{44,16},
+          {74,16},{102,16},{102,12},{111.944,12}}, color={0,127,255}));
+  connect(t30.port_b, returnCollector.ports[3]) annotation (Line(points={{73,40},
+          {90,40},{90,-28},{111.944,-28}}, color={0,127,255}));
+  connect(t29.T, dataBus.T29) annotation (Line(
+      points={{37.5,46},{-79.25,46},{-79.25,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(t30.T, dataBus.T30) annotation (Line(
+      points={{67.5,45},{-63.25,45},{-63.25,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(signalBus.P13_mod, p13.m_flow_in) annotation (Line(
+      points={{-198,-20},{-120,-20},{-120,1.2},{-40,1.2}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(signalBus.P09_mod, p09.m_flow_in) annotation (Line(
+      points={{-198,-20},{-60,-20},{-60,71},{79.6,71}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(signalBus.P08_mod, p08.m_flow_in) annotation (Line(
+      points={{-198,-20},{-82,-20},{-82,23},{34.4,23}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(e005.port_b2, portHeaCoi_a1) annotation (Line(points={{50,62.8},{38,
+          62.8},{38,88},{-100,88},{-100,100}}, color={0,127,255}));
+  connect(p09.port_a, portHeaCoi_b1) annotation (Line(points={{70,78},{72,78},{
+          72,92},{-60,92},{-60,100}}, color={0,127,255}));
+  connect(supplyCollector.ports[4], portVAVCoi_a) annotation (Line(points={{115.833,
+          12},{115.833,12},{180,12},{180,100}},         color={0,127,255}));
+  connect(portVAVCoi_b, returnCollector.ports[4]) annotation (Line(points={{140,100},
+          {140,100},{140,-28},{115.833,-28}},      color={0,127,255}));
+  connect(p04.m_flow_actual, dataBus.p04_m_flow) annotation (Line(
+      points={{-81.3,0.5},{-138.65,0.5},{-138.65,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(p13.m_flow_actual, dataBus.p13_m_flow) annotation (Line(
+      points={{-33.4,-3},{-117.7,-3},{-117.7,20.1},{-199.9,20.1}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(signalBus.P04_mod, p04.m_flow_in) annotation (Line(
+      points={{-198,-20},{-198,5.4},{-89,5.4}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+ annotation (Line(points={{-4,3},{-4,8},{14,8},
+          {14,-68},{-130,-68},{-130,-45},{-122,-45}}, color={0,0,127}),
+             Line(points={{-70,-47},{-38,-47},
+          {-38,3},{-4,3}}, color={0,0,127}),
+            Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+            {200,100}}), graphics={
+        Rectangle(
+          extent={{-202,100},{198,-100}},
+          fillColor={215,215,215},
+          fillPattern=FillPattern.Solid,
+          lineColor={191,0,0}),
+        Line(
+          points={{50,-20},{30,0}},
+          color={0,0,127}),
+        Line(
+          points={{30,0},{0,-30}},
+          color={0,0,127},
+          pattern=LinePattern.Dash),
+        Line(
+          points={{30,0},{-8,0}},
+          color={191,0,0},
+          thickness=0.5),
+        Line(
+          points={{-28,-20},{-128,-20}},
+          color={191,0,0},
+          thickness=0.5),
+        Line(
+          points={{-28,20},{-128,20}},
+          color={191,0,0},
+          thickness=0.5),
+        Line(
+          points={{-8,0},{-28,-20}},
+          color={191,0,0},
+          thickness=0.5),
+        Line(
+          points={{-8,0},{-28,20}},
+          color={191,0,0},
+          thickness=0.5),
+        Polygon(
+          points={{-128,0},{-128,40},{-158,20},{-128,0}},
+          lineColor={191,0,0},
+          fillColor={191,0,0},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{-128,-40},{-128,0},{-158,-20},{-128,-40}},
+          lineColor={191,0,0},
+          fillColor={191,0,0},
+          fillPattern=FillPattern.Solid),
+        Rectangle(
+          extent={{-158,40},{-178,-40}},
+          lineColor={191,0,0},
+          fillColor={191,0,0},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{200,0},{30,0}},
+          color={85,170,255},
+          smooth=Smooth.None),
+        Line(points={{30,70},{30,40}}),
+        Line(points={{52.9,32.8},{70.2,57.3}}),
+        Line(points={{7.1,32.8},{-10.2,57.3}}),
+        Line(points={{67.6,13.7},{95.8,23.9}}),
+        Ellipse(
+          lineColor={64,64,64},
+          fillColor={215,215,215},
+          extent={{18,-12},{42,12}},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          origin={30,0},
+          rotation=-17.5,
+          fillColor={64,64,64},
+          pattern=LinePattern.None,
+          fillPattern=FillPattern.Solid,
+          points={{-5.0,0.0},{-2.0,60.0},{0.0,65.0},{2.0,60.0},{5.0,0.0}}),
+        Ellipse(
+          fillColor={64,64,64},
+          pattern=LinePattern.None,
+          fillPattern=FillPattern.Solid,
+          extent={{23,-7},{37,7}}),
+        Line(
+          points={{60,-30},{50,-20}},
+          color={0,0,127},
+          pattern=LinePattern.Dash),
+        Line(
+          points={{0,-100},{0,-30}},
+          color={0,0,127},
+          smooth=Smooth.None,
+          pattern=LinePattern.Dash),
+        Line(
+          points={{60,-100},{60,-30}},
+          color={0,0,127},
+          smooth=Smooth.None,
+          pattern=LinePattern.Dash)}),                         Diagram(
+      coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{200,100}})));
+end HeatingSystem_onlyVent;

@@ -1,0 +1,797 @@
+within INFRAX.SubSystems.VentilationSystem;
+model VentilationSystemNonGEOTABS_noFCU
+  "detailed ventilation system for testing"
+
+parameter Modelica.SIunits.MassFlowRate mWatAHUHeaCoi_nominal = 1.8/3600*MediumWater.d_const;
+parameter Modelica.SIunits.MassFlowRate mWatAHUCooCoi_nominal = 4.3/3600*MediumWater.d_const;
+
+  IDEAS.Fluid.Sources.OutsideAir  outsideAir(
+    nPorts=2,
+    redeclare package Medium = MediumAir)
+              "ambient boundary"
+    annotation (Placement(transformation(extent={{-160,-20},{-140,0}})));
+  inner IDEAS.BoundaryConditions.SimInfoManager sim
+    annotation (Placement(transformation(extent={{-200,80},{-180,100}})));
+  INFRAX.Data.Parameters.Hydronic hydronic
+    annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
+
+  final parameter Real s_co2[max(MediumAir.nC,1)] = {if Modelica.Utilities.Strings.isEqual(string1=if MediumAir.nC>0 then MediumAir.extraPropertiesNames[i] else "",
+                                             string2="CO2",
+                                             caseSensitive=false)
+                                             then 1 else 0 for i in 1:max(MediumAir.nC,1)};
+
+  replaceable IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent
+                                                            [7] dp_ducts_supply(
+    redeclare package Medium = MediumAir,
+    allowFlowReversal=false,
+    show_T=true,
+    use_inputFilter=false,
+    from_dp=true,
+    m_flow_nominal=air.m_nominal_supply_duct,
+    dpValve_nominal=50,
+    dpFixed_nominal=100) constrainedby
+    IDEAS.Fluid.Interfaces.PartialTwoPortInterface                              "pressure drops in supply ducts"
+    annotation (Placement(transformation(extent={{32,-56},{52,-36}})));
+  replaceable IDEAS.Fluid.Movers.FlowControlled_dp            supplyFan(
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        addPowerToMedium=false,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=10000*1.225/3600,
+        dp_nominal(displayUnit="Pa") = 180,
+    redeclare Data.Parameters.INFRAX_AHU_FanSupply per,
+        dp_start=180,
+        redeclare package Medium = MediumAir)
+    constrainedby IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations
+    "supply fan of the air handling unit"
+    annotation (Placement(transformation(extent={{-36,-56},{-16,-36}})));
+  replaceable IDEAS.Fluid.Movers.FlowControlled_dp            exhaustFan(        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        addPowerToMedium=false,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        m_flow_nominal=8850*1.225/3600,
+        redeclare INFRAX.Data.Parameters.INFRAX_AHU_Fans per,
+        dp_nominal=150,
+        dp_start=150,
+        redeclare package Medium = MediumAir)
+    constrainedby IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations
+    "supply fan of the air handling unit"
+    annotation (Placement(transformation(extent={{-44,8},{-64,28}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort tAHUSupply(
+    m_flow_nominal=10000*1.225/3600,
+    allowFlowReversal=false,
+    redeclare package Medium = MediumAir,
+    tau = 0)        annotation (Placement(transformation(
+        extent={{-6,-6},{6,6}},
+        rotation=0,
+        origin={6,-46})));
+  INFRAX.Data.Parameters.Air air
+    annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+  replaceable IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent
+                                                            [15] vav_supply(
+    redeclare package Medium = MediumAir,
+    allowFlowReversal=false,
+    use_inputFilter=false,
+    from_dp=true,
+    m_flow_nominal=air.m_nominal_supply_vav,
+    dpValve_nominal=60,
+    dpFixed_nominal=100) constrainedby
+    IDEAS.Fluid.Interfaces.PartialTwoPortInterface
+    "vav supply ducts" annotation (Placement(transformation(
+        extent={{-8.5,-8.5},{8.5,8.5}},
+        rotation=0,
+        origin={42.5,-79.5})));
+  replaceable IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent
+                                                            [10] dp_ducts_extract(
+    redeclare package Medium = MediumAir,
+    allowFlowReversal=false,
+    use_inputFilter=false,
+    from_dp=true,
+    m_flow_nominal=air.m_nominal_extract_duct,
+    dpValve_nominal=50) constrainedby
+    IDEAS.Fluid.Interfaces.PartialTwoPortInterface
+   "pressure drops in extract ducts"
+    annotation (Placement(transformation(extent={{32,10},{12,30}})));
+  replaceable IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent
+                                                            [14] vav_extract(
+    redeclare package Medium = MediumAir,
+    allowFlowReversal=false,
+    use_inputFilter=false,
+    from_dp=true,
+    dpValve_nominal=150,
+    m_flow_nominal=air.m_nominal_extract_vav) constrainedby
+    IDEAS.Fluid.Interfaces.PartialTwoPortInterface
+    "vav supply ducts" annotation (Placement(transformation(
+        extent={{8.5,-8.5},{-8.5,8.5}},
+        rotation=0,
+        origin={20.5,56.5})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort tAHUExtract(
+    m_flow_nominal=8850*1.225/3600,
+    allowFlowReversal=false,
+    redeclare package Medium = MediumAir,
+    tau=0)         annotation (Placement(transformation(
+        extent={{6,-6},{-6,6}},
+        rotation=0,
+        origin={-28,20})));
+  replaceable Components.AHU_nonGEOTABS
+                             aHU(
+    allowFlowReversal1=false,
+    allowFlowReversal2=false,
+    tau=600,
+    tauAir=60,
+    tauSensor=100,
+    dpAirCooCoi_nominal=0,
+    dpAirHeaCoi_nominal=0,
+    redeclare package MediumCooCoi = MediumWater,
+    QHeaCoi_nominal=40170,
+    QCooCoi_nominal=-24900,
+    epsRecovery=(0.745 + 0.789)/2,
+    dpWatCooCoi_nominal(displayUnit="kPa") = 0,
+    dpWatHeaCoi_nominal(displayUnit="kPa") = 0,
+    mFlowWatHeaCoi_nominal=mWatAHUHeaCoi_nominal,
+    mFlowWatCooCoi_nominal=mWatAHUCooCoi_nominal,
+    redeclare package MediumHeaCoi = MediumWater,
+    TCooCoiWatSup_nominal=280.15,
+    TCooCoiWatRet_nominal=285.15,
+    TCooCoiAirSup_nominal=299.95,
+    TCooCoiAirRet_nominal=293.15,
+    THeaCoiWatSup_nominal=333.15,
+    THeaCoiWatRet_nominal=313.15,
+    THeaCoiAirSup_nominal=286.35,
+    THeaCoiAirRet_nominal=294.15)
+  constrainedby
+    INFRAX.SubSystems.VentilationSystem.Components.Dependencies.PartialAHU(
+    mFlowAirSup_nominal=10000*1.225/3600,
+    mFlowAirRet_nominal=8850*1.225/3600,
+    mFlowWatHeaCoi_nominal=hydronic.p09_m_flow,
+    mFlowWatCooCoi_nominal=hydronic.p13_m_flow,
+    QHeaCoi_nominal=34000,
+    QCooCoi_nominal=-59300,
+    dpAirRetTW_nominal=0,
+    dpWatCooCoi_nominal(displayUnit="kPa") = 27100,
+    dpAirCooCoi_nominal=0,
+    dpWatHeaCoi_nominal(displayUnit="kPa") = 31600,
+    dpAirHeaCoi_nominal=0,
+    dpAirSupTW_nominal=0,
+    tauWater=600,
+    redeclare package MediumAir = MediumAir,
+    redeclare package MediumCooCoi = MediumWater,
+    TCooCoiWatSup_nominal=285.15,
+    TCooCoiWatRet_nominal=288.15,
+    TCooCoiAirSup_nominal=299.65,
+    TCooCoiAirRet_nominal=287.35,
+    THeaCoiWatSup_nominal=305.15,
+    THeaCoiWatRet_nominal=301.15,
+    THeaCoiAirSup_nominal=265.15,
+    THeaCoiAirRet_nominal=274.85)
+    annotation (Placement(transformation(extent={{-84,-24},{-122,14}})));
+    //epsRecovery=(0.693 + 0.716)/2,
+    //redeclare package MediumHeaCoi = MediumGlycol,
+  replaceable IDEAS.Fluid.Movers.FlowControlled_dp            pump9(
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=mWatAHUHeaCoi_nominal,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine32slash160dash1comma1slash2
+          per,
+        inputType=IDEAS.Fluid.Types.InputType.Stages,
+        redeclare package Medium = MediumWater,
+    each dp_nominal(displayUnit="kPa") = 5000)  constrainedby
+    IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations
+                    "HeaCoi pump" annotation (Placement(transformation(
+        extent={{-6.5,-7.5},{6.5,7.5}},
+        rotation=0,
+        origin={-158.5,-60.5})));
+        //tau=30,
+  IDEAS.Fluid.Actuators.Valves.ThreeWayEqualPercentageLinear TWV_AHU_CooCoi(
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    use_inputFilter=false,
+    redeclare package Medium = MediumWater,
+    m_flow_nominal=mWatAHUCooCoi_nominal,
+    CvData=IDEAS.Fluid.Types.CvTypes.OpPoint,
+    dpValve_nominal(displayUnit="kPa") = 29300)
+                                        "3way valve of cooling coiil of ahu"
+                                               annotation (Placement(
+        transformation(
+        extent={{6,-6},{-6,6}},
+        rotation=90,
+        origin={-96,-40})));
+  IDEAS.Fluid.Actuators.Valves.ThreeWayEqualPercentageLinear TWV_AHU_HeaCoi(
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    use_inputFilter=false,
+    m_flow_nominal=mWatAHUHeaCoi_nominal,
+    redeclare package Medium = MediumWater,
+    CvData=IDEAS.Fluid.Types.CvTypes.OpPoint,
+    dpValve_nominal(displayUnit="kPa") = 4800)
+             "3way valve of heating coiil of ahu" annotation (Placement(
+        transformation(
+        extent={{6,-6},{-6,6}},
+        rotation=0,
+        origin={-132,-40})));
+  Modelica.Fluid.Interfaces.FluidPort_b AHUHeaCoi_b(redeclare package Medium =
+        MediumWater)       "return from AHU heating coil"
+    annotation (Placement(transformation(extent={{-210,-50},{-190,-30}})));
+  Modelica.Fluid.Interfaces.FluidPort_a AHUHeaCoi_a(redeclare package Medium =
+        MediumWater)       "supply to AHU heating coil"
+    annotation (Placement(transformation(extent={{-210,-70},{-190,-50}})));
+  Modelica.Fluid.Interfaces.FluidPort_b AHUCooCoi_b(redeclare package Medium =
+        IDEAS.Media.Water) "return from AHU cooling coil"
+    annotation (Placement(transformation(extent={{-210,-86},{-190,-66}})));
+  Modelica.Fluid.Interfaces.FluidPort_a AHUCooCoi_a(redeclare package Medium =
+        IDEAS.Media.Water) "supply to AHU cooling coil"
+    annotation (Placement(transformation(extent={{-210,-106},{-190,-86}})));
+  Controllers.SignalBus signalBus annotation (Placement(transformation(extent={{-214,20},
+            {-186,48}}),           iconTransformation(extent={{-210,-30},{-190,-10}})));
+  Controllers.DataBus dataBus annotation (Placement(transformation(extent={{-214,44},
+            {-184,72}}),    iconTransformation(extent={{-210,4},{-190,24}})));
+  IDEAS.Fluid.Sensors.TemperatureTwoPort[21] tAirSupply(
+    m_flow_nominal=10000*1.225/3600,
+    allowFlowReversal=false,
+    redeclare package Medium = MediumAir,
+    tau=0) annotation (Placement(transformation(
+        extent={{-6,-6},{6,6}},
+        rotation=0,
+        origin={108,10})));
+  Modelica.Fluid.Interfaces.FluidPort_b[21] airSupply(redeclare package Medium
+      = MediumAir) "air supply"
+    annotation (Placement(transformation(extent={{146,90},{166,110}})));
+  Modelica.Fluid.Interfaces.FluidPort_a[21] airReturn(redeclare package Medium
+      = MediumAir) "air return"
+    annotation (Placement(transformation(extent={{106,90},{126,110}})));
+  replaceable package MediumWater = IDEAS.Media.Water constrainedby
+    Modelica.Media.Interfaces.PartialMedium;
+//   replaceable package MediumGlycol =
+  //     IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
+    //       property_T=273.15,
+     //      X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
+//     replaceable package MediumGlycol = IDEAS.Media.Water;
+  replaceable package MediumAir = IDEAS.Media.Air(extraPropertiesNames={"CO2"}) constrainedby
+    Modelica.Media.Interfaces.PartialMedium;
+  Modelica.Blocks.Sources.RealExpression supplyVAV[15](y={air.m_nominal_supply_vav_min[
+        i]/air.m_nominal_supply_vav[i] + (1 - air.m_nominal_supply_vav_min[i]/
+        air.m_nominal_supply_vav[i])*dummy_vav[i].y for i in 1:15})
+    annotation (Placement(transformation(extent={{-40,-92},{-12,-72}})));
+  Modelica.Blocks.Sources.Constant supplyCAV[7](k=1)
+    annotation (Placement(transformation(extent={{12,-16},{22,-6}})));
+  Modelica.Blocks.Sources.Constant extractCAV[10](k=1)
+    annotation (Placement(transformation(extent={{-20,64},{-8,76}})));
+  Modelica.Blocks.Sources.RealExpression extractVAV[14](y={air.m_nominal_extract_vav_min[
+        i]/air.m_nominal_extract_vav[i] + (1 - air.m_nominal_extract_vav_min[i]
+        /air.m_nominal_extract_vav[i])*dummy_vav_extract[i].y for i in
+            1:14})
+    annotation (Placement(transformation(extent={{2,80},{30,100}})));
+  Data.Parameters.NonGEOTABS nonGEOTABS
+    annotation (Placement(transformation(extent={{-66,80},{-46,100}})));
+  Air.Comfort.Limits temLim(typeLimit=2, nZones=1,
+    maxOT=20 + 273.15)
+    "Model that computes the building limits and calculates the discomfort"
+    annotation (Placement(transformation(extent={{82,66},{102,88}})));
+  Modelica.Blocks.Sources.RealExpression dummyZone(y=temLim.Tavg)
+    annotation (Placement(transformation(extent={{52,66},{72,86}})));
+  Controllers.Components.Clock
+                             clock
+    annotation (Placement(transformation(extent={{-160,40},{-140,60}})));
+//  Modelica.Blocks.Sources.IntegerExpression fcuHeaDemand(y=if sum1.y > 0 then 1 else 0)
+//                 "FCU heating demand"
+  Modelica.Blocks.Interfaces.RealOutput fcuCooDem annotation (Placement(
+        transformation(
+        extent={{10,-10},{-10,10}},
+        rotation=90,
+        origin={70,-110})));
+  Controllers.EnergyKPIBus energyKPIBus annotation (Placement(transformation(
+          extent={{222,-32},{262,8}}), iconTransformation(extent={{-546,-80},{
+            -526,-60}})));
+  Modelica.Blocks.Continuous.Integrator p6kWh(k=1/3600)
+    annotation (Placement(transformation(extent={{204,-82},{214,-72}})));
+  Modelica.Blocks.Math.Gain p6kW(k=1/1000)
+    annotation (Placement(transformation(extent={{186,-82},{196,-72}})));
+  Modelica.Blocks.Continuous.Integrator p9kWh(k=1/3600)
+    annotation (Placement(transformation(extent={{-84,-90},{-74,-80}})));
+  Modelica.Blocks.Math.Gain p9kW(k=1/1000)
+    annotation (Placement(transformation(extent={{-102,-90},{-92,-80}})));
+  Modelica.Blocks.Continuous.Integrator supplyFankWh(k=1/3600)
+    annotation (Placement(transformation(extent={{70,44},{80,54}})));
+  Modelica.Blocks.Math.Gain supplyFankW(k=1/1000)
+    annotation (Placement(transformation(extent={{52,44},{62,54}})));
+  Modelica.Blocks.Continuous.Integrator exhaustFankWh(k=1/3600)
+    annotation (Placement(transformation(extent={{-54,64},{-44,74}})));
+  Modelica.Blocks.Math.Gain exhaustFankW(k=1/1000)
+    annotation (Placement(transformation(extent={{-72,64},{-62,74}})));
+  Modelica.Blocks.Continuous.Integrator FCUQHeakWh[22](k=1/3600)
+    annotation (Placement(transformation(extent={{178,24},{188,34}})));
+  Modelica.Blocks.Math.Gain FCUQHeakW[22](k=1/1000)
+    annotation (Placement(transformation(extent={{160,24},{170,34}})));
+  Modelica.Blocks.Math.Gain FCUQCookW[22](k=1/1000)
+    annotation (Placement(transformation(extent={{160,6},{170,16}})));
+  Modelica.Blocks.Continuous.Integrator FCUQCookWh[22](k=1/3600)
+    annotation (Placement(transformation(extent={{178,6},{188,16}})));
+  Modelica.Blocks.Math.Gain FCUkW[22](k=1/1000)
+    annotation (Placement(transformation(extent={{160,40},{170,50}})));
+  Modelica.Blocks.Continuous.Integrator FCUkWh[22](k=1/3600)
+    annotation (Placement(transformation(extent={{178,40},{188,50}})));
+  IDEAS.Fluid.FixedResistances.Junction jun2(
+    portFlowDirection_1=Modelica.Fluid.Types.PortFlowDirection.Entering,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    portFlowDirection_2=Modelica.Fluid.Types.PortFlowDirection.Leaving,
+    m_flow_nominal={1,1,1},
+    dp_nominal={0,0,0},
+    portFlowDirection_3=Modelica.Fluid.Types.PortFlowDirection.Leaving,
+    redeclare package Medium = MediumWater)
+    annotation (Placement(transformation(
+        extent={{7,-7},{-7,7}},
+        rotation=180,
+        origin={-131,-63})));
+  IDEAS.Fluid.FixedResistances.Junction jun1(
+    portFlowDirection_1=Modelica.Fluid.Types.PortFlowDirection.Entering,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    portFlowDirection_2=Modelica.Fluid.Types.PortFlowDirection.Leaving,
+    m_flow_nominal={1,1,1},
+    dp_nominal={0,0,0},
+    portFlowDirection_3=Modelica.Fluid.Types.PortFlowDirection.Leaving,
+    redeclare package Medium = MediumWater)
+    annotation (Placement(transformation(
+        extent={{6,-6},{-6,6}},
+        rotation=-90,
+        origin={-80,-40})));
+  Modelica.Blocks.Routing.RealPassThrough dummy_vav[15]
+    annotation (Placement(transformation(extent={{-248,32},{-228,52}})));
+  Modelica.Blocks.Routing.RealPassThrough dummy_vav_extract[15]
+    annotation (Placement(transformation(extent={{-248,4},{-228,24}})));
+  Modelica.Blocks.Sources.RealExpression dummy[22](y=1) "FCU heating demand"
+    annotation (Placement(transformation(extent={{98,30},{120,50}})));
+  Modelica.Blocks.Sources.RealExpression dummy1(y=1) "FCU heating demand"
+    annotation (Placement(transformation(extent={{136,-34},{114,-14}})));
+  //Integer p6_signal = 1;
+equation
+
+  connect(supplyFan.port_b, tAHUSupply.port_a)
+    annotation (Line(points={{-16,-46},{-16,-46},{0,-46}}, color={0,127,255}));
+  for i in 1:7 loop
+    connect(tAHUSupply.port_b, dp_ducts_supply[i].port_a)
+    annotation (Line(points={{12,-46},{32,-46}}, color={0,127,255}));
+  end for;
+  for i in 1:15 loop
+    connect(tAHUSupply.port_b, vav_supply[i].port_a) annotation (Line(points={{12,
+          -46},{12,-79.5},{34,-79.5}}, color={0,127,255}));
+  end for;
+  //flr3
+  connect(vav_supply[1].port_b, tAirSupply[1].port_a) annotation (Line(
+        points={{51,-79.5},{60,-79.5},{60,-80},{68,-80},{68,10},{102,10}},
+                                                                  color={0,127,
+          255}));
+  connect(vav_supply[2].port_b, tAirSupply[2].port_a);
+  connect(dp_ducts_supply[1].port_b, tAirSupply[4].port_a) annotation (
+      Line(points={{52,-46},{68,-46},{68,10},{102,10}},     color={0,127,255}));
+                                                                        //MT
+  connect(vav_supply[3].port_b, tAirSupply[3].port_a); // SmaR
+  //flr2
+  connect(vav_supply[4].port_b, tAirSupply[5].port_a);
+  connect(vav_supply[5].port_b, tAirSupply[6].port_a);
+  connect(vav_supply[6].port_b, tAirSupply[7].port_a);
+  connect(vav_supply[7].port_b, tAirSupply[8].port_a);
+  //flr1
+  connect(vav_supply[8].port_b, tAirSupply[9].port_a);
+  connect(vav_supply[9].port_b, tAirSupply[10].port_a);
+  connect(vav_supply[10].port_b, tAirSupply[11].port_a);
+  connect(vav_supply[11].port_b, tAirSupply[12].port_a);
+  connect(vav_supply[12].port_b, tAirSupply[13].port_a);
+  //flr0
+  connect(dp_ducts_supply[5].port_b, tAirSupply[14].port_a);
+  connect(dp_ducts_supply[3].port_b, tAirSupply[15].port_a);
+  connect(vav_supply[13].port_b, tAirSupply[16].port_a);
+  connect(vav_supply[14].port_b, tAirSupply[17].port_a);
+  connect(vav_supply[15].port_b, tAirSupply[18].port_a);
+  connect(dp_ducts_supply[4].port_b, tAirSupply[19].port_a);
+  connect(dp_ducts_supply[6].port_b, tAirSupply[20].port_a);
+  connect(dp_ducts_supply[7].port_b, tAirSupply[21].port_a);
+
+  for i in 1:21 loop
+  end for;
+
+  connect(tAHUExtract.port_b, exhaustFan.port_a)
+    annotation (Line(points={{-34,20},{-40,20},{-40,18},{-44,18}},
+                                                          color={0,127,255}));
+
+  //Extraction
+  connect(tAHUExtract.port_a, dp_ducts_extract[1].port_b)
+    annotation (Line(points={{-22,20},{-14,20},{12,20}},  color={0,127,255}));
+  connect(tAHUExtract.port_a, dp_ducts_extract[2].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[3].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[4].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[5].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[6].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[7].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[8].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[9].port_b);
+  connect(tAHUExtract.port_a, dp_ducts_extract[10].port_b);
+  connect(vav_extract[1].port_b, tAHUExtract.port_a) annotation (Line(points={{12,56.5},
+          {-10,56.5},{-10,20},{-22,20}},       color={0,127,255}));
+  connect(vav_extract[2].port_b, tAHUExtract.port_a);
+  connect(vav_extract[3].port_b, tAHUExtract.port_a);
+  connect(vav_extract[4].port_b, tAHUExtract.port_a);
+  connect(vav_extract[5].port_b, tAHUExtract.port_a);
+  connect(vav_extract[6].port_b, tAHUExtract.port_a);
+  connect(vav_extract[7].port_b, tAHUExtract.port_a);
+  connect(vav_extract[8].port_b, tAHUExtract.port_a);
+  connect(vav_extract[9].port_b, tAHUExtract.port_a);
+  connect(vav_extract[10].port_b, tAHUExtract.port_a);
+  connect(vav_extract[11].port_b, tAHUExtract.port_a);
+  connect(vav_extract[12].port_b, tAHUExtract.port_a);
+  connect(vav_extract[13].port_b, tAHUExtract.port_a);
+  connect(vav_extract[14].port_b, tAHUExtract.port_a);
+  connect(tAHUSupply.T, aHU.TSupply) annotation (Line(points={{6,-39.4},{6,58},
+          {-114,58},{-114,14},{-113.64,14},{-113.64,12.1}},color={0,0,127},
+      visible=false));
+  connect(exhaustFan.port_b, aHU.port_a1) annotation (Line(points={{-64,18},{
+          -74,18},{-74,6.4},{-84,6.4}},
+                                    color={0,127,255}));
+  connect(aHU.port_b1, outsideAir.ports[1]) annotation (Line(points={{-122,6.4},
+          {-140,6.4},{-140,-8}}, color={0,127,255}));
+  connect(outsideAir.ports[2], aHU.port_a2) annotation (Line(points={{-140,-12},
+          {-140,-16.4},{-122,-16.4}}, color={0,127,255}));
+  connect(aHU.port_b2, supplyFan.port_a) annotation (Line(points={{-84,-16.4},{
+          -74,-16.4},{-74,-46},{-36,-46}},
+                                       color={0,127,255}));
+
+  connect(tAHUSupply.T, dataBus.TAirSupplyAHU) annotation (Line(points={{6,
+          -39.4},{6,-39.4},{6,58},{6,58.07},{-198.925,58.07}}, color={0,0,127},
+      visible=false),
+      Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+
+  connect(pump9.stage, signalBus.P09_signal) annotation (Line(
+      points={{-158.5,-51.5},{-158.5,34},{-200,34}},
+      color={255,127,0},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(TWV_AHU_HeaCoi.y, signalBus.HeaCoi_3way_signal) annotation (Line(
+        points={{-132,-32.8},{-132,34},{-200,34}},
+        color={0,0,127},
+      visible=false),     Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(tAHUExtract.T, dataBus.TAirExtractAHU) annotation (Line(points={{-28,
+          26.6},{-28,58.07},{-198.925,58.07}}, color={0,0,127},
+      visible=false),                                            Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(tAirSupply.T, dataBus.TAirSupplyVAV) annotation (Line(points={{108,
+          16.6},{108,58},{-20,58},{-20,58.07},{-198.925,58.07}},
+                                                           color={0,0,127},
+      visible=false),
+      Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+
+  connect(TWV_AHU_CooCoi.y, signalBus.CooCoi_3way_signal) annotation (Line(
+        points={{-103.2,-40},{-146,-40},{-146,-42},{-200,-42},{-200,34}},
+        color={0,0,127},
+      visible=false),     Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+
+  //flr3
+  connect(tAirSupply[1].port_b, airSupply[1]) annotation (Line(points={{114,10},
+          {156,10},{156,90.4762}},                 color={0,127,255}));
+  connect(tAirSupply[2].port_b, airSupply[2]);
+  connect(tAirSupply[3].port_b, airSupply[3]);
+  connect(tAirSupply[4].port_b, airSupply[4]);
+  //flr2
+  connect(tAirSupply[5].port_b, airSupply[5]);
+  connect(tAirSupply[6].port_b, airSupply[6]);
+  connect(tAirSupply[7].port_b, airSupply[7]);
+  connect(tAirSupply[8].port_b, airSupply[8]);
+  //flr1
+  connect(tAirSupply[9].port_b, airSupply[9]);
+  connect(tAirSupply[10].port_b, airSupply[10]);
+  connect(tAirSupply[11].port_b, airSupply[11]);
+  connect(tAirSupply[12].port_b, airSupply[12]);
+  connect(tAirSupply[13].port_b, airSupply[13]);
+  //flr0                                                                             //server room
+  connect(tAirSupply[14].port_b, airSupply[19]); //balie
+  connect(tAirSupply[15].port_b, airSupply[15]); //ehbo
+  connect(tAirSupply[16].port_b, airSupply[16]); //refter vav
+  connect(tAirSupply[17].port_b, airSupply[17]); // meeting1 vav
+  connect(tAirSupply[18].port_b, airSupply[18]); // meeting2 vav
+  connect(tAirSupply[19].port_b, airSupply[19]); //sas
+  connect(tAirSupply[20].port_b, airSupply[20]);
+  connect(tAirSupply[21].port_b, airSupply[21]);
+
+  //flr3
+  connect(airReturn[1], vav_extract[1].port_a) annotation (Line(points={{116,
+          90.4762},{116,56},{29,56},{29,56.5}},      color={0,127,255}));
+  connect(airReturn[2], vav_extract[2].port_a);
+  connect(airReturn[3], vav_extract[3].port_a);
+  //flr2
+  connect(airReturn[5], vav_extract[4].port_a);
+  connect(airReturn[6], vav_extract[5].port_a);
+  connect(airReturn[7], vav_extract[6].port_a);
+  connect(airReturn[8], vav_extract[7].port_a);
+  //flr1
+  connect(airReturn[9], vav_extract[8].port_a);
+  connect(airReturn[11], vav_extract[9].port_a);
+  connect(airReturn[12], vav_extract[10].port_a);
+  connect(airReturn[13], vav_extract[11].port_a);
+  //flr0
+  connect(airReturn[16], vav_extract[12].port_a);
+  connect(airReturn[17], vav_extract[13].port_a);
+  connect(airReturn[18], vav_extract[14].port_a);
+
+  connect(airReturn[3], dp_ducts_extract[1].port_a) annotation (Line(points={{116,
+          92.381},{116,92.381},{116,56},{40,56},{40,20},{32,20}},
+        color={0,127,255}));
+  connect(airReturn[2], dp_ducts_extract[2].port_a);
+  connect(airReturn[4], dp_ducts_extract[3].port_a);
+  connect(airReturn[14], dp_ducts_extract[4].port_a);
+  connect(airReturn[15], dp_ducts_extract[5].port_a);
+  connect(airReturn[10], dp_ducts_extract[6].port_a); //storage room
+  connect(airReturn[19], dp_ducts_extract[7].port_a);
+  connect(airReturn[19], dp_ducts_extract[8].port_a);
+  connect(airReturn[20], dp_ducts_extract[9].port_a);
+  connect(airReturn[21], dp_ducts_extract[10].port_a);
+
+  connect(exhaustFan.dp_in, signalBus.AHUextract) annotation (Line(
+      points={{-54,30},{-54,34},{-200,34}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(supplyFan.dp_in, signalBus.AHUsupply) annotation (Line(
+      points={{-26,-34},{-26,-34},{-26,34},{-200,34}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  if MediumAir.nXi>0 then
+  end if;
+  connect(signalBus, aHU.signalBus) annotation (Line(
+      points={{-200,34},{-134,34},{-134,-8.8},{-65,-8.8}},
+      color={255,204,51},
+      thickness=0.5));
+  if MediumAir.nC>0 then
+  end if;
+  connect(supplyVAV.y, vav_supply.y) annotation (Line(points={{-10.6,-82},{2,
+          -82},{2,-69.3},{42.5,-69.3}}, color={0,0,127}));
+  connect(supplyCAV.y, dp_ducts_supply.y)
+    annotation (Line(points={{22.5,-11},{42,-11},{42,-34}}, color={0,0,127}));
+  connect(extractCAV.y, dp_ducts_extract.y) annotation (Line(points={{-7.4,70},{
+          0,70},{0,36},{22,36},{22,32}},  color={0,0,127}));
+  connect(extractVAV.y, vav_extract.y) annotation (Line(points={{31.4,90},{44,
+          90},{44,74},{20.5,74},{20.5,66.7}}, color={0,0,127}));
+  connect(dummyZone.y, temLim.TSensor[1]) annotation (Line(points={{73,76},{76,
+          76},{76,76.1538},{80.3333,76.1538}},
+                                           color={0,0,127}));
+  for i in 1:22 loop
+  end for;
+
+  connect(p6kW.y, p6kWh.u)
+    annotation (Line(points={{196.5,-77},{203,-77}}, color={0,0,127}));
+  connect(p9kW.y, p9kWh.u)
+    annotation (Line(points={{-91.5,-85},{-85,-85}}, color={0,0,127}));
+  connect(p9kW.u, pump9.P) annotation (Line(points={{-103,-85},{-146,-85},{-146,
+          -53.75},{-151.35,-53.75}}, color={0,0,127}));
+  connect(supplyFankW.y, supplyFankWh.u)
+    annotation (Line(points={{62.5,49},{69,49}}, color={0,0,127}));
+  connect(supplyFan.P, supplyFankW.u) annotation (Line(points={{-15,-37},{6,-37},
+          {6,-38},{26,-38},{26,0},{51,0},{51,49}}, color={0,0,127}));
+  connect(exhaustFankW.y, exhaustFankWh.u)
+    annotation (Line(points={{-61.5,69},{-55,69}}, color={0,0,127}));
+  connect(exhaustFan.P, exhaustFankW.u) annotation (Line(points={{-65,27},{-88,
+          27},{-88,69},{-73,69}}, color={0,0,127}));
+  connect(aHU.energyKPIBus, energyKPIBus) annotation (Line(
+      points={{-84,-1.58},{80,-1.58},{80,-12},{242,-12}},
+      color={255,204,51},
+      thickness=0.5,
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p6kWh.y, energyKPIBus.W_P06) annotation (Line(points={{214.5,-77},{
+          242.1,-77},{242.1,-11.9}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p6kW.y, energyKPIBus.dotW_P06) annotation (Line(points={{196.5,-77},{
+          196.5,-64},{242.1,-64},{242.1,-11.9}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-3,6},{-3,6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(p9kWh.y, energyKPIBus.W_P09) annotation (Line(points={{-73.5,-85},{
+          -73.5,-100},{240,-100},{240,-56},{242.1,-56},{242.1,-11.9}}, color={0,
+          0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(p9kW.y, energyKPIBus.dotW_P09) annotation (Line(points={{-91.5,-85},{
+          -91.5,-100},{240,-100},{240,-56},{242.1,-56},{242.1,-11.9}}, color={0,
+          0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(exhaustFankWh.y, energyKPIBus.W_extractAir) annotation (Line(
+      points={{-43.5,69},{242.1,69},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(exhaustFankW.y, energyKPIBus.dotW_extractAir) annotation (Line(
+      points={{-61.5,69},{242.1,69},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(supplyFankWh.y, energyKPIBus.W_airSupply) annotation (Line(
+      points={{80.5,49},{240,49},{240,-11.9},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(supplyFankW.y, energyKPIBus.dotW_airSupply) annotation (Line(
+      points={{62.5,49},{242.1,49},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(FCUQHeakW.y, FCUQHeakWh.u) annotation (Line(points={{170.5,29},{
+          174.25,29},{174.25,29},{177,29}}, color={0,0,127}));
+  connect(FCUQCookW.y, FCUQCookWh.u) annotation (Line(points={{170.5,11},{
+          174.25,11},{174.25,11},{177,11}}, color={0,0,127}));
+  connect(FCUkW.y, FCUkWh.u) annotation (Line(points={{170.5,45},{173.25,45},{
+          173.25,45},{177,45}}, color={0,0,127}));
+  connect(FCUkWh.y, energyKPIBus.W_FCU) annotation (Line(
+      points={{188.5,45},{242.1,45},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(FCUkW.y, energyKPIBus.dotW_FCU) annotation (Line(
+      points={{170.5,45},{170.5,66},{242.1,66},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{-3,6},{-3,6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(FCUQHeakW.y, energyKPIBus.dotQhea_FCU) annotation (Line(
+      points={{170.5,29},{242.1,29},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(FCUQHeakWh.y, energyKPIBus.Qhea_FCU) annotation (Line(
+      points={{188.5,29},{242.1,29},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(FCUQCookW.y, energyKPIBus.dotQcoo_FCU) annotation (Line(
+      points={{170.5,11},{170.5,-11.9},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(FCUQCookWh.y, energyKPIBus.Qcoo_FCU) annotation (Line(
+      points={{188.5,11},{188.5,-11.9},{242.1,-11.9}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dp_ducts_supply[2].port_b, airSupply[14]) annotation (Line(points={{52,-46},
+          {60,-46},{60,32},{156,32},{156,102.857}},      color={0,127,255}));
+  connect(aHU.TOutRec, dataBus.TAHUOutRec) annotation (Line(
+      points={{-106.04,-25.9},{-106.04,-28},{-199,-28},{-199,58}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(aHU.TOutHea, dataBus.TAHUOutHea) annotation (Line(
+      points={{-101.1,-25.9},{-101.1,-44},{-199,-44},{-199,58}},
+      color={0,0,127},
+      visible=false), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+
+  connect(pump9.port_b, jun2.port_1) annotation (Line(points={{-152,-60.5},{
+          -143,-60.5},{-143,-63},{-138,-63}}, color={0,127,255}));
+  connect(jun2.port_3, TWV_AHU_HeaCoi.port_3) annotation (Line(points={{-131,
+          -56},{-131,-51},{-132,-51},{-132,-46}}, color={0,127,255}));
+  connect(TWV_AHU_HeaCoi.port_1, aHU.portHeaCoi_b1) annotation (Line(points={{-126,
+          -40},{-118.2,-40},{-118.2,-24}},      color={0,127,255}));
+  connect(jun1.port_2, aHU.portCooCoi_a1) annotation (Line(points={{-80,-34},{
+          -80,-30},{-87.8,-30},{-87.8,-24}}, color={0,127,255}));
+  connect(TWV_AHU_CooCoi.port_1, aHU.portCooCoi_b1) annotation (Line(points={{-96,-34},
+          {-96,-24},{-95.4,-24}},                    color={0,127,255}));
+  connect(signalBus.VAV_signal, dummy_vav.u) annotation (Line(
+      points={{-199.93,34.07},{-218,34.07},{-218,64},{-260,64},{-260,42},{-250,42}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+
+  connect(signalBus.VAV_signal_extract, dummy_vav_extract.u) annotation (Line(
+      points={{-199.93,34.07},{-199.93,26},{-264,26},{-264,14},{-250,14}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dummy.y, FCUkW.u) annotation (Line(points={{121.1,40},{140,40},{140,45},
+          {159,45}}, color={0,0,127}));
+  connect(dummy.y, FCUQHeakW.u) annotation (Line(points={{121.1,40},{140,40},{140,
+          29},{159,29}}, color={0,0,127}));
+  connect(dummy.y, FCUQCookW.u) annotation (Line(points={{121.1,40},{140,40},{140,
+          11},{159,11}}, color={0,0,127}));
+  connect(dummy1.y, fcuCooDem) annotation (Line(points={{112.9,-24},{100,-24},{100,
+          -26},{70,-26},{70,-110}}, color={0,0,127}));
+  connect(dummy1.y, p6kW.u) annotation (Line(points={{112.9,-24},{149.45,-24},{149.45,
+          -77},{185,-77}}, color={0,0,127}));
+  connect(TWV_AHU_HeaCoi.port_2, AHUHeaCoi_b) annotation (Line(points={{-138,
+          -40},{-170,-40},{-170,-40},{-200,-40}}, color={0,127,255}));
+  connect(pump9.port_a, AHUHeaCoi_a) annotation (Line(points={{-165,-60.5},{
+          -181.5,-60.5},{-181.5,-60},{-200,-60}}, color={0,127,255}));
+  connect(AHUCooCoi_a, jun1.port_1) annotation (Line(points={{-200,-96},{-162,
+          -96},{-162,-98},{-80,-98},{-80,-46}}, color={0,127,255}));
+  connect(AHUCooCoi_b, TWV_AHU_CooCoi.port_2) annotation (Line(points={{-200,
+          -76},{-96,-76},{-96,-46}}, color={0,127,255}));
+  connect(jun2.port_2, aHU.portHeaCoi_a1) annotation (Line(points={{-124,-63},{
+          -120,-63},{-120,-62},{-110.6,-62},{-110.6,-24}}, color={0,127,255}));
+  connect(TWV_AHU_CooCoi.port_3, jun1.port_3)
+    annotation (Line(points={{-90,-40},{-86,-40}}, color={0,127,255}));
+     annotation (Diagram(coordinateSystem(extent={{-200,-100},{240,100}})), Icon(
+        coordinateSystem(extent={{-200,-100},{240,100}})),
+    experiment(
+      StopTime=31536000,
+      Interval=3600,
+      Tolerance=1e-06,
+      __Dymola_fixedstepsize=1,
+      __Dymola_Algorithm="Lsodar"));
+end VentilationSystemNonGEOTABS_noFCU;

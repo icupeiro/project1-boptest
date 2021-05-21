@@ -1,0 +1,8 @@
+within INFRAX.SubSystems.BuildingEnvelope;
+model EnvelopeMPC
+  extends Envelope(
+    redeclare Floor3.Floor3MPC floor3,
+    redeclare Floor2.Floor2MPC floor2,
+    redeclare Floor1.Floor1MPC floor1,
+    redeclare Floor0.Floor0MPC floor0);
+end EnvelopeMPC;

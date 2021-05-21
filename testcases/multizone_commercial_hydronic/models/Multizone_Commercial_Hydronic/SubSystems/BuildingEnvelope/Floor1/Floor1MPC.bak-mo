@@ -1,0 +1,10 @@
+within INFRAX.SubSystems.BuildingEnvelope.Floor1;
+model Floor1MPC
+  extends Floor1(redeclare VentilationSystem.Components.TroxVavMPC bath_duct(
+    allowFlowReversal=false,
+    m_flow_nominal=350*1.225/3600,
+    redeclare package Medium = Medium,
+    from_dp=true,
+    dpMax(displayUnit="Pa") = 250,
+    dpMin(displayUnit="Pa") = 50));
+end Floor1MPC;

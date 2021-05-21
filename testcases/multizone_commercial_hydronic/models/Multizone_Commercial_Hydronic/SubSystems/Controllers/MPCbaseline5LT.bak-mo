@@ -1,0 +1,20 @@
+within INFRAX.SubSystems.Controllers;
+model MPCbaseline5LT
+  extends MPCbaseline5(redeclare hG_MPC_baseline_borFieLT.MpcEnvelopeVentTabsRBC_CTBorFieLTSim
+      mpc(                 outputForecasts=true, use_postProcessing=true));
+    Modelica.Blocks.Sources.CombiTimeTable prescribedNeeds(
+    tableOnFile=true,
+    tableName="data",
+    fileName=Modelica.Utilities.Files.loadResource(
+        "predictions_infrax.txt"),
+    columns=2:31,
+    extrapolation=Modelica.Blocks.Types.Extrapolation.Periodic)
+    annotation (Placement(transformation(extent={{-100,192},{-80,212}})));
+equation
+for i in 1:10 loop
+connect(mpc.uLL[i], prescribedNeeds.y[3*(i-1)+1]);
+ connect(mpc.uLL[i+10], prescribedNeeds.y[3*(i-1)+2]);
+connect(mpc.uLL[i+20], prescribedNeeds.y[3*(i-1)+3]);
+end for;
+ mpc.uLL[31] = time;
+end MPCbaseline5LT;

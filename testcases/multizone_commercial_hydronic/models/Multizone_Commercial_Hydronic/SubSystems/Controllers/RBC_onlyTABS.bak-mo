@@ -1,0 +1,207 @@
+within INFRAX.SubSystems.Controllers;
+model RBC_onlyTABS "RBC controller of INFRAX"
+
+  DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{-80,20}}),
+        iconTransformation(extent={{-110,-10},{-90,10}})));
+  SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{120,
+            20}}), iconTransformation(extent={{90,-10},{110,10}})));
+  SubControllers.ModeSelector modeSelector
+    annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
+  SubControllers.Valves.ThreeWayValveTABS threeWayValveTABS
+    annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
+  SubControllers.Valves.ThreeWayValvePC threeWayValvePC
+    annotation (Placement(transformation(extent={{72,-68},{92,-48}})));
+  SubControllers.Valves.TwoWayValvesTABS twoWayValves
+    annotation (Placement(transformation(extent={{-40,-80},{-20,-60}})));
+  SubControllers.Situations.Situations situations
+    annotation (Placement(transformation(extent={{-40,60},{-20,80}})));
+  SubControllers.Demands.DemandTABS demandTABS
+    annotation (Placement(transformation(extent={{-58,26},{-38,46}})));
+  outer IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Ceiling,
+        0},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S},{IDEAS.Types.Tilt.Wall,
+        IDEAS.Types.Azimuth.W},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.N},{
+        IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.E}})
+    annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+  IDEAS.Buildings.Components.Interfaces.WeaBus weaBus(numSolBus=5)
+    annotation (Placement(transformation(extent={{-80,80},{-60,100}})));
+  SubControllers.Pumps.P5_onlyTABS p5_onlyTABS
+    annotation (Placement(transformation(extent={{-40,0},{-20,20}})));
+  SubControllers.Pumps.P1_onlyTABS p1_onlyTABS
+    annotation (Placement(transformation(extent={{0,40},{20,60}})));
+  SubControllers.HP_onlyTABS hP_onlyTABS
+    annotation (Placement(transformation(extent={{60,40},{80,60}})));
+  SubControllers.SunShading sunShading
+    annotation (Placement(transformation(extent={{40,-100},{60,-80}})));
+equation
+
+  connect(modeSelector.heat, signalBus.heatMode) annotation (Line(points={{61,
+          -25},{100.1,-25},{100.1,0.1}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(modeSelector.rest, signalBus.restMode) annotation (Line(points={{61,
+          -30},{100.1,-30},{100.1,0.1}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(modeSelector.cool, signalBus.coolMode) annotation (Line(points={{61,
+          -35},{100.1,-35},{100.1,0.1}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(dataBus, threeWayValveTABS.dataBus) annotation (Line(
+      points={{-100,0},{-100,0},{-100,-30},{-40,-30}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(threeWayValveTABS.signalBus, signalBus) annotation (Line(
+      points={{-19.8,-30},{38,-30},{38,0},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(threeWayValvePC.coo, modeSelector.cool) annotation (Line(points={{72,
+          -58},{68,-58},{61,-58},{61,-35}}, color={255,0,255}));
+  connect(threeWayValvePC.signalBus, signalBus) annotation (Line(
+      points={{92.2,-58},{100,-58},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(dataBus, twoWayValves.dataBus) annotation (Line(
+      points={{-100,0},{-100,0},{-100,-72},{-100,-70},{-40,-70}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(twoWayValves.signalBus, signalBus) annotation (Line(
+      points={{-19.8,-70},{38,-70},{38,0},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(dataBus, situations.dataBus) annotation (Line(
+      points={{-100,0},{-100,70},{-40,70}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(situations.signalBus, signalBus) annotation (Line(
+      points={{-19.8,70},{42,70},{100,70},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(dataBus.Tavg_building, demandTABS.Tavg_building) annotation (Line(
+      points={{-99.9,0.1},{-99.9,44},{-58,44}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(demandTABS.cca_hea_active, signalBus.TABSheatingDemand) annotation (
+      Line(points={{-38,44},{28,44},{100.1,44},{100.1,0.1}}, color={255,0,255}),
+      Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(demandTABS.cca_coo_active, signalBus.TABScoolingDemand) annotation (
+      Line(points={{-38,32},{100.1,32},{100.1,0.1}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(sim.weaBus, weaBus) annotation (Line(
+      points={{-84,92.8},{-76,92.8},{-76,90},{-70,90}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(weaBus.Te, demandTABS.Tavg_out) annotation (Line(
+      points={{-69.95,90.05},{-69.95,90.05},{-69.95,26},{-58,26}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(signalBus.heatMode, demandTABS.heaMode) annotation (Line(
+      points={{100.1,0.1},{100.1,40},{-38,40}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(signalBus.coolMode, demandTABS.cooMode) annotation (Line(
+      points={{100.1,0.1},{100.1,26},{-38,26}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(dataBus, p5_onlyTABS.dataBus) annotation (Line(
+      points={{-100,0},{-69,0},{-69,10},{-40,10}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(p5_onlyTABS.signalBus, signalBus) annotation (Line(
+      points={{-19.8,10},{42,10},{42,0},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(dataBus, p1_onlyTABS.dataBus) annotation (Line(
+      points={{-100,0},{-100,0},{-100,58},{-100,50},{0,50}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(p1_onlyTABS.signalBus, signalBus) annotation (Line(
+      points={{20.2,50},{58,50},{58,0},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(hP_onlyTABS.signalBus, signalBus) annotation (Line(
+      points={{80.2,50},{90,50},{100,50},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(dataBus, hP_onlyTABS.dataBus) annotation (Line(
+      points={{-100,0},{-100,100},{60,100},{60,50}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(sunShading.signalBus, signalBus) annotation (Line(
+      points={{60.2,-90},{100,-90},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(sunShading.dataBus, dataBus) annotation (Line(
+      points={{40,-90},{-28,-90},{-100,-90},{-100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+end RBC_onlyTABS;

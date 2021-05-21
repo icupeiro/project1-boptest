@@ -1,0 +1,895 @@
+within INFRAX.SubSystems.Controllers;
+model MPCbaseline5_precomputed "hybridGEOTABS MPC baseline"
+  Real heaMod;
+  Real cooMod;
+//  Real tabs3wayVal;
+  Real p05signal;
+  Real[15] vav_signal_supply;
+  Real[15] vav_signal_extract;
+  Real[21] vav_3way;
+  Boolean fanOn;
+  Integer P08P09;
+  Integer P06;
+  Real P13;
+ // Boolean HPOn;
+  Real THPSet;
+  DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{-80,20}}),
+        iconTransformation(extent={{-110,-10},{-90,10}})));
+  SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{120,
+            20}}), iconTransformation(extent={{90,-10},{110,10}})));
+  Air.Comfort.Limits temLim(typeLimit=2, nZones=14,
+    maxOT=20 + 273.15)
+    "Model that computes the building limits and calculates the discomfort"
+    annotation (Placement(transformation(extent={{-60,-10},{-40,12}})));
+  SubControllers.Valves.Tavg_of_floors avgFlrT
+    "Model that computes the average temperature of the different floors"
+    annotation (Placement(transformation(extent={{-100,60},{-80,80}})));
+  inner IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Ceiling,
+        0},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S},{IDEAS.Types.Tilt.Wall,
+        IDEAS.Types.Azimuth.W},{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.N},{
+        IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.E}})
+    annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+  Modelica.Blocks.Sources.RealExpression p05(y=p05signal)
+    annotation (Placement(transformation(extent={{-20,16},{0,36}})));
+  Components.Clock           clock
+    annotation (Placement(transformation(extent={{-60,80},{-40,100}})));
+  SubControllers.HP_ByPass hP_ByPass
+    annotation (Placement(transformation(extent={{-20,-46},{0,-26}})));
+  Modelica.Blocks.Sources.IntegerConstant p7Con(k=1) "P07 is always on"
+    annotation (Placement(transformation(extent={{20,60},{40,80}})));
+  SubControllers.HP_MPC_baseline
+                             hP_MPC_baseline(hysteresis(uLow=0, uHigh=1.5))
+    annotation (Placement(transformation(extent={{-60,44},{-40,64}})));
+  Modelica.Blocks.Sources.RealExpression TSet(y=THPSet)
+    annotation (Placement(transformation(extent={{-20,30},{0,50}})));
+  Modelica.Blocks.Sources.Constant const1(k=150)
+    annotation (Placement(transformation(extent={{-160,-198},{-140,-178}})));
+  Modelica.Blocks.Logical.GreaterEqual solDirMaxSWE[3]
+    annotation (Placement(transformation(extent={{-112,-190},{-92,-170}})));
+  Modelica.Blocks.Math.BooleanToReal scrnCtrl[3] "Screen control signal"
+    annotation (Placement(transformation(extent={{-72,-190},{-52,-170}})));
+  SubControllers.Pumps.P1 p1_1
+    annotation (Placement(transformation(extent={{-88,22},{-68,42}})));
+  Modelica.Blocks.Sources.RealExpression p03(y=if HPSignal.y > 0.5 then 12*
+        9806.38 else 3*9806.38)
+    annotation (Placement(transformation(extent={{-20,-80},{0,-60}})));
+  Modelica.Blocks.Routing.IntegerPassThrough HPSignal
+    annotation (Placement(transformation(extent={{128,-124},{148,-104}})));
+  Modelica.Blocks.Sources.RealExpression vav_signal[2,15](y={vav_signal_supply,
+        vav_signal_extract})
+    annotation (Placement(transformation(extent={{-20,2},{0,22}})));
+  Modelica.Blocks.Sources.RealExpression vav_3way_signal[21](y=vav_3way)
+    annotation (Placement(transformation(extent={{-20,-64},{0,-44}})));
+  Modelica.Blocks.Sources.RealExpression TABSmode[2](y={heaMod,cooMod})
+    annotation (Placement(transformation(extent={{0,82},{20,102}})));
+  Modelica.Blocks.Sources.RealExpression p13(y=P13)
+    annotation (Placement(transformation(extent={{-90,-104},{-70,-84}})));
+  Modelica.Blocks.Math.RealToInteger P04
+    annotation (Placement(transformation(extent={{-50,-120},{-30,-100}})));
+  Modelica.Blocks.Math.Gain P13_nom(k=14.5*9804.139432)
+    "nominal pressure rise of P13"
+    annotation (Placement(transformation(extent={{-14,-100},{-2,-88}})));
+  Modelica.Blocks.Sources.IntegerExpression P06signal(y=P06)
+    "P06 signal"
+    annotation (Placement(transformation(extent={{-90,-74},{-68,-54}})));
+  Modelica.Blocks.Sources.IntegerExpression P08P09signal(y=P08P09)
+    "Pumps 08 and 09 signal"
+    annotation (Placement(transformation(extent={{-90,-58},{-68,-38}})));
+  Modelica.Blocks.Sources.BooleanExpression buiMode[2](y={heaMod > 0.5,cooMod >
+        0.5}) annotation (Placement(transformation(extent={{-54,-40},{-34,-20}})));
+  IDEAS.Controls.Continuous.LimPID PI3WayHea(
+    controllerType=Modelica.Blocks.Types.SimpleController.PI,
+    Td=0,
+    k=0.1,
+    Ti(displayUnit="min") = 60,
+    y_start=1) "Controller for 3-way valve"
+    annotation (Placement(transformation(extent={{-140,-36},{-120,-16}})));
+  Modelica.Blocks.Sources.RealExpression TTabs(y=combiTimeTable.y[
+        52])
+    annotation (Placement(transformation(extent={{-200,-36},{-180,-16}})));
+  Modelica.Blocks.Sources.RealExpression tabs3way(y=if heaMod > 0.5 then
+        PI3WayHea.y else if cooMod > 0.5 then combiTimeTable.y[
+        41] else 0)
+    annotation (Placement(transformation(extent={{-160,0},{-140,20}})));
+  Modelica.Blocks.Sources.RealExpression heaCoi_AHU(y=if fanOn then con3wayHea.y
+         else 0)
+    annotation (Placement(transformation(extent={{-170,20},{-150,40}})));
+  Modelica.Blocks.Sources.RealExpression cooCoi_AHU(y=if fanOn then con3wayCoo.y
+         else 0)
+    annotation (Placement(transformation(extent={{-172,46},{-152,66}})));
+  IDEAS.Controls.Continuous.LimPID con3wayHea(
+    initType=Modelica.Blocks.Types.InitPID.InitialState,
+    controllerType=Modelica.Blocks.Types.SimpleController.PI,
+    Td=0,
+    Ti(displayUnit="s") = 40,
+    k=2,
+    reverseAction=false) "Controller for 3-way valve of AHU heating coil"
+    annotation (Placement(transformation(extent={{-230,18},{-210,38}})));
+  IDEAS.Controls.Continuous.LimPID con3wayCoo(
+    initType=Modelica.Blocks.Types.InitPID.InitialState,
+    controllerType=Modelica.Blocks.Types.SimpleController.PI,
+    Td=0,
+    k=5,
+    Ti(displayUnit="s") = 40,
+    reverseAction=true) "Controller for 3-way valve of AHU cooling coil"
+    annotation (Placement(transformation(extent={{-230,54},{-210,74}})));
+  Modelica.Blocks.Sources.RealExpression TAHU(y=combiTimeTable.y[
+        54])
+    annotation (Placement(transformation(extent={{-282,54},{-262,74}})));
+  IDEAS.Controls.Continuous.LimPID conHeaCoi[14](
+    controllerType=Modelica.Blocks.Types.SimpleController.PI,
+    each k=2,
+    each Ti=100,
+    each reset=IDEAS.Types.Reset.Disabled)
+    "Controller for heating coils in air ducts"
+    annotation (Placement(transformation(extent={{-140,-78},{-120,-58}})));
+  Modelica.Blocks.Sources.RealExpression TAirSup[14](y={combiTimeTable.y[
+        54+i] for i in 1:14})
+    annotation (Placement(transformation(extent={{-180,-78},{-160,-58}})));
+
+  Modelica.Blocks.Sources.RealExpression AHUFansignals[3](y={combiTimeTable.y[
+        1],combiTimeTable.y[2],combiTimeTable.y[5]})
+    annotation (Placement(transformation(extent={{-26,60},{-6,80}})));
+  Modelica.Blocks.Sources.RealExpression ccaSignals[4](y={combiTimeTable.y[42],
+  combiTimeTable.y[43], combiTimeTable.y[44], combiTimeTable.y[45]})
+    annotation (Placement(transformation(extent={{-28,76},{-8,96}})));
+  IDEAS.Controls.Continuous.LimPID conP05(
+    initType=Modelica.Blocks.Types.InitPID.InitialState,
+    controllerType=Modelica.Blocks.Types.SimpleController.PI,
+    Td=0,
+    reverseAction=true,
+    k=5,
+    Ti(displayUnit="s") = 60)  "Controller for TABS pump"
+    annotation (Placement(transformation(extent={{-164,-52},{-144,-32}})));
+  Modelica.Blocks.Sources.RealExpression hysCheck[14](y={temLim.TSensor[i] -
+        temLim.ctrlLimits.limValue[2, 4] for i in 1:14})
+    annotation (Placement(transformation(extent={{-180,-94},{-200,-74}})));
+  Modelica.Blocks.Logical.Hysteresis hysteresis[14](
+    pre_y_start=true,
+    uLow=0.1,
+    uHigh=0.6) "hysteresis logic for HPs"
+    annotation (Placement(transformation(extent={{-210,-120},{-190,-100}})));
+  Modelica.Blocks.Logical.Not not1[14] "heating mode conditions"
+    annotation (Placement(transformation(extent={{-180,-120},{-160,-100}})));
+  Modelica.Blocks.Sources.RealExpression TAirSupSet[14](y={if not1[i].y then
+        273.15 + 25  else TAirSup[i].y for i in 1:14})
+    annotation (Placement(transformation(extent={{-176,-92},{-156,-72}})));
+//  Modelica.Blocks.Sources.RealExpression TAirSupSet[14](y={TAirSup[i].y for i in 1:14})
+  Modelica.Blocks.Logical.Hysteresis hysteresis1(
+    pre_y_start=true,
+    uLow=-0.5,
+    uHigh=0.25) "hysteresis logic for HPs"
+    annotation (Placement(transformation(extent={{-166,98},{-146,118}})));
+  Modelica.Blocks.Sources.RealExpression tabsHys(y=dataBus.T24 - combiTimeTable.y[52])
+    annotation (Placement(transformation(extent={{-208,98},{-188,118}})));
+  Modelica.Blocks.Logical.Not not2 "heating mode conditions"
+    annotation (Placement(transformation(extent={{-136,98},{-116,118}})));
+  Modelica.Blocks.Logical.Hysteresis hysteresis2(
+    pre_y_start=true,
+    uLow=-0.25,
+    uHigh=0.5)  "hysteresis logic for HPs"
+    annotation (Placement(transformation(extent={{-166,126},{-146,146}})));
+  IDEAS.Utilities.Psychrometrics.TWetBul_TDryBulXi wetBul(redeclare package
+      Medium = IDEAS.Media.Air)
+    annotation (Placement(transformation(extent={{-20,120},{0,140}})));
+  Modelica.Blocks.Sources.Constant Patm(k=101325)
+    annotation (Placement(transformation(extent={{-52,116},{-40,128}})));
+  IDEAS.Buildings.Components.Interfaces.WeaBus weaBus1(numSolBus=5)
+    annotation (Placement(transformation(extent={{-60,140},{-40,160}})));
+  Modelica.Blocks.Logical.Not not3 "heating mode conditions"
+    annotation (Placement(transformation(extent={{20,204},{40,224}})));
+  Modelica.Blocks.Sources.RealExpression ct(y=if disCooTow.y then 9 elseif combiTimeTable.y[3]
+         < 0.02 or sim.Te >= TBor.y then 0 else combiTimeTable.y[3])
+    annotation (Placement(transformation(extent={{-20,216},{0,236}})));
+  Modelica.Blocks.Sources.RealExpression    p11(y=if disCooTow.y then 9 elseif
+        ct.y < 0.02 then 0 else Pum1Flow.y)
+    annotation (Placement(transformation(extent={{-20,230},{0,250}})));
+  Modelica.Blocks.Sources.BooleanExpression disCooTow(y=TCon.y > 273.15 + 40
+         and hP_MPC_baseline.actCooMod.y)
+    annotation (Placement(transformation(extent={{-20,180},{0,200}})));
+  Modelica.Blocks.Math.BooleanToInteger p10
+    annotation (Placement(transformation(extent={{24,164},{40,180}})));
+  Modelica.Blocks.Routing.RealPassThrough TCon
+    annotation (Placement(transformation(extent={{-64,202},{-44,222}})));
+  Modelica.Blocks.Routing.RealPassThrough TBor
+    annotation (Placement(transformation(extent={{-54,166},{-34,186}})));
+  Modelica.Blocks.Routing.RealPassThrough Pum1Flow
+    annotation (Placement(transformation(extent={{-62,230},{-42,250}})));
+  Modelica.Blocks.Sources.CombiTimeTable combiTimeTable(
+    tableOnFile=true,
+    tableName="data",
+    fileName="MPC_inputs.txt",
+    columns=2:69,
+    smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
+    extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
+    annotation (Placement(transformation(extent={{-30,-24},{-10,-4}})));
+protected
+  IDEAS.Buildings.Components.Interfaces.WeaBus weaBus(numSolBus=sim.numIncAndAziInBus,
+      final outputAngles=sim.outputAngles)
+    annotation (Placement(transformation(extent={{-160,-170},{-140,-150}}),
+        iconTransformation(extent={{90,30},{90,30}})));
+equation
+  vav_signal_supply = {
+  combiTimeTable.y[6],
+combiTimeTable.y[7],
+combiTimeTable.y[8],
+combiTimeTable.y[9],
+combiTimeTable.y[10],
+combiTimeTable.y[11],
+combiTimeTable.y[12],
+combiTimeTable.y[13],
+combiTimeTable.y[14],
+combiTimeTable.y[14],
+combiTimeTable.y[15],
+combiTimeTable.y[16],
+combiTimeTable.y[17],
+combiTimeTable.y[18],
+combiTimeTable.y[19]};
+  vav_signal_extract = {
+  combiTimeTable.y[6],
+combiTimeTable.y[7],
+combiTimeTable.y[8],
+combiTimeTable.y[9],
+combiTimeTable.y[10],
+combiTimeTable.y[11],
+combiTimeTable.y[12],
+combiTimeTable.y[13],
+combiTimeTable.y[14],
+combiTimeTable.y[15],
+combiTimeTable.y[16],
+combiTimeTable.y[17],
+combiTimeTable.y[18],
+combiTimeTable.y[19],
+  1};
+  vav_3way = {
+conHeaCoi[1].y,
+combiTimeTable.y[21],
+combiTimeTable.y[22],
+conHeaCoi[2].y,
+conHeaCoi[3].y,
+conHeaCoi[4].y,
+conHeaCoi[5].y,
+conHeaCoi[6].y,
+conHeaCoi[7].y,
+conHeaCoi[8].y,
+conHeaCoi[9].y,
+conHeaCoi[10].y,
+conHeaCoi[11].y,
+combiTimeTable.y[33],
+combiTimeTable.y[34],
+conHeaCoi[12].y,
+conHeaCoi[13].y,
+conHeaCoi[14].y,
+combiTimeTable.y[38],
+combiTimeTable.y[39],
+combiTimeTable.y[40]};
+    connect(weaBus,sim.weaBus);
+//MPC connections
+  //HP
+ // HPOn = mpc.QHP > 2000;
+  THPSet = max(min(combiTimeTable.y[46], 273.15+32),273.15+25);
+  //TABS
+    //2-way valves
+    //2-way MODE valves (1 or 0)
+  //heaMod = if combiTimeTable.y[47] > 25000 then 1 else 0;
+  //cooMod = if combiTimeTable.y[47] < 25000 then 1 else 0;
+  heaMod = if not2.y and combiTimeTable.y[47] > 0 then 1 else 0;
+  cooMod = if hysteresis2.y and combiTimeTable.y[47] < 0 then 1 else 0;
+    //3-way valve
+    //Pump 05
+  p05signal = if cooMod > 0.5 then conP05.y else 0;
+  //Ventilation
+    //AHU coils
+ // connect(mpc.y_valCooAhu, signalBus.CooCoi_3way_signal);
+ // connect(mpc.y_valHeaAhu, signalBus.HeaCoi_3way_signal);
+//  connect(mpc.y_ahu, signalBus.TW_bypass);
+    //Ventilation pumps
+  fanOn = if combiTimeTable.y[1] > 15 or combiTimeTable.y[2] > 15 then true else false;
+  P08P09 = if abs(combiTimeTable.y[48])- abs(combiTimeTable.y[49]) > 0 and fanOn then 1 else 0;
+  P13 = if abs(combiTimeTable.y[48]) - abs(combiTimeTable.y[49]) < 0 and fanOn then 1 else 0;
+  P06 = if abs(combiTimeTable.y[50]) > 200 and fanOn then 1 else 0;
+    //VAV reheating
+//  connect(mpc.y_valHeaVav, signalBus.Heacoils_signal);
+    //VAV damper
+  connect(temLim.Tavg, signalBus.baseSetpoint) annotation (Line(points={{-39.25,
+          2.60769},{28.375,2.60769},{28.375,0},{100,0}}, color={0,0,127},
+      visible=false),                                                      Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(avgFlrT.dataBus, dataBus) annotation (Line(
+      points={{-100,70},{-100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T3rdFlr_SZ,temLim. TSensor[1]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,-1.41758},{
+          -61.6667,-1.41758}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+   connect(dataBus.T3rdFlr_MTR,temLim. TSensor[2]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-81.6667,0},{-81.6667,-1.17582},{
+          -61.6667,-1.17582}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T2ndFlr_NZ,temLim. TSensor[3]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,-0.934066},{
+          -61.6667,-0.934066}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T2ndFlr_SZ,temLim. TSensor[4]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,-0.692308},{
+          -61.6667,-0.692308}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T2ndFlr_MT1,temLim. TSensor[5]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,-0.450549},{
+          -61.6667,-0.450549}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T2ndFlr_MT2,temLim. TSensor[6]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,-0.208791},{
+          -61.6667,-0.208791}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T1stFlr_NZ,temLim. TSensor[7]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,0.032967},{
+          -61.6667,0.032967}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T1stFlr_SZ1,temLim. TSensor[8]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-81.6667,0},{-81.6667,0.274725},{
+          -61.6667,0.274725}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T1stFlr_SZ2,temLim. TSensor[9]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,0.516484},{
+          -61.6667,0.516484}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T1stFlr_MT1,temLim. TSensor[10]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-81.6667,0},{-81.6667,0.758242},{
+          -61.6667,0.758242}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.T1stFlr_MT2,temLim. TSensor[11]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,1},{-61.6667,
+          1}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.TGndFlr_KTR,temLim. TSensor[12]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-81.6667,0},{-81.6667,1.24176},{
+          -61.6667,1.24176}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.TGndFlr_MT1,temLim. TSensor[13]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,1.48352},{
+          -61.6667,1.48352}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(dataBus.TGndFlr_MT2,temLim. TSensor[14]) annotation (Line(
+      points={{-99.9,0.1},{-90,0.1},{-90,0},{-79.6667,0},{-79.6667,1.72527},{
+          -61.6667,1.72527}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(p05.y, signalBus.P05_mod) annotation (Line(points={{1,26},{100,26},{100,
+          0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(hP_ByPass.signalBus, signalBus) annotation (Line(
+      points={{0.2,-36},{100,-36},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p7Con.y, signalBus.P07_signal) annotation (Line(points={{41,70},{100,70},
+          {100,0}}, color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(hP_MPC_baseline.signalBus, signalBus) annotation (Line(
+      points={{-39.8,54},{20,54},{20,46},{100,46},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(hP_MPC_baseline.dataBus, dataBus) annotation (Line(
+      points={{-60,54},{-100,54},{-100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(TSet.y, signalBus.T_TABS) annotation (Line(points={{1,40},{100,40},{100,
+          0}},     color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+//  // connect(TSet.y, signalBus.T_VAV) annotation (Line(points={{-39,34},{100,34},{100,
+//           0}}, color={0,0,127}), Text(
+//       string="%second",
+//       index=1,
+//       extent={{6,3},{6,3}},
+//       horizontalAlignment=TextAlignment.Left));
+//  // connect(TSet.y, signalBus.T_AHU_HP) annotation (Line(points={{-39,34},{100,34},{100,
+//           0}}, color={0,0,127}), Text(
+//       string="%second",
+//       index=1,
+//       extent={{6,3},{6,3}},
+//       horizontalAlignment=TextAlignment.Left));
+  connect(solDirMaxSWE[1].u1, weaBus.solBus[2].HDirTil) annotation (Line(points={{-114,
+          -180},{-282,-180},{-282,-159.95},{-149.95,-159.95}},
+                                                           color={0,0,127}));
+  connect(solDirMaxSWE[2].u1, weaBus.solBus[3].HDirTil) annotation (Line(points={{-114,
+          -180},{-282,-180},{-282,-159.95},{-149.95,-159.95}},
+                                                           color={0,0,127}));
+  connect(solDirMaxSWE[3].u1, weaBus.solBus[5].HDirTil) annotation (Line(points={{-114,
+          -180},{-282,-180},{-282,-159.95},{-149.95,-159.95}},
+                                                           color={0,0,127}));
+  connect(const1.y, solDirMaxSWE[1].u2)
+    annotation (Line(points={{-139,-188},{-96,-188},{-96,-218},{-52,-218},{-52,
+          -188},{-114,-188}},                          color={0,0,127}));
+  connect(const1.y, solDirMaxSWE[2].u2)
+    annotation (Line(points={{-139,-188},{-96,-188},{-96,-218},{-52,-218},{-52,
+          -188},{-114,-188}},                          color={0,0,127}));
+  connect(const1.y, solDirMaxSWE[3].u2);
+   connect(scrnCtrl.u,solDirMaxSWE. y)
+    annotation (Line(points={{-74,-180},{-91,-180}},   color={255,0,255}));
+  connect(scrnCtrl[1].y, dataBus.southShading)
+    annotation (Line(points={{-51,-180},{-99.9,-180},{-99.9,0.1}},
+                                                            color={0,0,127}));
+  connect(scrnCtrl[2].y, dataBus.westShading)
+    annotation (Line(points={{-51,-180},{-99.9,-180},{-99.9,0.1}},
+                                                            color={0,0,127}));
+  connect(scrnCtrl[3].y, dataBus.eastShading2nd)
+    annotation (Line(points={{-51,-180},{-99.9,-180},{-99.9,0.1}},
+                                                            color={0,0,127}));
+  connect(scrnCtrl[1].y, dataBus.southShading)
+    annotation (Line(points={{-51,-180},{-99.9,-180},{-99.9,0.1}},
+                                                            color={0,0,127}));
+  connect(scrnCtrl[2].y, dataBus.westShading)
+    annotation (Line(points={{-51,-180},{-99.9,-180},{-99.9,0.1}},
+                                                            color={0,0,127}));
+  connect(scrnCtrl[3].y, dataBus.eastShading3rd)
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+        coordinateSystem(preserveAspectRatio=false)));
+  connect(p1_1.dataBus, dataBus) annotation (Line(
+      points={{-88,32},{-100,32},{-100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(p1_1.signalBus, signalBus) annotation (Line(
+      points={{-67.8,32},{-66,32},{-66,22},{100,22},{100,0}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p03.y, signalBus.P03_mod) annotation (Line(points={{1,-70},{100,-70},{
+          100,0}},  color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(HPSignal.u, signalBus.HP1_signal) annotation (Line(points={{126,-114},
+          {100,-114},{100,0},{100,0}}, color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(TSet.y, signalBus.T_AHU_HP) annotation (Line(points={{1,40},{100,40},{
+          100,0}},  color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(TSet.y, signalBus.T_VAV) annotation (Line(points={{1,40},{100,40},{100,
+          0}},     color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(heaCoi_AHU.y, signalBus.HeaCoi_3way_signal) annotation (Line(
+        points={{-149,30},{100,30},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(cooCoi_AHU.y, signalBus.CooCoi_3way_signal) annotation (Line(
+        points={{-151,56},{100,56},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(vav_signal[1, :].y, signalBus.VAV_signal) annotation (Line(points={{1,
+          12},{60,12},{60,0.1},{100.1,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(vav_signal[2, :].y, signalBus.VAV_signal_extract) annotation (Line(
+        points={{1,12},{58.5,12},{58.5,0.1},{100.1,0.1}}, color={0,0,127}),
+      Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(vav_3way_signal.y, signalBus.Heacoils_signal) annotation (Line(points=
+         {{1,-54},{100.1,-54},{100.1,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+      //  connect(combiTimeTable.y[41], signalBus.TABS_3way_signal)
+      // annotation (Line(
+//         points={{1,-10},{100,-10},{100,0}}, color={0,0,127}), Text(
+//       string="%second",
+//       index=1,
+//       extent={{6,3},{6,3}},
+//       horizontalAlignment=TextAlignment.Left));
+  connect(TABSmode[1].y, signalBus.TABSHeaSup);
+  connect(TABSmode[2].y, signalBus.TABSCooSup) annotation (Line(points={{21,92},
+          {100,92},{100,0}},color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p13.y,P04. u) annotation (Line(points={{-69,-94},{-60,-94},{-60,-110},
+          {-52,-110}},
+        color={0,0,127}));
+  connect(P04.y, signalBus.P04_signal) annotation (Line(points={{-29,-110},{100,
+          -110},{100,0}},
+                    color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p13.y,P13_nom. u)
+    annotation (Line(points={{-69,-94},{-15.2,-94}},
+                                                color={0,0,127}));
+  connect(P13_nom.y, signalBus.P13_signal) annotation (Line(points={{-1.4,-94},{
+          100,-94},{100,0}},
+                         color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(P06signal.y, signalBus.P06_signal) annotation (Line(points={{-66.9,-64},
+          {100,-64},{100,0}},
+                            color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(buiMode[2].y, signalBus.coolMode) annotation (Line(points={{-33,-30},{
+          -4,-30},{-4,0},{100,0}},
+                               color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(buiMode[1].y, signalBus.heatMode) annotation (Line(points={{-33,-30},{
+          -4,-30},{-4,6},{100,6},{100,0}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(vav_signal[1, :].y, signalBus.VAV_signal) annotation (Line(points={{1,
+          12},{52,12},{52,0.1},{100.1,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(P08P09signal.y, signalBus.P08_signal) annotation (Line(points={{-66.9,
+          -48},{16,-48},{16,0},{100,0}}, color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(P08P09signal.y, signalBus.P09_signal) annotation (Line(points={{-66.9,
+          -48},{16.55,-48},{16.55,0},{100,0}}, color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(PI3WayHea.u_m, dataBus.T24) annotation (Line(points={{-130,-38},{-110,
+          -38},{-110,0.1},{-99.9,0.1}},
+                                    color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(TTabs.y, PI3WayHea.u_s)
+    annotation (Line(points={{-179,-26},{-142,-26}}, color={0,0,127}));
+  connect(tabs3way.y, signalBus.TABS_3way_signal) annotation (Line(points={{-139,
+          10},{-16,10},{-16,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(TAHU.y, con3wayCoo.u_s)
+    annotation (Line(points={{-261,64},{-232,64}}, color={0,0,127}));
+  connect(con3wayHea.u_m, dataBus.TAirSupplyAHU) annotation (Line(points={{-220,
+          16},{-218,16},{-218,0.1},{-99.9,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(con3wayCoo.u_m, dataBus.TAirSupplyAHU) annotation (Line(points={{-220,
+          52},{-218,52},{-218,42},{-190,42},{-190,4},{-99.9,4},{-99.9,0.1}},
+        color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(TAHU.y, con3wayHea.u_s) annotation (Line(points={{-261,64},{-246,64},{
+          -246,28},{-232,28}}, color={0,0,127}));
+  connect(conHeaCoi[1].u_m, dataBus.TAirSupplyVAV[1]) annotation (Line(points={{
+          -130,-80},{-130,-92},{-99.9,-92},{-99.9,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(conHeaCoi[2].u_m, dataBus.TAirSupplyVAV[4]);
+  connect(conHeaCoi[3].u_m, dataBus.TAirSupplyVAV[5]);
+  connect(conHeaCoi[4].u_m, dataBus.TAirSupplyVAV[6]);
+  connect(conHeaCoi[5].u_m, dataBus.TAirSupplyVAV[7]);
+  connect(conHeaCoi[6].u_m, dataBus.TAirSupplyVAV[8]);
+  connect(conHeaCoi[7].u_m, dataBus.TAirSupplyVAV[9]);
+  connect(conHeaCoi[8].u_m, dataBus.TAirSupplyVAV[10]);
+  connect(conHeaCoi[9].u_m, dataBus.TAirSupplyVAV[11]);
+  connect(conHeaCoi[10].u_m, dataBus.TAirSupplyVAV[12]);
+  connect(conHeaCoi[11].u_m, dataBus.TAirSupplyVAV[13]);
+  connect(conHeaCoi[12].u_m, dataBus.TAirSupplyVAV[16]);
+  connect(conHeaCoi[13].u_m, dataBus.TAirSupplyVAV[17]);
+  connect(conHeaCoi[14].u_m, dataBus.TAirSupplyVAV[18]);
+  connect(AHUFansignals[1].y, signalBus.AHUsupply) annotation (Line(points={{-5,
+          70},{50,70},{50,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(AHUFansignals[2].y, signalBus.AHUextract) annotation (Line(points={{
+          -5,70},{50,70},{50,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(AHUFansignals[3].y, signalBus.TW_bypass) annotation (Line(points={{-5,
+          70},{48,70},{48,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(ccaSignals[1].y, signalBus.CCA0_val) annotation (Line(points={{-7,86},
+          {50,86},{50,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(ccaSignals[2].y, signalBus.CCA1_val) annotation (Line(points={{-7,86},
+          {48,86},{48,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(ccaSignals[3].y, signalBus.CCA2_val) annotation (Line(points={{-7,86},
+          {46.5,86},{46.5,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(ccaSignals[4].y, signalBus.CCA3_val) annotation (Line(points={{-7,86},
+          {48,86},{48,0},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(conP05.u_m, dataBus.T17) annotation (Line(points={{-154,-54},{-132,-54},
+          {-132,-56},{-99.9,-56},{-99.9,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(TTabs.y, conP05.u_s) annotation (Line(points={{-179,-26},{-164,-26},{
+          -164,-42},{-166,-42}},
+                            color={0,0,127}));
+  connect(hysCheck.y, hysteresis.u) annotation (Line(points={{-201,-84},{-220,
+          -84},{-220,-110},{-212,-110}}, color={0,0,127}));
+  connect(hysteresis.y, not1.u) annotation (Line(points={{-189,-110},{-186,-110},
+          {-186,-110},{-182,-110}}, color={255,0,255}));
+  connect(TAirSupSet.y, conHeaCoi.u_s) annotation (Line(points={{-155,-82},{
+          -148.5,-82},{-148.5,-68},{-142,-68}}, color={0,0,127}));
+  connect(tabsHys.y,hysteresis1. u)
+    annotation (Line(points={{-187,108},{-168,108}},
+                                                   color={0,0,127}));
+  connect(not2.u,hysteresis1. y)
+    annotation (Line(points={{-138,108},{-145,108}},
+                                                   color={255,0,255}));
+  connect(tabsHys.y,hysteresis2. u) annotation (Line(points={{-187,108},{-180,108},
+          {-180,136},{-168,136}}, color={0,0,127}));
+  connect(sim.weaBus, weaBus1) annotation (Line(
+      points={{-81,93},{-58,93},{-58,150},{-50,150}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(weaBus1.Te, wetBul.TDryBul) annotation (Line(
+      points={{-49.95,150.05},{-36,150.05},{-36,138},{-21,138}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(weaBus1.X_wEnv, wetBul.Xi[1]) annotation (Line(
+      points={{-49.95,150.05},{-36,150.05},{-36,130},{-21,130}},
+      color={255,204,51},
+      thickness=0.5), Text(
+      string="%first",
+      index=-1,
+      extent={{-6,3},{-6,3}}));
+  connect(wetBul.TWetBul, signalBus.Twet) annotation (Line(points={{1,130},{100,
+          130},{100,0}},                  color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(Patm.y,wetBul. p) annotation (Line(points={{-39.4,122},{-21,122}},
+                    color={0,0,127}));
+  connect(not3.y, signalBus.CC_2way_signal) annotation (Line(points={{41,214},{
+          100,214},{100,0}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(ct.y, signalBus.CT_signal) annotation (Line(points={{1,226},{100,226},
+          {100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(disCooTow.y, not3.u) annotation (Line(points={{1,190},{8,190},{8,214},
+          {18,214}}, color={255,0,255}));
+  connect(disCooTow.y, signalBus.Hex_2way_signal) annotation (Line(points={{1,
+          190},{100,190},{100,0}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p10.y, signalBus.P10_signal) annotation (Line(points={{40.8,172},{100,
+          172},{100,0}}, color={255,127,0}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(p10.u, disCooTow.y)
+    annotation (Line(points={{22.4,172},{1,172},{1,190}}, color={255,0,255}));
+  connect(TCon.u, dataBus.TCon) annotation (Line(points={{-66,212},{-100,212},{
+          -100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(TBor.u, dataBus.T6) annotation (Line(points={{-56,176},{-100,176},{
+          -100,0.1},{-99.9,0.1}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(p11.y, signalBus.P11_mod) annotation (Line(points={{1,240},{42,240},{
+          42,238},{100,238},{100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}},
+      horizontalAlignment=TextAlignment.Left));
+  connect(Pum1Flow.u, dataBus.mBorFlow) annotation (Line(points={{-64,240},{-88,
+          240},{-88,250},{-100,250},{-100,0}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  annotation (Diagram(coordinateSystem(extent={{-100,-100},{120,100}}),
+        graphics={
+        Rectangle(extent={{268,94},{364,52}},  lineColor={28,108,200}),
+        Text(
+          extent={{272,94},{300,86}},
+          lineColor={28,108,200},
+          textString="AHU setpoint"),
+        Rectangle(extent={{268,52},{364,-32}},lineColor={28,108,200}),
+        Text(
+          extent={{272,54},{316,48}},
+          lineColor={28,108,200},
+          textString="Thermal wheel bypass"),
+        Rectangle(extent={{268,-32},{364,-148}},
+                                              lineColor={28,108,200}),
+        Text(
+          extent={{268,-32},{302,-38}},
+          lineColor={28,108,200},
+          textString="Cooling coil"),
+        Text(
+          extent={{268,-148},{302,-154}},
+          lineColor={28,108,200},
+          textString="Heating coil"),
+        Rectangle(extent={{268,-148},{364,-232}},
+                                                lineColor={28,108,200}),
+        Rectangle(extent={{268,-232},{364,-292}},lineColor={28,108,200}),
+        Text(
+          extent={{268,-232},{302,-238}},
+          lineColor={28,108,200},
+          textString="AHU fans"),
+        Rectangle(extent={{180,124},{468,-318}}, lineColor={28,108,200})}),
+      Icon(coordinateSystem(extent={{-100,-100},{120,100}})));
+end MPCbaseline5_precomputed;
