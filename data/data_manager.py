@@ -150,7 +150,10 @@ class Data_Manager(object):
         # Search for .csv files in the resources folder
         for f in self.files:
             if f.endswith('.csv'):
-                df = pd.read_csv(f, comment='#')
+                try:
+                    df = pd.read_csv(f, comment='#')
+                except:
+                    print(f)
                 cols = df.keys()
                 if 'time' in cols:
                     for col in cols.drop('time'):
