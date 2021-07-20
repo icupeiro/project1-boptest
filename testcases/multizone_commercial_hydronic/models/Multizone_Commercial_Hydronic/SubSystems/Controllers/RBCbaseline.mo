@@ -4,7 +4,7 @@ model RBCbaseline "hybridGEOTABS RBC baseline"
         iconTransformation(extent={{-110,-10},{-90,10}})));
   SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{120,
             20}}), iconTransformation(extent={{90,-10},{110,10}})));
-  SubControllers.ModeSelector_baseline modSel(
+  SubControllers.ModeSelector modSel(
     heat(start=true),
     rest(start=false),
     cool(start=false)) "Mode selector sequence"
@@ -24,13 +24,13 @@ model RBCbaseline "hybridGEOTABS RBC baseline"
   SubControllers.HP_set hpCon
     "Model that includes the control logic of the GSHPs"
     annotation (Placement(transformation(extent={{60,10},{80,30}})));
-  SubControllers.AHU_baseline ahuCon
+  SubControllers.AHU_BOPTEST  ahuCon
     "Model that includes the control logic of the AHU"
     annotation (Placement(transformation(extent={{60,-34},{80,-6}})));
   SubControllers.Situations.Situations ctCon
     "Model that includes the control logic of the cooling tower"
     annotation (Placement(transformation(extent={{60,-60},{80,-40}})));
-  SubControllers.VAV_baseline vavCon
+  SubControllers.VAV_BOPTEST  vavCon
     "Model that includes the control logic of the VAV and heating coils within the ducts"
     annotation (Placement(transformation(extent={{60,-94},{80,-66}})));
   SubControllers.SunShading sunSha

@@ -302,31 +302,7 @@ equation
       horizontalAlignment=TextAlignment.Right));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),           Icon(coordinateSystem(
-          preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={
-        Rectangle(
-          heaSys.e005.port_a2.extent),
-        Polygon(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Rectangle(
-          heaSys.e005.port_a2.extent),
-        Rectangle(
-          heaSys.e005.port_a2.extent),
-        Text(
-          heaSys.e005.port_a2.extent),
-        Text(
-          heaSys.e005.port_a2.extent),
-        Line(
-          heaSys.e005.port_a2.points),
-        Text(
-          heaSys.e005.port_a2.extent),
-        Text(
-          heaSys.e005.port_a2.extent),
-        Text(
-          heaSys.e005.port_a2.extent)}),
+          preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics),
               Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end AHU_nonGEOTABS;

@@ -1,6 +1,6 @@
 within Multizone_Commercial_Hydronic.SubSystems.VentilationSystem;
 model VentilationSystemKPI
-  extends VentilationSystemSim;
+  extends VentilationSystem;
   Controllers.EnergyKPIBus energyKPIBus annotation (Placement(transformation(
           extent={{30,80},{70,120}}), iconTransformation(extent={{22,88},{42,
             108}})));

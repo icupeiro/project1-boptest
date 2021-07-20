@@ -23,11 +23,11 @@ equation
   connect(zone2.y, limits.TSensor[2]) annotation (Line(points={{-39,16},{-20,16},{-20,1},{-8,1}},    color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
         Ellipse(
-          heaSys.e005.port_a2.extent),
+          heaSys(     port_a2)),
         Polygon(
-          heaSys.e005.port_a2.points),
+          heaSys(     port_a2)),
         Polygon(
-          heaSys.e005.port_a2.points)}),                         Diagram(coordinateSystem(preserveAspectRatio=false)),
+          heaSys(     port_a2))}),                               Diagram(coordinateSystem(preserveAspectRatio=false)),
     experiment(
       StopTime=60480000,
       Interval=3600.00288,

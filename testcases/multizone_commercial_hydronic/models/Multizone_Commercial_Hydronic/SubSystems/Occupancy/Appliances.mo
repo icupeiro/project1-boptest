@@ -115,18 +115,7 @@ equation
           20},{-6,20}}, color={0,0,127}));
   connect(appliances.y, gainRad.u) annotation (Line(points={{-39,0},{-22,0},{-22,
           -20},{-4,-20}}, color={0,0,127}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-        Rectangle(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Text(
-          heaSys(     port_a2))}),                               Diagram(
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
+                                                                 Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end Appliances;

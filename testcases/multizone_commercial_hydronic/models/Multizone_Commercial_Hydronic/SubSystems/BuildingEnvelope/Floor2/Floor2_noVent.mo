@@ -2,7 +2,7 @@ within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor2;
 model Floor2_noVent
 
   replaceable package Medium = IDEAS.Media.Air constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+    Modelica.Media.Interfaces.PartialMedium;
   outer IDEAS.BoundaryConditions.SimInfoManager sim "Data reader"
     annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
   Multizone_Commercial_Hydronic.Data.Parameters.Str2ndFlr str2ndFlr "Record with the 2nd floor data"
@@ -38,7 +38,6 @@ model Floor2_noVent
     V=str2ndFlr.Vol_2ndFlr_NZ,
     hZone=str2ndFlr.Height2ndFlr,
     nSurf=12,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -47,6 +46,7 @@ model Floor2_noVent
     redeclare IDEAS.Buildings.Components.OccupancyType.OfficeWork occTyp)
     "Northern landscape office"
     annotation (Placement(transformation(extent={{20,40},{60,80}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.RectangularZoneTemplate meetingRoom1(
     aziA=Multizone_Commercial_Hydronic.Data.Orientations.N,
     bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
@@ -72,7 +72,6 @@ model Floor2_noVent
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.GlassWall conTypD,
     hasWinA=false,
     hasWinC=false,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -81,6 +80,7 @@ model Floor2_noVent
     redeclare IDEAS.Buildings.Components.OccupancyType.OfficeWork occTyp)
     "Meeting room next to 2nd floor reception"
     annotation (Placement(transformation(extent={{-60,-10},{-40,10}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.RectangularZoneTemplate meetingRoom2(
     aziA=Multizone_Commercial_Hydronic.Data.Orientations.N,
     bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
@@ -109,7 +109,6 @@ model Floor2_noVent
     redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraTypA,
     hasWinA=false,
     hasWinC=false,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -118,11 +117,11 @@ model Floor2_noVent
     redeclare IDEAS.Buildings.Components.OccupancyType.OfficeWork occTyp)
     "Meeting room far from 2nd floor reception"
     annotation (Placement(transformation(extent={{40,-10},{60,10}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.Zone southZone(
     hZone=str2ndFlr.Height2ndFlr,
     V=str2ndFlr.Vol_2ndFlr_SZ2,
     nSurf=28,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -131,12 +130,13 @@ model Floor2_noVent
     redeclare IDEAS.Buildings.Components.OccupancyType.OfficeWork occTyp)
     "Big southern landscape office"
     annotation (Placement(transformation(extent={{-24,-72},{16,-32}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.OuterWall[4] southWall(
     azi=str2ndFlr.azi_2ndFlr_SZ,
     A=str2ndFlr.AWall_2ndFlr_SZ,
     inc=str2ndFlr.inc_2ndFlr_SZ,
     redeclare replaceable Multizone_Commercial_Hydronic.Data.Constructions.OuterWalls constructionType,
-    T_start=T_start)
+    each T_start=T_start)
     "Array of walls connected to the southern landscape office"
     annotation (Placement(transformation(extent={{-96,-60},{-84,-40}})));
   IDEAS.Buildings.Components.Window[4] southWindows(
@@ -146,16 +146,16 @@ model Floor2_noVent
     inc=str2ndFlr.inc_2ndFlr_SZ,
     redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraType,
     redeclare Multizone_Commercial_Hydronic.Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing,
-    T_start=T_start,
+    each T_start=T_start,
     redeclare Data.Shading.HorizontalFins shaType)
     "Array of windows connected to the sourthern landscape office"
     annotation (Placement(transformation(extent={{-96,-84},{-84,-64}})));
   IDEAS.Buildings.Components.InternalWall[2] internalWalls(
-    inc=IDEAS.Types.Tilt.Wall,
+    each inc=IDEAS.Types.Tilt.Wall,
     A=str2ndFlr.AinternalWalls,
     azi={Multizone_Commercial_Hydronic.Data.Orientations.N,Multizone_Commercial_Hydronic.Data.Orientations.W},
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.ReinforcedGlassWall constructionType,
-    T_start=T_start)
+    each T_start=T_start)
     "Glass wall separating Copy rooms from south zone adding thermal
     mass to the south zone"
     annotation (Placement(
@@ -181,13 +181,13 @@ model Floor2_noVent
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.SilicateWall conTypB,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.SilicateWall conTypC,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.SilicateWall conTypD,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
     T_start=T_start)
   "Bathroom zone, not conditioned and with air extraction"
     annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
+    //energyDynamicsAir=energyDynamicsAir,
 
   IDEAS.Buildings.Components.InternalWall copyWalls(
     inc=IDEAS.Types.Tilt.Wall,
@@ -285,8 +285,8 @@ model Floor2_noVent
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b[5] gainRad
   "Bus to connect radiative heat transfer to the zones"
     annotation (Placement(transformation(extent={{130,-80},{150,-60}})));
-  parameter Modelica.Fluid.Types.Dynamics energyDynamicsAir=Modelica.Fluid.Types.Dynamics.FixedInitial
-  "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
+//  parameter Modelica.Fluid.Types.Dynamics energyDynamicsAir=Modelica.Fluid.Types.Dynamics.FixedInitial
+//  "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
   parameter Real[5] A_Conv = {northZone.A, southZone.A, meetingRoom1.A, meetingRoom2.A, bathroomZone.A}
   "Convective area of zones";
   parameter Real mSenFac=5
@@ -520,9 +520,7 @@ equation
   connect(gain1.y, northZone.yOcc)
     annotation (Line(points={{92,23},{92,68},{64,68}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,
-            -100},{140,100}}), graphics={
-          Rectangle(heaSys(     port_a2)),                               Text(
-          heaSys(     port_a2))}),
+            -100},{140,100}}), graphics),
                              Diagram(coordinateSystem(preserveAspectRatio=false,
           extent={{-140,-100},{140,100}})));
 end Floor2_noVent;

@@ -7,5 +7,12 @@ model EnvelopeSim
     redeclare Floor0.Floor0Sim floor0,
     westStairs(nPorts=2),
     eastStairs(nPorts=2),
-    redeclare IDEAS.Fluid.Movers.FlowControlled_dp toiletExtract);
+    redeclare IDEAS.Fluid.Movers.FlowControlled_dp toiletExtract,
+    dp_toilet(start=0));
+  annotation (experiment(
+      StopTime=31536000,
+      Interval=3600,
+      Tolerance=1e-06,
+      __Dymola_fixedstepsize=30,
+      __Dymola_Algorithm="Cvode"));
 end EnvelopeSim;

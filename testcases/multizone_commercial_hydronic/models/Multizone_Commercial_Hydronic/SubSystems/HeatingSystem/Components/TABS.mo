@@ -681,15 +681,13 @@ equation
   connect(pump7.P, P_pump) annotation (Line(points={{-67.2,-35.3},{-67.2,-32},
           {-84,-32},{-84,-50},{-110,-50}}, color={0,0,127}));
   connect(pump7.stage, signalBus.P07_signal) annotation (Line(points={{-69.6,
-          -43},{-84.8,-43},{-84.8,-22},{-98,-22}}, color={255,127,0}), Text(
+          -43},{-84.8,-43},{-84.8,-21.9},{-97.9,-21.9}},
+                                                   color={255,127,0}), Text(
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-140},
-            {120,100}}),                                        graphics={
-          Rectangle(
-          heaSys(     port_a2)),                                         Text(
-          heaSys(     port_a2))}),
+            {120,100}}),                                        graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={
             {-100,-140},{120,100}})));
 end TABS;

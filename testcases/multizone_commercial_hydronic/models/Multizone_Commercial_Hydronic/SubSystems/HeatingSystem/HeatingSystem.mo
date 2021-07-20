@@ -3,8 +3,7 @@ model HeatingSystem "Heating system with no KPI"
    replaceable package MediumGlycol =
        IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
            property_T=273.15,
-           X_a=0.30) constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+           X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
 //     replaceable package MediumGlycol = IDEAS.Media.Water;
   IDEAS.Fluid.Movers.SpeedControlled_y pump1(
     allowFlowReversal=false,
@@ -298,7 +297,7 @@ model HeatingSystem "Heating system with no KPI"
   Components.CoolingTower coolingTower_detailed(redeclare package MediumGlycol =
         MediumGlycol)
     annotation (Placement(transformation(extent={{194,80},{218,100}})));
-  Components.TABS tABS_detailed
+  Components.TABSSimpler tABS_detailed
     annotation (Placement(transformation(extent={{86,68},{106,88}})));
   Controllers.DataBus dataBus annotation (Placement(transformation(extent={{-220,-2},
             {-180,38}}),    iconTransformation(extent={{-210,4},{-190,24}})));
@@ -511,7 +510,6 @@ model HeatingSystem "Heating system with no KPI"
         rotation=0,
         origin={-50,118})));
   IDEAS.Fluid.FixedResistances.PressureDrop dp_fixed_byPass_collector(
-    allowFlowReversal=false,
     redeclare package Medium = IDEAS.Media.Water,
     m_flow_nominal=hydronic.p03_m_flow,
     dp_nominal(displayUnit="kPa") = 0) "equilibrium valve" annotation (
@@ -625,7 +623,7 @@ model HeatingSystem "Heating system with no KPI"
     annotation (Placement(transformation(extent={{-40,72},{-48,64}})));
   Modelica.Blocks.MathBoolean.Not HPValConByp
     annotation (Placement(transformation(extent={{-52,62},{-56,66}})));
-  IDEAS.Fluid.Geothermal.Borefields.TwoUTubes
+  IBPSA.Fluid.Geothermal.Borefields.TwoUTubes
     borField(
     allowFlowReversal=false,
     borFieDat=Data.Parameters.BorefieldData.borFie(),
@@ -642,7 +640,7 @@ model HeatingSystem "Heating system with no KPI"
         rotation=180,
         origin={-54,35})));
   IDEAS.Fluid.Sensors.TemperatureTwoPort t2(
-    redeclare package Medium = IDEAS.Media.Water,
+    redeclare package Medium = MediumGlycol,
     allowFlowReversal=false,
     m_flow_nominal=24000/3600,
     tau=hydronic.sensorTau,
@@ -1089,11 +1087,13 @@ equation
   connect(jun4.port_3, entSupCTCoo.port_a)
     annotation (Line(points={{-116,-101},{48,-101}}, color={0,127,255}));
   connect(entSupCTCoo.port_b, coolingTower_detailed.port_a1) annotation (Line(
-        points={{62,-101},{220,-101},{220,91},{218,91}}, color={0,127,255}));
+        points={{62,-101},{220,-101},{220,89.1667},{218,89.1667}},
+                                                         color={0,127,255}));
   connect(jun5.port_3, entRetCTCoo.port_b) annotation (Line(points={{-116,-129},
           {58,-129},{58,-130},{80,-130}}, color={0,127,255}));
   connect(entRetCTCoo.port_a, coolingTower_detailed.port_b1) annotation (Line(
-        points={{92,-130},{232,-130},{232,90},{224,90},{224,93},{218,93}},
+        points={{92,-130},{232,-130},{232,90},{224,90},{224,90.8333},{218,
+          90.8333}},
         color={0,127,255}));
   connect(dp_fixed_e004_TABS.port_b, entSupTABSCoo.port_a)
     annotation (Line(points={{38,-59},{62,-59}}, color={0,127,255}));

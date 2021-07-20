@@ -86,13 +86,13 @@ equation
             -100},{100,100}})),           Icon(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={
         Ellipse(
-          heaSys.e005.port_a2.extent),
+          heaSys(     port_a2)),
         Line(
-          heaSys.e005.port_a2.points),
+          heaSys(     port_a2)),
         Line(
-          heaSys.e005.port_a2.points),
+          heaSys(     port_a2)),
         Text(
-          heaSys.e005.port_a2.extent)}),
+          heaSys(     port_a2))}),
               Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end Clock;

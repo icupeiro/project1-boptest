@@ -1,0 +1,5 @@
+model dsmodelIterationSelect
+  extends BaseConfiguration.Approach2ForControllDataCenter;
+  annotation(__Dymola_SimulationIterationVariables={"rectangularZoneTemplate.ports[1].m_flow",
+   "hex.port_a2.m_flow", "sim.weaDat.tWetBul_TDryBulXi.TWetBul"});
+end dsmodelIterationSelect;

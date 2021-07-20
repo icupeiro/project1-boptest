@@ -10,7 +10,7 @@ expandable connector SignalBus "Data bus that stores signal data"
 //   Integer P04_signal "signal for pump 04";
 //   Real P05_mod "modulation for pump 05";
 //   Integer P06_signal "signal for pump 06";
-//   Integer P07_signal "signal for pump 07";
+   Integer P07_signal(start=1) "signal for pump 07";
 //   Integer P08_signal "signal for pump 08";
 //   Integer P09_signal "signal for pump 09";
 //   Integer P13_signal "signal for pupmp 13";
@@ -52,8 +52,8 @@ expandable connector SignalBus "Data bus that stores signal data"
 //   Integer P11_signal "signal for pump 11";
 //   Real AHUsupply "signal for AHU supply fan";
 //   Real AHUextract "signal for AHU extraction fan";
-   Real[15] VAV_signal;
-   Real[15] VAV_signal_extract "signal for ventilation extract";
+   Real[15] VAV_signal(each start=0);
+   Real[15] VAV_signal_extract(each start=0) "signal for ventilation extract";
 //   Real[21] Heacoils_signal(each start=0) "signal for ventilation heating coils";
 //   Modelica.SIunits.Temperature[21] TSupplySetPoints "Supply temperature setpoints";
 //   Modelica.SIunits.Temperature T_TABS "TABS supply water temperature setpoint";
@@ -65,8 +65,7 @@ expandable connector SignalBus "Data bus that stores signal data"
   annotation (
     defaultComponentName="weaBus",
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
-            100}}), graphics={Rectangle(
-          heaSys(     port_a2))}),
+            100}}), graphics),
     Documentation(info="<html>
 <p>
 This component is an expandable connector that is used to implement a bus that contains the weather data.

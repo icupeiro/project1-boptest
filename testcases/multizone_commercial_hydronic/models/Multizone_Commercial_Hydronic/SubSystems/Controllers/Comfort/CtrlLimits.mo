@@ -27,7 +27,7 @@ equation
   end for;
   RMOT=rmot.TRm;
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,80}}), graphics={Rectangle(
-          heaSys.e005.port_a2.extent),    Text(
-          heaSys.e005.port_a2.extent)}),                                                        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})),
+          heaSys(     port_a2)),          Text(
+          heaSys(     port_a2))}),                                                              Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}})),
     experiment(StopTime=94694400));
 end CtrlLimits;

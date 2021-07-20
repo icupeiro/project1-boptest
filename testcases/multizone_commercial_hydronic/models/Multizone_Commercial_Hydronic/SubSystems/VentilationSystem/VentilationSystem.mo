@@ -20,13 +20,43 @@ model VentilationSystem "Ventilation System with No KPI"
                                              caseSensitive=false)
                                              then 1 else 0 for i in 1:max(MediumAir.nC,1)};
 
-  replaceable IDEAS.Fluid.Interfaces.PartialTwoPortInterface[7] dp_ducts_supply "pressure drops in supply ducts"
+ IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent[7] dp_ducts_supply(
+      allowFlowReversal=false,
+          m_flow_nominal=air.m_nominal_supply_duct,
+          redeclare package Medium = MediumAir,
+          from_dp=true,
+          dpFixed_nominal=100,
+      dpValve_nominal=50,
+      use_inputFilter=false) "pressure drops in supply ducts"
     annotation (Placement(transformation(extent={{32,-56},{52,-36}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations supplyFan
-    "supply fan of the air handling unit"
+  IDEAS.Fluid.Movers.FlowControlled_dp supplyFan(
+      allowFlowReversal=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        addPowerToMedium=false,
+        use_inputFilter=false,
+        tau=60,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=10000*1.225/3600,
+        dp_nominal(displayUnit="Pa") = 180,
+      redeclare Data.Parameters.AHU_FanSupply per,
+        dp_start=180,
+        redeclare package Medium = MediumAir,
+        prescribeSystemPressure=true)
     annotation (Placement(transformation(extent={{-36,-56},{-16,-36}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations exhaustFan
-    "supply fan of the air handling unit"
+IDEAS.Fluid.Movers.FlowControlled_dp exhaustFan(
+      allowFlowReversal=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        addPowerToMedium=false,
+        tau=10,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        m_flow_nominal=8850*1.225/3600,
+        redeclare Multizone_Commercial_Hydronic.Data.Parameters.AHU_FanExtract per,
+        dp_nominal=150,
+        constantHead=150,
+        dp_start=150,
+        redeclare package Medium = MediumAir,
+        prescribeSystemPressure=true)
     annotation (Placement(transformation(extent={{-44,8},{-64,28}})));
   IDEAS.Fluid.Sensors.TemperatureTwoPort tAHUSupply(
     m_flow_nominal=10000*1.225/3600,
@@ -38,17 +68,54 @@ model VentilationSystem "Ventilation System with No KPI"
         origin={6,-46})));
   Multizone_Commercial_Hydronic.Data.Parameters.Air air
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-  replaceable IDEAS.Fluid.Interfaces.PartialTwoPortInterface[15] vav_supply
+IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent[15]    vav_supply(
+      allowFlowReversal=false,
+            use_inputFilter=false,
+            m_flow_nominal=air.m_nominal_supply_vav,
+            redeclare package Medium = MediumAir,
+            from_dp=true,
+            each dpValve_nominal=60,
+            dpFixed_nominal=100,
+            deltaM=0.02,
+            deltax=0.02)
     "vav supply ducts" annotation (Placement(transformation(
         extent={{-8.5,-8.5},{8.5,8.5}},
         rotation=0,
         origin={42.5,-79.5})));
-  replaceable
-  IDEAS.Fluid.HeatExchangers.BaseClasses.PartialEffectiveness[21] counterFlowHEX
-    constrainedby
-    heaSys.e005.port_a2.IDEAS.Fluid.Interfaces.PartialFourPortInterface
+IBPSA.Fluid.HeatExchangers.DryCoilEffectivenessNTU[21]
+                                              counterFlowHEX(
+      m1_flow_nominal=air.m_nominal_water,
+      m2_flow_nominal=air.m_nominal_air,
+      dp2_nominal=0,
+      dp1_nominal=0,
+      redeclare each package Medium1 = MediumWater,
+      redeclare each package Medium2 = MediumAir,
+      each allowFlowReversal1=false,
+      each allowFlowReversal2=false,
+      configuration=IBPSA.Fluid.Types.HeatExchangerConfiguration.CounterFlow,
+      Q_flow_nominal=air.Q_nominal,
+      T_a1_nominal=air.TWatSup_nominal,
+      T_a2_nominal=air.TAirSup_nominal,
+      UA=air.Q_nominal/Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+          air.TWatSup_nominal,
+          air.TWatRet_nominal,
+          air.TAirSup_nominal,
+          air.TAirRet_nominal))
     annotation (Placement(transformation(extent={{150,4},{128,-18}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations pump6
+  IDEAS.Fluid.Movers.FlowControlled_dp pump6(
+        tau=30,
+        energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        inputType=IDEAS.Fluid.Types.InputType.Stages,
+        m_flow_nominal=hydronic.p06_m_flow,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.Stratos40slash1to12CANPN6slash10 per,
+        each dp_nominal(displayUnit="Pa") = 7.2*9804.139432,
+        dp_start=0,
+        redeclare package Medium = MediumWater)
                     "HeaCoi pump" annotation (Placement(transformation(
         extent={{-8,-8},{8,8}},
         rotation=90,
@@ -102,10 +169,22 @@ model VentilationSystem "Ventilation System with No KPI"
         extent={{-8,-8},{8,8}},
         rotation=90,
         origin={160,-52})));
-  replaceable IDEAS.Fluid.Interfaces.PartialTwoPortInterface[10] dp_ducts_extract
+  IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent[10] dp_ducts_extract(
+      allowFlowReversal=false,
+          m_flow_nominal=air.m_nominal_extract_duct,
+          redeclare package Medium = MediumAir,
+          from_dp=true,
+      dpValve_nominal=50,
+      use_inputFilter=false)
    "pressure drops in extract ducts"
     annotation (Placement(transformation(extent={{32,10},{12,30}})));
-  replaceable IDEAS.Fluid.Interfaces.PartialTwoPortInterface[14] vav_extract
+IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent[14]    vav_extract(
+      allowFlowReversal=false,
+            use_inputFilter=false,
+            m_flow_nominal=air.m_nominal_extract_vav,
+            each dpValve_nominal=150,
+            redeclare package Medium = MediumAir,
+            from_dp=true)
     "vav supply ducts" annotation (Placement(transformation(
         extent={{8.5,-8.5},{-8.5,8.5}},
         rotation=0,
@@ -118,8 +197,7 @@ model VentilationSystem "Ventilation System with No KPI"
         extent={{6,-6},{-6,6}},
         rotation=0,
         origin={-28,20})));
-  replaceable Components.AHU_baseline
-                             aHU(
+        replaceable Components.AHU_nonGEOTABS aHU(
     dpAirCooCoi_nominal=0,
     dpAirHeaCoi_nominal=0,
     dpWatCooCoi_nominal(displayUnit="kPa") = 27100,
@@ -138,9 +216,10 @@ model VentilationSystem "Ventilation System with No KPI"
     THeaCoiWatSup_nominal=305.15,
     THeaCoiWatRet_nominal=301.15,
     THeaCoiAirSup_nominal=265.15,
-    THeaCoiAirRet_nominal=274.85)
+    THeaCoiAirRet_nominal=274.85,
+    epsRecovery=(0.745 + 0.789)/2)
   constrainedby
-    heaSys.e005.port_a2.Multizone_Commercial_Hydronic.SubSystems.VentilationSystem.Components.Dependencies.PartialAHU(
+    Multizone_Commercial_Hydronic.SubSystems.VentilationSystem.Components.Dependencies.PartialAHU(
     mFlowAirSup_nominal=10000*1.225/3600,
     mFlowAirRet_nominal=8850*1.225/3600,
     mFlowWatHeaCoi_nominal=hydronic.p09_m_flow,
@@ -167,13 +246,38 @@ model VentilationSystem "Ventilation System with No KPI"
     THeaCoiAirSup_nominal=265.15,
     THeaCoiAirRet_nominal=274.85)
     annotation (Placement(transformation(extent={{-84,-24},{-122,14}})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations pump9
+IDEAS.Fluid.Movers.FlowControlled_dp pump9(
+        tau=30,
+      energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=hydronic.p09_m_flow,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine32slash160dash1comma1slash2
+          per,
+        each dp_nominal(displayUnit="kPa") = 14*9804.139432,
+        inputType=IDEAS.Fluid.Types.InputType.Stages,
+        redeclare package Medium = MediumGlycol)
                     "HeaCoi pump" annotation (Placement(transformation(
         extent={{6.5,-7.5},{-6.5,7.5}},
         rotation=0,
         origin={-160.5,-38.5})));
-  replaceable IDEAS.Fluid.Interfaces.LumpedVolumeDeclarations pump13
-                                                                    "CooCoi pump" annotation (Placement(transformation(
+IDEAS.Fluid.Movers.FlowControlled_dp pump13(
+        tau=30,
+      energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        use_inputFilter=false,
+        allowFlowReversal=false,
+        addPowerToMedium=false,
+        massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+        m_flow_nominal=hydronic.p13_m_flow,
+        redeclare
+          IDEAS.Fluid.Movers.Data.Pumps.Wilo.VeroLine40slash120dash1comma5slash2
+          per,
+        redeclare package Medium = MediumWater,
+        inputType=IDEAS.Fluid.Types.InputType.Continuous,
+        each dp_nominal(displayUnit="kPa") = 40000) annotation (Placement(transformation(
         extent={{-7,-8},{7,8}},
         rotation=90,
         origin={-80,-61})));
@@ -328,12 +432,10 @@ model VentilationSystem "Ventilation System with No KPI"
         extent={{-6,-6},{6,6}},
         rotation=0,
         origin={160,0})));
-  Modelica.Fluid.Interfaces.FluidPort_b[21] airSupply(redeclare package
-      Medium =
+  Modelica.Fluid.Interfaces.FluidPort_b[21] airSupply(redeclare package Medium =
         MediumAir)       "air supply"
     annotation (Placement(transformation(extent={{146,90},{166,110}})));
-  Modelica.Fluid.Interfaces.FluidPort_a[21] airReturn(redeclare package
-      Medium =
+  Modelica.Fluid.Interfaces.FluidPort_a[21] airReturn(redeclare package Medium =
         MediumAir)       "air return"
     annotation (Placement(transformation(extent={{106,90},{126,110}})));
   Modelica.Blocks.Sources.RealExpression realExpression2(y=supplyFan.P +
@@ -342,15 +444,14 @@ model VentilationSystem "Ventilation System with No KPI"
   Modelica.Blocks.Interfaces.RealOutput total_P
     annotation (Placement(transformation(extent={{-200,66},{-220,86}})));
   replaceable package MediumWater = IDEAS.Media.Water constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+    Modelica.Media.Interfaces.PartialMedium;
    replaceable package MediumGlycol =
        IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
            property_T=273.15,
-           X_a=0.30) constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+           X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
 //     replaceable package MediumGlycol = IDEAS.Media.Water;
   replaceable package MediumAir = IDEAS.Media.Air(extraPropertiesNames={"CO2"}) constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+    Modelica.Media.Interfaces.PartialMedium;
   IDEAS.Fluid.Sensors.RelativePressure senRelPRet(redeclare package Medium =
         MediumAir)
     annotation (Placement(transformation(extent={{-56,42},{-36,62}})));
@@ -375,7 +476,32 @@ protected
   Modelica.Blocks.Sources.RealExpression CEnv[max(MediumAir.nC,1)](y=sim.CEnv.y*
         s_co2)
     annotation (Placement(transformation(extent={{-198,-26},{-180,-10}})));
+
+  Modelica.Blocks.Sources.Constant                       supplyCAV[7](k=1)
+    annotation (Placement(transformation(extent={{12,-16},{22,-6}})));
+  Modelica.Blocks.Sources.Constant                       extractCAV[10](k=1)
+    annotation (Placement(transformation(extent={{-20,64},{-8,76}})));
+  Modelica.Blocks.Sources.RealExpression extractVAV[14](y={air.m_nominal_extract_vav_min[
+        i]/air.m_nominal_extract_vav[i] + (1 - air.m_nominal_extract_vav_min[i]
+        /air.m_nominal_extract_vav[i])*signalBus.VAV_signal_extract[i] for i in
+            1:14})
+    annotation (Placement(transformation(extent={{2,80},{30,100}})));
+  Modelica.Blocks.Sources.RealExpression supplyVAV[15](y={air.m_nominal_supply_vav_min[
+        i]/air.m_nominal_supply_vav[i] + (1 - air.m_nominal_supply_vav_min[i]/
+        air.m_nominal_supply_vav[i])*signalBus.VAV_signal[i] for i in 1:15})
+    annotation (Placement(transformation(extent={{-40,-92},{-12,-72}})));
+
 equation
+
+  connect(supplyCAV.y, dp_ducts_supply.y)
+    annotation (Line(points={{22.5,-11},{42,-11},{42,-34}}, color={0,0,127}));
+  connect(extractCAV.y, dp_ducts_extract.y) annotation (Line(points={{-7.4,70},{
+          0,70},{0,36},{22,36},{22,32}},  color={0,0,127}));
+  connect(supplyVAV.y, vav_supply.y) annotation (Line(points={{-10.6,-82},{2,
+          -82},{2,-69.3},{42.5,-69.3}}, color={0,0,127}));
+  connect(extractVAV.y, vav_extract.y) annotation (Line(points={{31.4,90},{44,
+          90},{44,74},{22.5,74},{22.5,62.7}}, color={0,0,127}));
+
   connect(supplyFan.port_b, tAHUSupply.port_a)
     annotation (Line(points={{-16,-46},{-16,-46},{0,-46}}, color={0,127,255}));
   for i in 1:7 loop
@@ -416,7 +542,6 @@ equation
   connect(dp_ducts_supply[6].port_b, counterFlowHEX[20].port_a2);
   connect(dp_ducts_supply[7].port_b, counterFlowHEX[21].port_a2);
 
-
   connect(pump6.port_b, dp_HeaCoi_supply[2].port_a);
   connect(pump6.port_b, dp_HeaCoi_supply[3].port_a);
   connect(pump6.port_b, dp_HeaCoi_supply[4].port_a);
@@ -451,7 +576,6 @@ equation
           {160,-40}},           color={0,127,255}));
   connect(pump6.port_b, dp_HeaCoi_supply[1].port_a) annotation (Line(points={{160,-64},
           {160,-60}},                color={0,127,255}));
-
 
   connect(tAHUExtract.port_b, exhaustFan.port_a)
     annotation (Line(points={{-34,20},{-40,20},{-40,18},{-44,18}},
@@ -629,7 +753,6 @@ equation
   connect(tAirSupply[19].port_b, airSupply[19]); //sas
   connect(tAirSupply[20].port_b, airSupply[20]);
   connect(tAirSupply[21].port_b, airSupply[21]);
-
 
   //flr3
   connect(airReturn[1], vav_extract[1].port_a) annotation (Line(points={{116,

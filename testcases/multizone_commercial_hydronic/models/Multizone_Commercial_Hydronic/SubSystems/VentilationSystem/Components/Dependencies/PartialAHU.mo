@@ -2,7 +2,10 @@ within Multizone_Commercial_Hydronic.SubSystems.VentilationSystem.Components.Dep
 partial model PartialAHU "air handling unit of INFRAX"
 
   replaceable package MediumAir = IDEAS.Media.Air;
-  replaceable package MediumHeaCoi = IDEAS.Media.Water;
+  replaceable package MediumHeaCoi =
+      IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
+           property_T=273.15,
+           X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
   replaceable package MediumCooCoi = IDEAS.Media.Water;
 
     extends IDEAS.Fluid.Interfaces.PartialFourPortInterface(redeclare final
@@ -107,29 +110,69 @@ equation
             -100},{100,100}})),           Icon(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={
         Rectangle(
-          heaSys.e005.port_a2.extent),
+          extent={{-100,100},{100,-100}},
+          lineColor={0,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
         Polygon(
-          heaSys.e005.port_a2.points),
+          points={{0,58},{-40,18},{0,-22},{40,18},{0,58}},
+          lineColor={0,0,0},
+          smooth=Smooth.None,
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
         Line(
-          heaSys.e005.port_a2.points),
+          points={{-100,60},{-26,60},{0,34},{26,60},{98,60}},
+          color={0,0,0},
+          smooth=Smooth.None),
         Line(
-          heaSys.e005.port_a2.points),
+          points={{100,-62},{26,-62},{26,-26},{0,0},{-28,-28},{-28,-62},{-100,
+              -62}},
+          color={0,0,0},
+          smooth=Smooth.None),
         Rectangle(
-          heaSys.e005.port_a2.extent),
+          extent={{-76,-36},{-50,-86}},
+          lineColor={0,128,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
         Rectangle(
-          heaSys.e005.port_a2.extent),
+          extent={{52,-34},{78,-84}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
         Text(
-          heaSys.e005.port_a2.extent),
+          extent={{58,-50},{70,-72}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="+"),
         Text(
-          heaSys.e005.port_a2.extent),
+          extent={{-76,-48},{-50,-70}},
+          lineColor={0,0,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="-"),
         Line(
-          heaSys.e005.port_a2.points),
+          points={{-38,-60},{-38,-84},{0,-100}},
+          color={0,0,255},
+          smooth=Smooth.None,
+          pattern=LinePattern.Dash),
         Text(
-          heaSys.e005.port_a2.extent),
+          extent={{-42,-40},{-32,-60}},
+          lineColor={0,0,0},
+          pattern=LinePattern.Dash,
+          textString="T"),
         Text(
-          heaSys.e005.port_a2.extent),
+          extent={{-74,-82},{-48,-104}},
+          lineColor={0,0,255},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="-"),
         Text(
-          heaSys.e005.port_a2.extent)}),
+          extent={{54,-82},{66,-104}},
+          lineColor={255,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid,
+          textString="+")}),
               Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end PartialAHU;

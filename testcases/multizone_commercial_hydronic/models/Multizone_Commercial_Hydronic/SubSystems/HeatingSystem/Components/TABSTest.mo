@@ -680,10 +680,7 @@ equation
   connect(ramp.y, TWVTABS.y) annotation (Line(points={{-127,-26},{-98,-26},{-98,
           -84},{-69.6,-84}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-140},
-            {120,100}}),                                        graphics={
-          Rectangle(
-          heaSys.e005.port_a2.extent),                                   Text(
-          heaSys.e005.port_a2.extent)}),
+            {120,100}}),                                        graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={
             {-100,-140},{120,100}})),
     experiment(

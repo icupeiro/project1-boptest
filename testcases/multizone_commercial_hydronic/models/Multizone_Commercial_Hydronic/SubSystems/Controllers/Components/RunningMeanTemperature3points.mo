@@ -49,13 +49,13 @@ equation
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
         graphics={
         Rectangle(
-          heaSys.e005.port_a2.extent),
+          heaSys(     port_a2)),
         Line(
-          heaSys.e005.port_a2.points),
+          heaSys(     port_a2)),
         Text(
-          heaSys.e005.port_a2.extent),
+          heaSys(     port_a2)),
         Text(
-          heaSys.e005.port_a2.extent)}),
+          heaSys(     port_a2))}),
 Documentation(revisions="<html>
 <ul>
 <li>

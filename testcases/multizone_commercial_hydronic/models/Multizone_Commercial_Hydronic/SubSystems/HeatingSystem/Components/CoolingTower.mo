@@ -1,25 +1,36 @@
 within Multizone_Commercial_Hydronic.SubSystems.HeatingSystem.Components;
 model CoolingTower
-//   replaceable package MediumGlycol =
-//       IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
-//           property_T=273.15,
-//           X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
-    replaceable package MediumGlycol = IDEAS.Media.Water;
-Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coolingTower(
-    allowFlowReversal=false,
-    redeclare final package Medium = IDEAS.Media.Water,
-    m_flow_nominal=hydronic.p11_m_flow,
-    dp_nominal=35000,
-    TAirInWB_nominal=273.15 + 22.2,
-    TRan_nominal=5,
-    PFan_nominal=4700,
-    TApp_nominal=7.5,
-    fraPFan_nominal=coolingTower.PFan_nominal/hydronic.p11_m_flow,
-    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-    tau=3600,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState)
-                        "cooling tower"
-    annotation (Placement(transformation(extent={{6,76},{26,96}})));
+   replaceable package MediumGlycol =
+       IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
+           property_T=273.15,
+           X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
+//    replaceable package MediumGlycol = IDEAS.Media.Water;
+   package MediumAir = IDEAS.Media.Air;
+   parameter Modelica.SIunits.MassFlowRate mAirCooTow = 9;
+
+IBPSA.Fluid.HeatExchangers.DryCoilEffectivenessNTU cooTow(
+    allowFlowReversal2=false,
+    m1_flow_nominal=mAirCooTow,
+    m2_flow_nominal=hydronic.p11_m_flow,
+    dp1_nominal=0,
+    dp2_nominal=35000,
+    configuration=IBPSA.Fluid.Types.HeatExchangerConfiguration.CrossFlowUnmixed,
+    use_Q_flow_nominal=false,
+    eps_nominal=0.85,
+    UA=-150000/Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
+        30,
+        22.5,
+        29.5,
+        34.5),
+    allowFlowReversal1=false,
+    redeclare package Medium1 = MediumAir,
+    redeclare package Medium2 = MediumGlycol)
+                                             "Cooling tower" annotation (
+      Placement(transformation(
+        extent={{-10,10},{10,-10}},
+        rotation=180,
+        origin={18,92})));
+
 
   IDEAS.Fluid.Sensors.TemperatureTwoPort t26(
     m_flow_nominal=hydronic.p11_m_flow,
@@ -137,22 +148,22 @@ Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coolingTower(
         MediumGlycol)      annotation (Placement(transformation(rotation=0,
           extent={{88,20},{112,40}})));
   IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_hex_sup(
+    allowFlowReversal=false,
     use_inputFilter=false,
     m_flow_nominal=hydronic.p11_m_flow,
     dpValve_nominal=0.01,
-    l=1e-10,
-    redeclare package Medium = MediumGlycol)
-                          annotation (Placement(transformation(
+    redeclare package Medium = MediumGlycol,
+    dpFixed_nominal=0.01) annotation (Placement(transformation(
         extent={{-6,-6},{6,6}},
         rotation=90,
         origin={-14,-6})));
   IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_hex_ret(
+    allowFlowReversal=false,
     use_inputFilter=false,
     m_flow_nominal=hydronic.p11_m_flow,
     dpValve_nominal=0.01,
-    l=1e-10,
-    redeclare package Medium = MediumGlycol)
-                          annotation (Placement(transformation(
+    redeclare package Medium = MediumGlycol,
+    dpFixed_nominal=0.01) annotation (Placement(transformation(
         extent={{-6,6},{6,-6}},
         rotation=-90,
         origin={60,-6})));
@@ -187,9 +198,8 @@ Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coolingTower(
     m_flow_nominal=hydronic.p11_m_flow,
     dpValve_nominal=0.01,
     allowFlowReversal=false,
-    l=1e-10,
-    redeclare package Medium = MediumGlycol)
-                           annotation (Placement(transformation(
+    redeclare package Medium = MediumGlycol,
+    dpFixed_nominal=0.01)  annotation (Placement(transformation(
         extent={{7,-7},{-7,7}},
         rotation=0,
         origin={27,13})));
@@ -198,9 +208,8 @@ Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coolingTower(
     m_flow_nominal=hydronic.p11_m_flow,
     dpValve_nominal=0.01,
     allowFlowReversal=false,
-    l=1e-10,
-    redeclare package Medium = MediumGlycol)
-                          annotation (Placement(transformation(
+    redeclare package Medium = MediumGlycol,
+    dpFixed_nominal=0.01) annotation (Placement(transformation(
         extent={{-7,-7},{7,7}},
         rotation=0,
         origin={83,31})));
@@ -242,8 +251,26 @@ Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc coolingTower(
     annotation (Placement(transformation(extent={{82,66},{94,78}})));
   Modelica.Blocks.Interfaces.RealOutput P_CT annotation (Placement(
         transformation(rotation=0, extent={{100,80},{120,100}})));
-  Modelica.Blocks.Sources.RealExpression realExpression(y=coolingTower.PFan)
+  Modelica.Blocks.Sources.RealExpression realExpression(y=4700*(gain.u)^3)
     annotation (Placement(transformation(extent={{72,80},{92,100}})));
+  IDEAS.Fluid.Sources.OutsideAir outsideAir(redeclare package Medium =
+        MediumAir,       nPorts=2)
+    annotation (Placement(transformation(extent={{102,120},{82,140}})));
+  IDEAS.Fluid.Movers.FlowControlled_m_flow
+                                       cooTowFan(
+    allowFlowReversal=false,
+    massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    addPowerToMedium=false,
+    nominalValuesDefineDefaultPressureCurve=true,
+    use_inputFilter=false,
+    tau=60,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    m_flow_nominal=mAirCooTow,
+    dp_nominal(displayUnit="Pa") = 0,
+    redeclare package Medium = MediumAir)
+    annotation (Placement(transformation(extent={{76,130},{56,110}})));
+  Modelica.Blocks.Math.Gain gain(k=mAirCooTow)
+    annotation (Placement(transformation(extent={{-46,98},{-26,118}})));
 equation
   connect(p10.port_b,t31. port_a)
     annotation (Line(points={{-1,-52},{-1,-36}},          color={0,127,255}));
@@ -253,18 +280,12 @@ equation
           {30,-34}},       color={0,127,255}));
   connect(p11.port_b,t26. port_a)
     annotation (Line(points={{-14,50},{-14,62}},          color={0,127,255}));
-  connect(t26.port_b,coolingTower. port_a)
-    annotation (Line(points={{-14,72},{-14,86},{6,86}},   color={0,127,255}));
-  connect(TLvg, coolingTower.TLvg) annotation (Line(points={{110,-60},{110,
-          -60},{70,-60},{70,80},{27,80}},
-                              color={0,0,127}));
   connect(port_a, p10.port_a)
     annotation (Line(points={{-1,-100},{-1,-66}},       color={0,127,255}));
   connect(t26.T, dataBus.T26);
   connect(t27.T, dataBus.T27);
   connect(t31.T, dataBus.T31);
   connect(t32.T, dataBus.T32);
-  connect(coolingTower.TAir, signalBus.Twet);
   connect(p11.stage, signalBus.P11_signal);
   connect(p10.stage, signalBus.P10_signal);
   connect(e006.port_b2, val_hex_sup.port_a) annotation (Line(points={{10,-15.2},
@@ -316,8 +337,6 @@ equation
           {30,-44},{30,-53},{30,-62}}, color={0,127,255}));
   connect(dp_fixed_e006_primary.port_b, port_b) annotation (Line(points={{30,
           -78},{30,-78},{30,-100}}, color={0,127,255}));
-  connect(coolingTower.port_b, dp_fixed_e006_primary1.port_a)
-    annotation (Line(points={{26,86},{34,86}}, color={0,127,255}));
   connect(dp_fixed_e006_primary1.port_b, t27.port_a) annotation (Line(points=
           {{50,86},{61.5,86},{61.5,72}}, color={0,127,255}));
   connect(port_a1, dp_fixed_e006_primary2.port_a) annotation (Line(points={{
@@ -336,12 +355,26 @@ equation
       visible=false));
   connect(realExpression.y, P_CT)
     annotation (Line(points={{93,90},{110,90}}, color={0,0,127}));
-  connect(coolingTower.y, signalBus.CT_signal) annotation (Line(points={{4,94},
-          {-138,94},{-138,-20}}, color={0,0,127}), Text(
+  connect(t27.T, TLvg) annotation (Line(points={{68.65,65},{68.65,-60},{110,-60}},
+        color={0,0,127}));
+  connect(dp_fixed_e006_primary1.port_a, cooTow.port_b2)
+    annotation (Line(points={{34,86},{28,86}}, color={0,127,255}));
+  connect(cooTow.port_a2, t26.port_b)
+    annotation (Line(points={{8,86},{-14,86},{-14,72}}, color={0,127,255}));
+  connect(cooTowFan.port_a, outsideAir.ports[1]) annotation (Line(points={{76,120},
+          {80,120},{80,132},{82,132}}, color={0,127,255}));
+  connect(cooTowFan.port_b, cooTow.port_a1) annotation (Line(points={{56,120},{42,
+          120},{42,98},{28,98}}, color={0,127,255}));
+  connect(cooTow.port_b1, outsideAir.ports[2]) annotation (Line(points={{8,98},{
+          -14,98},{-14,128},{82,128}}, color={0,127,255}));
+  connect(gain.y, cooTowFan.m_flow_in)
+    annotation (Line(points={{-25,108},{66,108}}, color={0,0,127}));
+  connect(gain.u, signalBus.CT_signal) annotation (Line(points={{-48,108},{-138,
+          108},{-138,-20}}, color={0,0,127}), Text(
       string="%second",
       index=1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
-  annotation (Diagram(coordinateSystem(extent={{-140,-100},{100,100}})), Icon(
-        coordinateSystem(extent={{-140,-100},{100,100}})));
+  annotation (Diagram(coordinateSystem(extent={{-140,-100},{100,140}})), Icon(
+        coordinateSystem(extent={{-140,-100},{100,140}})));
 end CoolingTower;

@@ -253,8 +253,7 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   annotation (
     defaultComponentName="weaBus",
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
-            100}}), graphics={Rectangle(
-          heaSys(     port_a2))}),
+            100}}), graphics),
     Documentation(info="<html>
 <p>
 This component is an expandable connector that is used to implement a bus that contains the weather data.

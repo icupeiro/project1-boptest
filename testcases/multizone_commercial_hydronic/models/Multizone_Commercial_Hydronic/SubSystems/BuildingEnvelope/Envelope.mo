@@ -1,7 +1,7 @@
 within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope;
 model Envelope "Envelope of Multizone_Commercial_Hydronic"
   replaceable package Medium = IDEAS.Media.Air(extraPropertiesNames={"CO2"}) constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+    Modelica.Media.Interfaces.PartialMedium;
   outer IDEAS.BoundaryConditions.SimInfoManager sim(incAndAziInBus={{IDEAS.Types.Tilt.Floor,
         0},{IDEAS.Types.Tilt.Ceiling,0},{IDEAS.Types.Tilt.Wall,0},{IDEAS.Types.Tilt.Wall,
         Multizone_Commercial_Hydronic.Data.Orientations.E},{IDEAS.Types.Tilt.Wall,Multizone_Commercial_Hydronic.Data.Orientations.W},
@@ -83,7 +83,7 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     azi={Multizone_Commercial_Hydronic.Data.Orientations.N,Multizone_Commercial_Hydronic.Data.Orientations.E},
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.OuterWalls constructionType,
     A=structure.h*{2.55,5} - {structure.AWindows_eastStair,0},
-    T_start=T_start)
+    each T_start=T_start)
    "Array of outer walls for eastern stairs"
    annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
@@ -102,7 +102,7 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
         extent={{-6,-10},{6,10}},
         rotation=-90,
         origin={70,88})));
-  replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor3.Floor3 floor3(energyDynamicsAir=energyDynamicsAir, redeclare
+  replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor3.Floor3 floor3(                                     redeclare
       package Medium =
                Medium,
     mSenFac=mSenFac,
@@ -110,7 +110,7 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     T_start=T_start)
   "Third floor component"
     annotation (Placement(transformation(extent={{-12,50},{16,70}})));
-  replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor2.Floor2 floor2(energyDynamicsAir=energyDynamicsAir, redeclare
+  replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor2.Floor2 floor2(redeclare
       package Medium =
                Medium,
     mSenFac=mSenFac,
@@ -118,7 +118,7 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     T_start=T_start)
   "Second floor component"
     annotation (Placement(transformation(extent={{-12,8},{16,28}})));
- replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor1.Floor1 floor1(energyDynamicsAir=energyDynamicsAir, redeclare
+ replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor1.Floor1 floor1(redeclare
       package Medium =
                Medium,
     mSenFac=mSenFac,
@@ -126,7 +126,7 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     T_start=T_start)
   "First floor component"
     annotation (Placement(transformation(extent={{-12,-38},{16,-18}})));
-  replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor0.Floor0 floor0(energyDynamicsAir=energyDynamicsAir, redeclare
+  replaceable Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor0.Floor0 floor0( redeclare
       package Medium =
                Medium,
     mSenFac=mSenFac,
@@ -136,10 +136,10 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     annotation (Placement(transformation(extent={{-12,-74},{16,-54}})));
   IDEAS.Buildings.Components.InternalWall[8] floor_0_garage(
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.Floor constructionType,
-    inc=IDEAS.Types.Tilt.Floor,
+    each inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=strGndFlr.Areas_GndFlr,
-    T_start=T_start)
+    each T_start=T_start)
   "Floor wall between ground floor and garage/parking"
    annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
@@ -223,7 +223,6 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
         origin={100,60})));
   IDEAS.Buildings.Components.InternalWall Floor_0_2(
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_hall_2SZ,
@@ -235,12 +234,12 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
         origin={-34,-16})));
   IDEAS.Buildings.Components.Window[2] brandkoepels(
     redeclare IDEAS.Buildings.Components.Shading.None shaType,
-    inc=IDEAS.Types.Tilt.Ceiling,
+    each inc=IDEAS.Types.Tilt.Ceiling,
     azi=0,
     frac=0,
     A=structure.A_stairs_koepel,
     redeclare IDEAS.Buildings.Data.Frames.None fraType,
-    T_start=T_start,
+    each T_start=T_start,
     redeclare IDEAS.Examples.TwinHouses.BaseClasses.Data.Materials.Glazing
       glazing) "domes from stairs (cupulas)" annotation (Placement(
         transformation(
@@ -252,7 +251,7 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     inc={IDEAS.Types.Tilt.Wall,IDEAS.Types.Tilt.Ceiling},
     azi={Multizone_Commercial_Hydronic.Data.Orientations.W,0},
     A={structure.AWall_Grg_Out,structure.A_Grg_OutRoof},
-    T_start=T_start)
+    each T_start=T_start)
     "Garage outer walls, on west and roof side"
     annotation (Placement(transformation(extent={{-90,-96},{-78,-76}})));
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b[35] cca
@@ -269,10 +268,6 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[27] rad
   "Heat port for radiative heat transfer"
     annotation (Placement(transformation(extent={{130,-90},{150,-70}})));
-  parameter Modelica.Fluid.Types.Dynamics energyDynamicsTABS=Modelica.Fluid.Types.Dynamics.FixedInitial
-    "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
-  parameter Modelica.Fluid.Types.Dynamics energyDynamicsAir=Modelica.Fluid.Types.Dynamics.FixedInitial
-    "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
   parameter Boolean allowFlowReversal = true
     "= false to simplify equations, assuming, but not enforcing, no flow reversal"
     annotation(Dialog(tab="Assumptions"), Evaluate=true);
@@ -306,339 +301,340 @@ model Envelope "Envelope of Multizone_Commercial_Hydronic"
     azi=0,
     A=structure.A_2Flr_3Flr[1],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)        annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_2(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[2],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_3(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[3],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_4(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[4],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_5(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[5],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_6(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[6],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_7(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[7],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_2_3_8(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_2Flr_3Flr[8],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)         annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,38})));
+    //energyDynamics=energyDynamicsTABS,
       IDEAS.Buildings.Components.InternalWall Floor_0_1_1(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[1],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_2(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[2],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_3(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[3],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_4(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[4],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_5(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[5],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_6(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[6],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_7(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[7],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_8(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[8],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_9(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[9],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_10(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[10],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_11(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[11],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_12(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[12],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_13(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[13],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_14(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[14],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_0_1_15(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[15],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
    IDEAS.Buildings.Components.InternalWall Floor_0_1_16(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     A=structure.A_GndFlr_1stFlr[16],
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-46})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_1(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[1],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_2(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[2],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_3(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[3],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_4(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[4],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_5(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[5],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_6(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[6],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   IDEAS.Buildings.Components.InternalWall Floor_1_2_7(
     inc=IDEAS.Types.Tilt.Floor,
     azi=0,
     A=structure.A_1Flr_2Flr[7],
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.InnerFloor constructionType,
-    energyDynamics=energyDynamicsTABS,
     T_start=T_start)
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={4,-4})));
+    //energyDynamics=energyDynamicsTABS,
   parameter Real mSenFac=5
     "Correction factor for thermal capacity of zone air.";
   replaceable IDEAS.Fluid.Movers.FlowControlled_dp     toiletExtract(
     massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     addPowerToMedium=false,
+    nominalValuesDefineDefaultPressureCurve=true,
     use_inputFilter=false,
     allowFlowReversal=false,
     tau=60,

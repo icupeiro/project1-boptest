@@ -14,7 +14,10 @@ The following libraries must be on the MODELICAPATH:
 from parsing import parser
 from pymodelica import environ
 
-environ['JVM_ARGS'] = '-Xmx4096m'
+#environ['JVM_ARGS'] = '-Xmx4096m'
+#environ['JVM_ARGS'] = '-Xmx8192m'
+#environ['JVM_ARGS'] = '-Xmx16384m'
+environ['JVM_ARGS'] = '-Xmx22g'
 
 def compile_fmu():
     '''Compile the fmu.
@@ -30,6 +33,7 @@ def compile_fmu():
     # ------------
     mopath      = 'Multizone_Commercial_Hydronic'
     modelpath   = 'Multizone_Commercial_Hydronic.Testcase'
+    #modelpath   = 'Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.EnvelopeSim'
     # ------------
 
     # COMPILE FMU

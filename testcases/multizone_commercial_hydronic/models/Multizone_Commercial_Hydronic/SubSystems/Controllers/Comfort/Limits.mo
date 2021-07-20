@@ -31,6 +31,14 @@ model Limits
   Multizone_Commercial_Hydronic.SubSystems.Controllers.Components.Clock
                              clock
     annotation (Placement(transformation(extent={{0,60},{20,80}})));
+initial equation
+  for i in 1:nZones loop
+    intOverh[i] = 0;
+    intOverhSoft[i] = 0;
+    intUnderSoft[i] = 0;
+    intUnder[i] = 0;
+  end for;
+
 equation
   for i in 1:nZones loop
     if TSensor[i]>THardUp then
@@ -75,55 +83,6 @@ equation
   connect(Tavg, realExpression.y) annotation (Line(points={{155,-11},{130,-11},
           {130,-11},{103.2,-11}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-160},{140,100}}),
-                                                                graphics={
-        Rectangle(
-          heaSys.e005.port_a2.extent),
-        Polygon(
-          heaSys.e005.port_a2.points),
-        Polygon(
-          heaSys.e005.port_a2.points),
-        Polygon(
-          heaSys.e005.port_a2.points),
-        Polygon(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Line(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Line(
-          heaSys.e005.port_a2.points),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Line(
-          heaSys.e005.port_a2.points),
-        Polygon(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Line(
-          heaSys.e005.port_a2.points),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Ellipse(
-          heaSys.e005.port_a2.extent),
-        Line(
-          heaSys.e005.port_a2.points),
-        Line(
-          heaSys.e005.port_a2.points)}),                         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-160},{140,100}})));
+                                                                graphics),
+                                                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-160},{140,100}})));
 end Limits;

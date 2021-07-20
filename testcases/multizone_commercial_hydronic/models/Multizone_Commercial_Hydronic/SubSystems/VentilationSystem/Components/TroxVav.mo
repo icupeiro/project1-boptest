@@ -70,7 +70,7 @@ equation
               Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),
     Icon(graphics={
-        Rectangle(heaSys.e005.port_a2.extent),
-        Line(heaSys.e005.port_a2.points),
-        Line(heaSys.e005.port_a2.points)}));
+        Rectangle(heaSys(     port_a2)),
+        Line(heaSys(     port_a2)),
+        Line(heaSys(     port_a2))}));
 end TroxVav;

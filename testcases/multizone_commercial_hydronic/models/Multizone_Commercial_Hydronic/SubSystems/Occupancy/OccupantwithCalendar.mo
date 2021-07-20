@@ -46,27 +46,7 @@ for i in 1:nZones loop
           71},{-56,110}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,
             -100},{200,100}}),
-                         graphics={
-        Rectangle(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Text(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2))}),
+                         graphics),
                                  Diagram(coordinateSystem(preserveAspectRatio=false,
           extent={{-200,-100},{200,100}})));
 end OccupantwithCalendar;

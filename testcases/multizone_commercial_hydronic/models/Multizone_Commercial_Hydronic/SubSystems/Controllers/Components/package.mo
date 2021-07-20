@@ -52,13 +52,13 @@ public
       Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
           graphics={
           Rectangle(
-            heaSys.e005.port_a2.extent),
+            heaSys),
           Line(
-            heaSys.e005.port_a2.points),
+            heaSys),
           Text(
-            heaSys.e005.port_a2.extent),
+            heaSys),
           Text(
-            heaSys.e005.port_a2.extent)}),
+            heaSys)}),
   Documentation(revisions="<html>
 <ul>
 <li>
@@ -91,27 +91,31 @@ First implementation.
             20}}, color={0,0,127}));
     connect(weekDayExp.y, weekDay)
       annotation (Line(points={{1,-20},{110,-20}}, color={0,0,127}));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-                                  Rectangle(
-          heaSys(     port_a2)),          Text(
-          heaSys(     port_a2)),
-          Ellipse(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
-          Line(heaSys(     port_a2)),
+    annotation (    Icon(coordinateSystem(
+          preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Ellipse(extent={{-80,80},{80,-80}}, lineColor={160,160,164},
+            fillColor={215,215,215},
+            fillPattern=FillPattern.Solid),
+          Line(points={{0,80},{0,60}}, color={160,160,164}),
+          Line(points={{80,0},{60,0}}, color={160,160,164}),
+          Line(points={{0,-80},{0,-60}}, color={160,160,164}),
+          Line(points={{-80,0},{-60,0}}, color={160,160,164}),
+          Line(points={{37,70},{26,50}}, color={160,160,164}),
+          Line(points={{70,38},{49,26}}, color={160,160,164}),
+          Line(points={{71,-37},{52,-27}}, color={160,160,164}),
+          Line(points={{39,-70},{29,-51}}, color={160,160,164}),
+          Line(points={{-39,-70},{-29,-52}}, color={160,160,164}),
+          Line(points={{-71,-37},{-50,-26}}, color={160,160,164}),
+          Line(points={{-71,37},{-54,28}}, color={160,160,164}),
+          Line(points={{-38,70},{-28,51}}, color={160,160,164}),
           Line(
-            heaSys(     port_a2)),
+            points={{0,0},{-50,50}},
+            thickness=0.5),
           Line(
-            heaSys(     port_a2))}),                               Diagram(
+            points={{0,0},{40,0}},
+            thickness=0.5)}),                                                  Diagram(
           coordinateSystem(preserveAspectRatio=false)));
   end Clock;
 end Components;

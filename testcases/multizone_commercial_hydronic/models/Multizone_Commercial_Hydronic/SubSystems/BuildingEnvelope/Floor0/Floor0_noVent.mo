@@ -2,7 +2,7 @@ within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor0;
 model Floor0_noVent
 
   replaceable package Medium = IDEAS.Media.Air constrainedby
-    heaSys.e005.port_a2.Modelica.Media.Interfaces.PartialMedium;
+    Modelica.Media.Interfaces.PartialMedium;
   //CHANGE MEETING ROOM 2 FACES B (WOOD WALL) AND C
   //REARRANGE HALL AND MEETING ROOM1; ENTRANCE AS A PART OF THE HALL
   //MEETINGROOM1 simpleglass, same frame ratio as window1st floor
@@ -11,7 +11,6 @@ model Floor0_noVent
   IDEAS.Buildings.Components.Zone kitchen(
     V=strGndFlr.Vol_GndFlr_KT,
     hZone=strGndFlr.HeightGndFlr,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -21,6 +20,7 @@ model Floor0_noVent
     redeclare IDEAS.Buildings.Components.Occupants.Fixed occNum)
    "Kitchen lunch room zone"
     annotation (Placement(transformation(extent={{80,-20},{120,20}})));
+    //energyDynamicsAir=energyDynamicsAir,
   Multizone_Commercial_Hydronic.Data.Parameters.StrGndFlr strGndFlr "Record with ground floor data"
     annotation (Placement(transformation(extent={{120,-100},{140,-80}})));
   IDEAS.Buildings.Components.OuterWall[2] KTouterWalls(
@@ -28,7 +28,7 @@ model Floor0_noVent
     each inc=IDEAS.Types.Tilt.Wall,
     azi={Multizone_Commercial_Hydronic.Data.Orientations.E,Multizone_Commercial_Hydronic.Data.Orientations.S},
     A=strGndFlr.AWall_GndFlr_KT,
-    T_start=T_start)
+    each T_start=T_start)
     "Kitchen/lunchroom outer walls"
     annotation (Placement(transformation(extent={{100,-46},{88,-26}})));
 
@@ -36,6 +36,7 @@ model Floor0_noVent
     annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
   IDEAS.Buildings.Components.RectangularZoneTemplate MT1(
     bouTypB=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
+    nSurfExt=1,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.PlasterWall conTypB,
     bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
     bouTypC=IDEAS.Buildings.Components.Interfaces.BoundaryType.OuterWall,
@@ -50,15 +51,11 @@ model Floor0_noVent
     w=strGndFlr.w_GndFlr_MT2,
     bouTypFlo=IDEAS.Buildings.Components.Interfaces.BoundaryType.External,
     bouTypCei=IDEAS.Buildings.Components.Interfaces.BoundaryType.External,
-    hasWinC=true,
+    hasWinC=false,
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.GlasswoolWall conTypC,
     A_winC=strGndFlr.AWindows_GndFlr_MT2,
     redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraTypC,
-    energyDynamicsAir=energyDynamicsAir,
-    n50=1.3,
-    redeclare package Medium = Medium,
-    mSenFac=mSenFac,
-    shaTypC(
+        shaTypC(
       controlled=false,
       shaType=IDEAS.Buildings.Components.Shading.Interfaces.ShadingType.OverhangAndHorizontalFins,
       hWin=strGndFlr.WindowGndHeight,
@@ -71,6 +68,9 @@ model Floor0_noVent
       w=0.17,
       t=0.032,
       beta=0.5235987755983),
+    n50=1.3,
+    redeclare package Medium = Medium,
+    mSenFac=mSenFac,
     T_start=T_start,
     redeclare IDEAS.Buildings.Components.Occupants.Fixed occNum,
     redeclare IDEAS.Buildings.Components.OccupancyType.OfficeWork occTyp,
@@ -78,13 +78,27 @@ model Floor0_noVent
       glazingC)
     "Big meeting room 1, placed on right just when entering the building"
     annotation (Placement(transformation(extent={{-2,-42},{22,-18}})));
+ //   shaTypC(
+//       controlled=false,
+//       shaType=Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins,
+//       hWin=strGndFlr.WindowGndHeight,
+//       wWin=2.7 + 1.35,
+//       wLeft=1.35/2,
+//       wRight=1.35/2,
+//       ovDep=5.7,
+//       ovGap=8.17 - strGndFlr.WindowGndHeight,
+//       s=0.175,
+//       w=0.17,
+//       t=0.032,
+//       beta=0.5235987755983),
+
+    //energyDynamicsAir=energyDynamicsAir,
 
 
   IDEAS.Buildings.Components.Zone hall(
     hZone=strGndFlr.HeightGndFlr,
     V=strGndFlr.Vol_GndFlr_HR,
     A=strGndFlr.A_GndFlr_HR,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -92,6 +106,7 @@ model Floor0_noVent
     nSurf=22)
     "Entrance hall of the building"
     annotation (Placement(transformation(extent={{-76,-42},{-34,0}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.RectangularZoneTemplate FirstAid(
     redeclare Multizone_Commercial_Hydronic.Data.Constructions.Floor conTypFlo,
     bouTypA=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
@@ -110,24 +125,24 @@ model Floor0_noVent
     bouTypFlo=IDEAS.Buildings.Components.Interfaces.BoundaryType.External,
     bouTypCei=IDEAS.Buildings.Components.Interfaces.BoundaryType.External,
     nSurfExt=1,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
     T_start=T_start)
     "First aid room"
     annotation (Placement(transformation(extent={{0,40},{20,60}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.Zone servers(
     V=strGndFlr.Vol_GndFlr_SV,
     hZone=strGndFlr.HeightGndFlr,
     nSurf=9,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
     T_start=T_start)
     "Room with servers"
     annotation (Placement(transformation(extent={{46,44},{72,68}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.OuterWall northWall_SV(
     redeclare replaceable Multizone_Commercial_Hydronic.Data.Constructions.OuterWalls constructionType,
     inc=IDEAS.Types.Tilt.Wall,
@@ -169,24 +184,24 @@ model Floor0_noVent
     bouTypFlo=IDEAS.Buildings.Components.Interfaces.BoundaryType.External,
     bouTypB=IDEAS.Buildings.Components.Interfaces.BoundaryType.InternalWall,
     bouTypCei=IDEAS.Buildings.Components.Interfaces.BoundaryType.External,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
     T_start=T_start)
   "Bathroom zone, not conditioned with air extraction"
     annotation (Placement(transformation(extent={{-100,60},{-80,80}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.Zone storage(
     V=strGndFlr.Vol_GndFlr_Sto,
     hZone=strGndFlr.HeightGndFlr,
     nSurf=7,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
     T_start=T_start)
   "Storage rooms in ground floor"
     annotation (Placement(transformation(extent={{108,48},{128,68}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.OuterWall northWall_sto(
     redeclare replaceable Multizone_Commercial_Hydronic.Data.Constructions.OuterWalls constructionType,
     inc=IDEAS.Types.Tilt.Wall,
@@ -224,7 +239,6 @@ model Floor0_noVent
     V=strGndFlr.Vol_GndFlr_MT1,
     hZone=strGndFlr.HeightGndFlr,
     nSurf=8,
-    energyDynamicsAir=energyDynamicsAir,
     n50=1.3,
     redeclare package Medium = Medium,
     mSenFac=mSenFac,
@@ -233,12 +247,13 @@ model Floor0_noVent
     redeclare IDEAS.Buildings.Components.OccupancyType.OfficeWork occTyp)
   "Smaller meeting room, placed just left of the buildings entrance"
     annotation (Placement(transformation(extent={{-102,-82},{-78,-58}})));
+    //energyDynamicsAir=energyDynamicsAir,
   IDEAS.Buildings.Components.OuterWall[3] outerWall_MT1(
     redeclare replaceable Multizone_Commercial_Hydronic.Data.Constructions.OuterWalls constructionType,
     each inc=IDEAS.Types.Tilt.Wall,
     A=strGndFlr.AWall_GndFlr_MT1,
     azi={Multizone_Commercial_Hydronic.Data.Orientations.E,Multizone_Commercial_Hydronic.Data.Orientations.S,Multizone_Commercial_Hydronic.Data.Orientations.inc},
-    T_start=T_start)
+    each T_start=T_start)
   "Array of outer walls for the big meeting room"
     annotation (Placement(transformation(extent={{-132,-76},{-120,-56}})));
   IDEAS.Buildings.Components.OuterWall outerWall_HR(
@@ -344,20 +359,20 @@ model Floor0_noVent
       redeclare Multizone_Commercial_Hydronic.Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing,
       A=strGndFlr.AWindows_GndFlr_MT1[2],
       azi=Multizone_Commercial_Hydronic.Data.Orientations.inc,
-      redeclare IDEAS.Buildings.Components.Shading.BuildingShade shaType(
+      T_start=T_start,
+      redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.BuildingShade shaType(
       hWin=strGndFlr.WindowHeight,
       L=5.0,
-      dh=10.0 - 2.04),
-      T_start=T_start)
+      dh=10.0 - 2.04))
   "Small meeting room western window"
     annotation (Placement(transformation(extent={{-132,-100},{-120,-80}})));
+//       redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.BuildingShade shaType(
+//       hWin=strGndFlr.WindowHeight,
+//       L=5.0,
+//       dh=10.0 - 2.04),
   IDEAS.Buildings.Components.Window window_KT1(
     inc=IDEAS.Types.Tilt.Wall,
-    redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraType,
-    A=strGndFlr.AWindows_GndFlr_KT[1],
-    frac=strGndFlr.FrameRatio_GndFlr_KT[1],
-    azi=Multizone_Commercial_Hydronic.Data.Orientations.E,
-    redeclare IDEAS.Buildings.Components.Shading.OverhangAndHorizontalFins
+    redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
       shaType(
       dep=1.80,
       hWin=strGndFlr.WindowGndHeight,
@@ -369,16 +384,28 @@ model Floor0_noVent
       s=0.175,
       w=0.17,
       t=0.032),
+    redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraType,
+    A=strGndFlr.AWindows_GndFlr_KT[1],
+    frac=strGndFlr.FrameRatio_GndFlr_KT[1],
+    azi=Multizone_Commercial_Hydronic.Data.Orientations.E,
       redeclare Multizone_Commercial_Hydronic.Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing)
     "Eastern windows in kitchen/lunch room"
     annotation (Placement(transformation(extent={{100,-74},{88,-54}})));
+//     redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
+//       shaType(
+//       dep=1.80,
+//       hWin=strGndFlr.WindowGndHeight,
+//       wWin=2.7 + 1.35,
+//       wLeft=(2.7 - 1.47)/2,
+//       wRight=(2.7 - 1.47)/2,
+//       gap=8.17 - strGndFlr.WindowGndHeight,
+//       beta=0.5235987755983,
+//       s=0.175,
+//       w=0.17,
+//       t=0.032),
   IDEAS.Buildings.Components.Window window_KT2(
     inc=IDEAS.Types.Tilt.Wall,
-    redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraType,
-    A=strGndFlr.AWindows_GndFlr_KT[2],
-    frac=strGndFlr.FrameRatio_GndFlr_KT[2],
-    azi=Multizone_Commercial_Hydronic.Data.Orientations.S,
-    redeclare IDEAS.Buildings.Components.Shading.OverhangAndHorizontalFins
+    redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
       shaType(
       dep=5.70,
       hWin=strGndFlr.WindowGndHeight,
@@ -390,10 +417,26 @@ model Floor0_noVent
       s=0.175,
       w=0.17,
       t=0.032),
+    redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraType,
+    A=strGndFlr.AWindows_GndFlr_KT[2],
+    frac=strGndFlr.FrameRatio_GndFlr_KT[2],
+    azi=Multizone_Commercial_Hydronic.Data.Orientations.S,
       redeclare Multizone_Commercial_Hydronic.Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing,
       T_start=T_start)
     "Southern windows in kitchen/lunch room"
     annotation (Placement(transformation(extent={{100,-74},{88,-54}})));
+//     redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
+//       shaType(
+//       dep=5.70,
+//       hWin=strGndFlr.WindowGndHeight,
+//       wWin=2.7 + 1.35,
+//       wLeft=1.35/2,
+//       wRight=1.35/2,
+//       gap=8.17 - strGndFlr.WindowGndHeight,
+//       beta=0.5235987755983,
+//       s=0.175,
+//       w=0.17,
+//       t=0.032),
 
   IDEAS.Buildings.Components.Window hallWindows_west(
     inc=IDEAS.Types.Tilt.Wall,
@@ -401,16 +444,20 @@ model Floor0_noVent
     redeclare Multizone_Commercial_Hydronic.Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing,
     A=strGndFlr.AWindows_GndFlr_HR[2],
     azi=Multizone_Commercial_Hydronic.Data.Orientations.inc,
-    redeclare IDEAS.Buildings.Components.Shading.BuildingShade shaType(
+      T_start=T_start,
+    redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.BuildingShade shaType(
       L=5,
       dh=10 - 2.04,
-      hWin=3.18*strGndFlr.WindowGndHeight + strGndFlr.WindowD/strGndFlr.WindowHeight),
-      T_start=T_start)
+      hWin=3.18*strGndFlr.WindowGndHeight + strGndFlr.WindowD/strGndFlr.WindowHeight))
     "Western windows in the hall"
     annotation (Placement(transformation(
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={-56,-56})));
+//     redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.BuildingShade shaType(
+//       L=5,
+//       dh=10 - 2.04,
+//       hWin=3.18*strGndFlr.WindowGndHeight + strGndFlr.WindowD/strGndFlr.WindowHeight),
   Multizone_Commercial_Hydronic.SubSystems.Controllers.DataBus dataBus "Bus connecting floor sensors" annotation (Placement(transformation(extent={{-160,20},{-120,
             60}}),
         iconTransformation(extent={{-110,-10},{-90,10}})));
@@ -420,8 +467,8 @@ model Floor0_noVent
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b[8] gainRad
   "Bus to connect radiative heat transfer to the zones"
    annotation (Placement(transformation(extent={{130,-80},{150,-60}})));
-  parameter Modelica.Fluid.Types.Dynamics energyDynamicsAir=Modelica.Fluid.Types.Dynamics.FixedInitial
-    "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
+//  parameter Modelica.Fluid.Types.Dynamics energyDynamicsAir=Modelica.Fluid.Types.Dynamics.FixedInitial
+//    "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
 
   parameter Real mSenFac=5
     "Correction factor for thermal capacity of zone air.";
@@ -438,28 +485,41 @@ model Floor0_noVent
     redeclare Data.Frames.Multizone_Commercial_HydronicWood fraType,
     redeclare Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing,
     A=strGndFlr.AWindows_GndFlr_MT1[1],
-    redeclare IDEAS.Buildings.Components.Shading.OverhangAndHorizontalFins
-      shaType(
-      wLeft=16.1,
-      wRight=0.8 + 5,
-      dep=27,
-      s=0.175,
-      w=0.17,
-      t=0.032,
-      hWin=5.24 - 0.8,
-      wWin=strGndFlr.WindowHeight,
-      gap=8.17 - 3.25,
-      beta=0.5235987755983),
     azi=Multizone_Commercial_Hydronic.Data.Orientations.E,
-    T_start=T_start) "Small meeting room eastern window"
+    T_start=T_start,
+redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
+  shaType(
+  wLeft=16.1,
+  wRight=0.8 + 5,
+  dep=27,
+  s=0.175,
+  w=0.17,
+  t=0.032,
+  hWin=5.24 - 0.8,
+  wWin=strGndFlr.WindowHeight,
+  gap=8.17 - 3.25,
+  beta=0.5235987755983))
+            "Small meeting room eastern window"
     annotation (Placement(transformation(extent={{-118,-100},{-106,-80}})));
+    // redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
+    //   shaType(
+    //   wLeft=16.1,
+    //   wRight=0.8 + 5,
+    //   dep=27,
+    //   s=0.175,
+    //   w=0.17,
+    //   t=0.032,
+    //   hWin=5.24 - 0.8,
+    //   wWin=strGndFlr.WindowHeight,
+    //   gap=8.17 - 3.25,
+    //   beta=0.5235987755983)
   IDEAS.Buildings.Components.Window hallWindows_south(
     inc=IDEAS.Types.Tilt.Wall,
     redeclare Data.Frames.Multizone_Commercial_HydronicWood fraType,
     redeclare Data.Glazing.SGGCLIMAPLUSONE4dash15dash6 glazing,
     A=strGndFlr.AWindows_GndFlr_HR[1],
     azi=Multizone_Commercial_Hydronic.Data.Orientations.S,
-    redeclare IDEAS.Buildings.Components.Shading.OverhangAndHorizontalFins
+    redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
       shaType(
       s=0.175,
       w=0.17,
@@ -476,6 +536,18 @@ model Floor0_noVent
         extent={{-6,-10},{6,10}},
         rotation=90,
         origin={-30,-56})));
+//     redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
+//       shaType(
+//       s=0.175,
+//       w=0.17,
+//       t=0.032,
+//       wLeft=1.35/2,
+//       wRight=1.35/2,
+//       dep=5.7,
+//       hWin=strGndFlr.WindowHeight,
+//       gap=8.17 - strGndFlr.WindowGndHeight,
+//       wWin=3*2.7,
+//       beta=0.5235987755983),
   parameter Modelica.Media.Interfaces.Types.Temperature T_start=293.15
     "Start value of temperature";
    parameter Real[8] A_Conv = {servers.A, FirstAid.A, kitchen.A,MT2.A,MT1.A,
@@ -495,6 +567,33 @@ model Floor0_noVent
         extent={{-6,-10},{6,10}},
         rotation=180,
         origin={20,6})));
+  IDEAS.Buildings.Components.Window MT1_windows(
+    inc=IDEAS.Types.Tilt.Wall,
+    redeclare
+      Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood
+      fraType,
+    redeclare IDEAS.Examples.TwinHouses.BaseClasses.Data.Materials.Glazing
+      glazing,
+    A=strGndFlr.AWindows_GndFlr_MT2,
+    azi=Multizone_Commercial_Hydronic.Data.Orientations.S,
+    redeclare
+      Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.OverhangAndHorizontalFins
+      shaType(
+      hWin=strGndFlr.WindowGndHeight,
+      wWin=2.7 + 1.35,
+      wLeft=1.35/2,
+      wRight=1.35/2,
+      dep=5.7,
+      gap=8.17 - strGndFlr.WindowGndHeight,
+      s=0.175,
+      w=0.17,
+      t=0.032,
+      beta=0.5235987755983),
+    T_start=T_start) "Southern windows of the hall zone" annotation (Placement(
+        transformation(
+        extent={{-6,-10},{6,10}},
+        rotation=90,
+        origin={10,-62})));
 equation
 
   //Kitchen/lunchroom connections
@@ -793,9 +892,11 @@ equation
   connect(nOcc[3],MT2. yOcc) annotation (Line(points={{50,-86.6667},{50,
           -86.6667},{50,-30},{-75.6,-30},{-75.6,-65.2}},
                                                        color={0,0,127}));
+  connect(MT1_windows.propsBus_a, MT1.proBusExt[1]) annotation (Line(
+      points={{8,-57},{2,-57},{2,-18},{-4.4,-18}},
+      color={255,204,51},
+      thickness=0.5));
 annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,-100},
-            {140,100}}), graphics={
-          Rectangle(heaSys(     port_a2)),                               Text(
-          heaSys(     port_a2))}),                             Diagram(
+            {140,100}}), graphics),                            Diagram(
       coordinateSystem(preserveAspectRatio=false, extent={{-140,-100},{140,100}})));
 end Floor0_noVent;

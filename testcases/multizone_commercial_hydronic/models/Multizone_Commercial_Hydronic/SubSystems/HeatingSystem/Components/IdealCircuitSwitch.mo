@@ -120,35 +120,5 @@ equation
           {60,-106}}, color={255,0,255}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})), Icon(coordinateSystem(preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}}), graphics={
-        Rectangle(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Rectangle(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Polygon(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Line(
-          heaSys(     port_a2)),
-        Line(heaSys(     port_a2)),
-        Line(heaSys(     port_a2))}));
+          extent={{-100,-100},{100,100}}), graphics));
 end IdealCircuitSwitch;

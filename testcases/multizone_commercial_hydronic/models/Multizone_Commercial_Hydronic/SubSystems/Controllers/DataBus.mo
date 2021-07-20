@@ -113,18 +113,17 @@ expandable connector DataBus "Data bus that stores sensor data"
   //Mass flow rate to outside in south zone, 3rd floor
   //Modelica.SIunits.MassFlowRate m_dist1;
   //Shading control for building
-  Real eastShading2nd "movable east windows shading signal, 2nd floor";
-  Real eastShading3rd "movable east windows shading signal, 3rd floor";
-  Real southShading "movable south windows shading signal";
-  Real westShading "movable west windows shading signal";
+  Real eastShading2nd(start = 0) "movable east windows shading signal, 2nd floor";
+  Real eastShading3rd(start = 0) "movable east windows shading signal, 3rd floor";
+  Real southShading(start = 0) "movable south windows shading signal";
+  Real westShading(start = 0) "movable west windows shading signal";
 
 
 
   annotation (
     defaultComponentName="weaBus",
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
-            100}}), graphics={Rectangle(
-          heaSys(     port_a2))}),
+            100}}), graphics),
     Documentation(info="<html>
 <p>
 This component is an expandable connector that is used to implement a bus that contains the weather data.
