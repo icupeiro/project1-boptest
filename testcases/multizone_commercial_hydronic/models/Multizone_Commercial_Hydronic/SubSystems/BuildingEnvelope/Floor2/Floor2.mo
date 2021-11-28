@@ -39,7 +39,6 @@ model Floor2
   parameter Boolean allowFlowReversal = true
     "= false to simplify equations, assuming, but not enforcing, no flow reversal"
     annotation(Dialog(tab="Assumptions"), Evaluate=true);
-
   Modelica.Fluid.Interfaces.FluidPort_b[4] airOutlet(
     each m_flow(max=if allowFlowReversal then Modelica.Constants.inf else 0),
     redeclare each package Medium = Medium)
@@ -90,8 +89,6 @@ equation
           255}));
   connect(meetingRoom2.ports[2], airOutlet[4]) annotation (Line(points={{50,10},
           {50,36},{-38,36},{-38,107.5}},color={0,127,255}));
-
-
           //PPM sensors
   connect(northZone.ppm, dataBus.CO2_2ndFlr_NZ) annotation (Line(points={{62,60},
           {-38,60},{-38,40.1},{-139.9,40.1}}, color={0,0,127}), Text(
@@ -118,5 +115,4 @@ equation
       index=1,
       extent={{6,3},{6,3}},
       horizontalAlignment=TextAlignment.Left));
-
 end Floor2;

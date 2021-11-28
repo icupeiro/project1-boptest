@@ -1,9 +1,7 @@
 within Multizone_Commercial_Hydronic.SubSystems.Controllers;
 package RBC_detailed
   "RBC with the detailed changes concerning implementation in TACO"
-
   package Valves
-
     model TwoWayValvesTABS
       TwoWayValveCCA3 twoWayValveCCA3_1
         annotation (Placement(transformation(extent={{-10,50},{10,70}})));
@@ -81,7 +79,6 @@ package RBC_detailed
     model TwoWayValveCCA3
       "controller of two-way valve in the third floor"
       import INFRAX;
-
       DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{
                 -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
       SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{
@@ -176,7 +173,6 @@ package RBC_detailed
               -8,-84},{-2,-84}}, color={0,0,127}));
       connect(heaCoo.y, valvePID.u_m) annotation (Line(points={{21,-76},{42,-76},
               {42,-50},{42,-10}}, color={0,0,127}));
-
       connect(signalBus.TABSheatingDemand, heaCoo.u2) annotation (Line(
           points={{100.1,0.1},{100.1,0.1},{100.1,-100},{-10,-100},{-10,-76},{-2,
               -76}},
@@ -224,7 +220,6 @@ package RBC_detailed
     model TwoWayValveCCA2
       "controller of the two way valve in the second floor of TABS"
       import INFRAX;
-
       DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{
                 -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
       SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{
@@ -317,7 +312,6 @@ package RBC_detailed
           extent={{-6,3},{-6,3}}));
       connect(add2.y, heaCoo.u1)
         annotation (Line(points={{-11,-66},{6,-66},{6,-68}}, color={0,0,127}));
-
       connect(heaCoo.y, valvePID.u_m) annotation (Line(points={{29,-76},{42,-76},
               {42,-10}}, color={0,0,127}));
       connect(signalBus.TABSheatingDemand, or1.u1) annotation (Line(
@@ -366,7 +360,6 @@ package RBC_detailed
     model TwoWayValveCCA1
       "controller of the two way valve in the first floor of TABS"
       import INFRAX;
-
       DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{
                 -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
       SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{
@@ -510,7 +503,6 @@ package RBC_detailed
     model TwoWayValveCCA0
       "controller of the two way valve in the ground floor of TABS"
       import INFRAX;
-
       DataBus dataBus annotation (Placement(transformation(extent={{-120,-20},{
                 -80,20}}), iconTransformation(extent={{-110,-10},{-90,10}})));
       SignalBus signalBus annotation (Placement(transformation(extent={{80,-20},{
@@ -586,7 +578,6 @@ package RBC_detailed
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-
       connect(dataBus.TretCCA3, add4.u1) annotation (Line(
           points={{-99.9,0.1},{-99.9,0.1},{-99.9,-86},{-99.9,-84},{-38,-84}},
           color={255,204,51},
@@ -607,7 +598,6 @@ package RBC_detailed
               -10,-68},{-2,-68}}, color={0,0,127}));
       connect(heaCoo.y, valvePID.u_m) annotation (Line(points={{21,-76},{44,-76},
               {44,-10}}, color={0,0,127}));
-
       connect(signalBus.TABSheatingDemand, or1.u1) annotation (Line(
           points={{100.1,0.1},{100.1,0.1},{100.1,-58},{82,-58},{82,-60}},
           color={255,204,51},

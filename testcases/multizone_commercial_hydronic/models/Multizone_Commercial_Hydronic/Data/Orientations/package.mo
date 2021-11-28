@@ -29,5 +29,4 @@ package Orientations "INFRAX Types"
    constant Modelica.SIunits.Angle incOptDes = IDEAS.Types.Azimuth.N +
    shiftOptDes - 71/180*Modelica.Constants.pi
    "INFRAX inc orientation gnd and 1st floor";
-
 end Orientations;

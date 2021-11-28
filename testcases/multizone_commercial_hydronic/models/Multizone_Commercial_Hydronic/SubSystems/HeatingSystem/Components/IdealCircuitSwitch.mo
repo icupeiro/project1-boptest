@@ -51,7 +51,6 @@ model IdealCircuitSwitch
     dpValve_nominal=dpValve_nominal,
     use_inputFilter=false) if not simplify
     annotation (Placement(transformation(extent={{40,10},{60,-10}})));
-
   Modelica.Blocks.Math.BooleanToReal booleanToReal if not simplify  annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
@@ -64,7 +63,6 @@ model IdealCircuitSwitch
         origin={50,-50})));
 equation
   assert(u_val1 or u_val2 or abs(port_c.m_flow)< m_flow_nominal/1e4, "IdealCircuitSwitch invalid since mass flow when valves are closed: port_c.m_flow = "+ String(port_c.m_flow));
-
     if simplify then
       if setEqualPressureAB then
         assert(abs(port_a.m_flow+port_c.m_flow+port_b.m_flow)<m_flow_nominal/1e4, "IdealCircuitSwitch invalid since mass is not conserved: sum = " + String(port_a.m_flow+port_c.m_flow+port_b.m_flow));
@@ -76,7 +74,6 @@ equation
         // weird construction since normal else/if causes singularity
         port_a.m_flow= -port_c.m_flow*(if u_val1 and not u_val2 then 1 elseif u_val1 and u_val2 then 1-fra else 0);
       end if;
-
       if setEqualPressureBC then
         port_b.p=port_c.p;
       else
@@ -85,7 +82,6 @@ equation
       if not allowBCOpen then
           assert(not u_val1 or not u_val2 or port_c.m_flow >  -m_flow_nominal/1e4, "IdealCircuitSwitch invalid since both valves are opened and mass flow rate is flowing out of port c");
       end if;
-
     inStream(port_c.h_outflow) = port_a.h_outflow;
     inStream(port_c.h_outflow) = port_b.h_outflow;
     inStream(port_c.Xi_outflow) = port_a.Xi_outflow;

@@ -1,8 +1,6 @@
 within Multizone_Commercial_Hydronic.Data.Interfaces;
 record Material "Template record for properties of building materials"
-
   extends Modelica.Icons.MaterialProperty;
-
   parameter Modelica.SIunits.Length d=0 "Layer thickness";
   parameter Modelica.SIunits.ThermalConductivity k "Thermal conductivity";
   parameter Modelica.SIunits.SpecificHeatCapacity c "Specific thermal capacity";
@@ -15,19 +13,15 @@ record Material "Template record for properties of building materials"
     annotation(Evaluate=true);
   parameter Modelica.SIunits.KinematicViscosity mhu = 0
     "Viscosity, i.e. if the material is a fluid";
-
   parameter Modelica.SIunits.Emissivity epsLw_a = epsLw
     "Longwave emisivity for surface a if different";
   parameter Modelica.SIunits.Emissivity epsLw_b = epsLw
     "Longwave emisivity for surface a if different";
-
   parameter Modelica.SIunits.Emissivity epsSw_a = epsSw
     "Shortwave emisivity for surface a if different";
   parameter Modelica.SIunits.Emissivity epsSw_b = epsSw
     "Shortwave emisivity for surface a if different";
-
   final parameter Modelica.SIunits.ThermalInsulance R=d/k;
-
   final parameter Modelica.SIunits.ThermalDiffusivity alpha=k/(c*rho)
     "Thermal diffusivity";
   final parameter Integer nStaRef=3
@@ -38,7 +32,6 @@ record Material "Template record for properties of building materials"
     "d/sqrt(mat.alpha) of the depicted layer";
   final parameter Integer nSta(min=2) = max(2, integer(ceil(nStaRef*piLay/piRef)))
     "Actual number of state variables in material";
-
   annotation (Documentation(info="<html>
 <p><h4><font color=\"#008000\">General description</font></h4></p>
 <p><h5>Goal</h5></p>

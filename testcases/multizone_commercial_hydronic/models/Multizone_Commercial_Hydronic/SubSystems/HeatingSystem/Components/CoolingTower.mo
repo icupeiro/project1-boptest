@@ -7,7 +7,6 @@ model CoolingTower
 //    replaceable package MediumGlycol = IDEAS.Media.Water;
    package MediumAir = IDEAS.Media.Air;
    parameter Modelica.SIunits.MassFlowRate mAirCooTow = 9;
-
 IBPSA.Fluid.HeatExchangers.DryCoilEffectivenessNTU cooTow(
     allowFlowReversal2=false,
     m1_flow_nominal=mAirCooTow,
@@ -30,8 +29,6 @@ IBPSA.Fluid.HeatExchangers.DryCoilEffectivenessNTU cooTow(
         extent={{-10,10},{10,-10}},
         rotation=180,
         origin={18,92})));
-
-
   IDEAS.Fluid.Sensors.TemperatureTwoPort t26(
     m_flow_nominal=hydronic.p11_m_flow,
     tau=hydronic.sensorTau,
@@ -78,7 +75,6 @@ IBPSA.Fluid.HeatExchangers.DryCoilEffectivenessNTU cooTow(
         extent={{7,-8},{-7,8}},
         rotation=180,
         origin={17,-20})));
-
   IDEAS.Fluid.Movers.SpeedControlled_y     p10(
     redeclare package Medium = IDEAS.Media.Water,
     allowFlowReversal=false,

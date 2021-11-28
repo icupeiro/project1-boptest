@@ -5,7 +5,6 @@ model TABSKPI
     val_heat_sup(l=1e-10),
     val_heat_ret(l=1e-10),
     val_coo_ret(l=1e-10));
-
     Controllers.EnergyKPIBus energyKPIBus annotation (Placement(transformation(
           extent={{102,18},{142,58}}), iconTransformation(extent={{-246,-4},{
             -226,16}})));
@@ -17,19 +16,13 @@ model TABSKPI
   Modelica.Blocks.Sources.RealExpression realExpression1[35](y=
         dotQ_TABS_circuit_heating)
     annotation (Placement(transformation(extent={{62,74},{78,90}})));
-
   Modelica.SIunits.Power dotQ_TABS_circuit_heating[35];
   Modelica.SIunits.Power dotQ_TABS_circuit_cooling[35];
   Modelica.SIunits.Power dotQ_TABS_circuit[35];
-
   Modelica.SIunits.Power dotQ_TABS_floor_heating[4];
   Modelica.SIunits.Power dotQ_TABS_floor_cooling[4];
-
   Modelica.SIunits.Power dotQ_TABS_heating;
   Modelica.SIunits.Power dotQ_TABS_cooling;
-
-
-
   Modelica.SIunits.Power dotQ_TABS;
   Modelica.Blocks.Sources.RealExpression realExpression2[35](y=
         dotQ_TABS_circuit_cooling)
@@ -98,8 +91,6 @@ model TABSKPI
   Modelica.Blocks.Sources.RealExpression realExpression7(y=if gain5.y == 0
          then 0.001 else gain5.y)
     annotation (Placement(transformation(extent={{82,164},{92,174}})));
-
-
   Modelica.Blocks.Sources.RealExpression realExpression8(y=dotQ_TABS)
     annotation (Placement(transformation(extent={{84,-6},{100,10}})));
   Modelica.Blocks.Math.Gain gain7(each k=1/1000) "W to kW"
@@ -108,9 +99,7 @@ model TABSKPI
         0.001)
     annotation (Placement(transformation(extent={{126,-2},{134,6}})));
 equation
-
  dotQ_TABS_circuit = cat(1, cca3.QTot, cca2.QTot, cca1.QTot, cca0.QTot);
-
    for i in 1:35 loop
      if dotQ_TABS_circuit[i] > 0 then
        dotQ_TABS_circuit_heating[i] = dotQ_TABS_circuit[i];
@@ -120,17 +109,11 @@ equation
        dotQ_TABS_circuit_cooling[i] = dotQ_TABS_circuit[i];
      end if;
    end for;
-
   dotQ_TABS_floor_heating = {sum(dotQ_TABS_circuit_heating[1:4]), sum(dotQ_TABS_circuit_heating[5:11]),sum(dotQ_TABS_circuit_heating[12:20]),sum(dotQ_TABS_circuit_heating[21:35])};
   dotQ_TABS_floor_cooling = {sum(dotQ_TABS_circuit_cooling[1:4]), sum(dotQ_TABS_circuit_cooling[5:11]),sum(dotQ_TABS_circuit_cooling[12:20]),sum(dotQ_TABS_circuit_cooling[21:35])};
-
   dotQ_TABS_heating = sum(dotQ_TABS_circuit_heating);
   dotQ_TABS_cooling = sum(dotQ_TABS_circuit_cooling);
-
-
-
   dotQ_TABS = sum(dotQ_TABS_circuit);
-
      connect(gain.y, integrator.u)
     annotation (Line(points={{94.4,82},{103.2,82}}, color={0,0,127}));
   connect(integrator.y, energyKPIBus.Q_TABS_circuit_heating) annotation (Line(
@@ -224,7 +207,6 @@ equation
     annotation (Line(points={{78.8,138},{85.2,138}}, color={0,0,127}));
   connect(gain5.y, integrator5.u)
     annotation (Line(points={{94.4,138},{103.2,138}}, color={0,0,127}));
-
   connect(realExpression6.y, gain6.u) annotation (Line(points={{78.8,152},{82,152},
           {82,152},{85.2,152}}, color={0,0,127}));
   connect(gain6.y, integrator6.u)
@@ -286,8 +268,6 @@ equation
     annotation (Line(points={{92.5,187},{103.4,187}}, color={0,0,127}));
   connect(realExpression7.y, replicator2.u) annotation (Line(points={{92.5,169},
           {98.25,169},{98.25,169},{103.4,169}}, color={0,0,127}));
-
-
   connect(integrator6.y, energyKPIBus.Q_TABScomp_cooling) annotation (Line(points={{112.4,
           152},{122.1,152},{122.1,38.1}}, color={0,0,127}), Text(
       string="%second",

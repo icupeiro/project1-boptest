@@ -8,7 +8,6 @@ record AHU_FanExtract
           eta={0.80, 0.81, 0.80, 0.75, 0.70, 0.60, 0.40}),
     pressure(V_flow={1.5, 2.5, 3.1, 3.5},
           dp={1000, 800, 500, 200}));
-
   annotation (
 defaultComponentPrefixes="parameter",
 defaultComponentName="per",

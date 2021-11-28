@@ -19,7 +19,6 @@ record General
     dp_nominal=28500,
     use_Rb=false,
     Rb=0.094);
-
                 //assumed parameter
                  //k for HDPE
                      //Assumming Double U is placed in center of BH

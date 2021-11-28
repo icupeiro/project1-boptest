@@ -2,7 +2,6 @@ within Multizone_Commercial_Hydronic.Data.HeatTransfer;
 package Soil "Package with solid material for soil, characterized by thermal conductance, density and specific heat capacity"
     extends Modelica.Icons.MaterialPropertiesPackage;
 
-
   annotation (preferredView="info",
 Documentation(
 info="<html>

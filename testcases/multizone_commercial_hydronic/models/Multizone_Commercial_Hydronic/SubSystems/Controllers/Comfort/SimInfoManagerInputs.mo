@@ -7,12 +7,10 @@ model SimInfoManagerInputs
       winSpeSou=IDEAS.BoundaryConditions.Types.DataSource.Input,
       winDirSou=IDEAS.BoundaryConditions.Types.DataSource.Input,
       HSou=IDEAS.BoundaryConditions.Types.RadiationDataSource.Input_HDirNor_HDifHor));
-
   parameter String fileNameLocalWeather=Modelica.Utilities.Files.loadResource(
       "modelica://SmartGeotherm/Resources/Validation/HH/XmasExperiment/weatherFile_lat_51_lon_5_date_2012_1_1_nbDays367.txt");
   parameter String fileNameLocalWeatherTAmb=Modelica.Utilities.Files.loadResource(
       "modelica://SmartGeotherm/Resources/Validation/HH/XmasExperiment/Measurements/TAmb_Hobo_XmasExp.txt");
-
   Modelica.Blocks.Routing.RealPassThrough trustWeatherData
     annotation (Placement(transformation(extent={{-20,-14},{-12,-6}})));
   Modelica.Blocks.Tables.CombiTable1Ds localWeather(
@@ -49,7 +47,6 @@ equation
   connect(localWeather.y[9], trustWeatherData.u)
     annotation (Line(points={{-31,-10},{-26,-10},{-20.8,-10}},
                                                      color={0,0,127}));
-
   connect(TAmb.y[1], weaDat.TDryBul_in) annotation (Line(points={{-31,-38},{-30,-38},{-30,-41},{-101,-41}},
                                          color={0,0,127}));
   connect(realExpression.y, localWeather.u) annotation (Line(points={{-69,-20},

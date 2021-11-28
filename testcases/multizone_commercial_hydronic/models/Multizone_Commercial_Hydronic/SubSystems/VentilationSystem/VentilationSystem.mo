@@ -1,6 +1,5 @@
 within Multizone_Commercial_Hydronic.SubSystems.VentilationSystem;
 model VentilationSystem "Ventilation System with No KPI"
-
   IDEAS.Fluid.Sources.Boundary_pT bouAmb(
     use_T_in=true,
     nPorts=2,
@@ -14,12 +13,10 @@ model VentilationSystem "Ventilation System with No KPI"
     annotation (Placement(transformation(extent={{-200,80},{-180,100}})));
   Multizone_Commercial_Hydronic.Data.Parameters.Hydronic hydronic
     annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
-
   final parameter Real s_co2[max(MediumAir.nC,1)] = {if Modelica.Utilities.Strings.isEqual(string1=if MediumAir.nC>0 then MediumAir.extraPropertiesNames[i] else "",
                                              string2="CO2",
                                              caseSensitive=false)
                                              then 1 else 0 for i in 1:max(MediumAir.nC,1)};
-
  IDEAS.Fluid.Actuators.Valves.TwoWayPressureIndependent[7] dp_ducts_supply(
       allowFlowReversal=false,
           m_flow_nominal=air.m_nominal_supply_duct,
@@ -476,7 +473,6 @@ protected
   Modelica.Blocks.Sources.RealExpression CEnv[max(MediumAir.nC,1)](y=sim.CEnv.y*
         s_co2)
     annotation (Placement(transformation(extent={{-198,-26},{-180,-10}})));
-
   Modelica.Blocks.Sources.Constant                       supplyCAV[7](k=1)
     annotation (Placement(transformation(extent={{12,-16},{22,-6}})));
   Modelica.Blocks.Sources.Constant                       extractCAV[10](k=1)
@@ -490,9 +486,7 @@ protected
         i]/air.m_nominal_supply_vav[i] + (1 - air.m_nominal_supply_vav_min[i]/
         air.m_nominal_supply_vav[i])*signalBus.VAV_signal[i] for i in 1:15})
     annotation (Placement(transformation(extent={{-40,-92},{-12,-72}})));
-
 equation
-
   connect(supplyCAV.y, dp_ducts_supply.y)
     annotation (Line(points={{22.5,-11},{42,-11},{42,-34}}, color={0,0,127}));
   connect(extractCAV.y, dp_ducts_extract.y) annotation (Line(points={{-7.4,70},{
@@ -501,7 +495,6 @@ equation
           -82},{2,-69.3},{42.5,-69.3}}, color={0,0,127}));
   connect(extractVAV.y, vav_extract.y) annotation (Line(points={{31.4,90},{44,
           90},{44,74},{22.5,74},{22.5,62.7}}, color={0,0,127}));
-
   connect(supplyFan.port_b, tAHUSupply.port_a)
     annotation (Line(points={{-16,-46},{-16,-46},{0,-46}}, color={0,127,255}));
   for i in 1:7 loop
@@ -541,7 +534,6 @@ equation
   connect(dp_ducts_supply[4].port_b, counterFlowHEX[19].port_a2);
   connect(dp_ducts_supply[6].port_b, counterFlowHEX[20].port_a2);
   connect(dp_ducts_supply[7].port_b, counterFlowHEX[21].port_a2);
-
   connect(pump6.port_b, dp_HeaCoi_supply[2].port_a);
   connect(pump6.port_b, dp_HeaCoi_supply[3].port_a);
   connect(pump6.port_b, dp_HeaCoi_supply[4].port_a);
@@ -576,11 +568,9 @@ equation
           {160,-40}},           color={0,127,255}));
   connect(pump6.port_b, dp_HeaCoi_supply[1].port_a) annotation (Line(points={{160,-64},
           {160,-60}},                color={0,127,255}));
-
   connect(tAHUExtract.port_b, exhaustFan.port_a)
     annotation (Line(points={{-34,20},{-40,20},{-40,18},{-44,18}},
                                                           color={0,127,255}));
-
   //Extraction
   connect(tAHUExtract.port_a, dp_ducts_extract[1].port_b)
     annotation (Line(points={{-22,20},{-14,20},{12,20}},  color={0,127,255}));
@@ -620,7 +610,6 @@ equation
           -16.4},{-122,-16.4}}, color={0,127,255}));
   connect(aHU.port_b2, supplyFan.port_a) annotation (Line(points={{-84,-16.4},{-74,
           -16.4},{-74,-46},{-36,-46}}, color={0,127,255}));
-
   connect(t15.port_b, pump13.port_a) annotation (Line(points={{-146,-96},{-120,
           -96},{-80,-96},{-80,-68}}, color={0,127,255}));
   connect(t23.port_a, aHU.portHeaCoi_b1) annotation (Line(points={{-120,-38},{-120,
@@ -666,7 +655,6 @@ equation
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-
   connect(pump9.stage, signalBus.P09_signal) annotation (Line(
       points={{-160.5,-29.5},{-160.5,34},{-200,34}},
       color={255,127,0},
@@ -711,7 +699,6 @@ equation
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-
   connect(TWV_AHU_CooCoi.y, signalBus.CooCoi_3way_signal) annotation (Line(
         points={{-101.2,-40},{-146,-40},{-146,-42},{-200,-42},{-200,34}},
         color={0,0,127},
@@ -726,7 +713,6 @@ equation
      string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-
   //flr3
   connect(tAirSupply[1].port_b, airSupply[1]) annotation (Line(points={{166,0},
           {176,0},{176,78},{156,78},{156,90.4762}},color={0,127,255}));
@@ -753,7 +739,6 @@ equation
   connect(tAirSupply[19].port_b, airSupply[19]); //sas
   connect(tAirSupply[20].port_b, airSupply[20]);
   connect(tAirSupply[21].port_b, airSupply[21]);
-
   //flr3
   connect(airReturn[1], vav_extract[1].port_a) annotation (Line(points={{116,
           90.4762},{116,90.4762},{116,56},{31,56},{31,52.5}},
@@ -774,7 +759,6 @@ equation
   connect(airReturn[16], vav_extract[12].port_a);
   connect(airReturn[17], vav_extract[13].port_a);
   connect(airReturn[18], vav_extract[14].port_a);
-
   connect(airReturn[3], dp_ducts_extract[1].port_a) annotation (Line(points={{116,
           92.381},{116,92.381},{116,56},{40,56},{40,20},{32,20}},
         color={0,127,255}));
@@ -787,7 +771,6 @@ equation
   connect(airReturn[19], dp_ducts_extract[8].port_a);
   connect(airReturn[20], dp_ducts_extract[9].port_a);
   connect(airReturn[21], dp_ducts_extract[10].port_a);
-
   connect(exhaustFan.dp_in, signalBus.AHUextract) annotation (Line(
       points={{-54,30},{-54,34},{-200,34}},
       color={0,0,127},

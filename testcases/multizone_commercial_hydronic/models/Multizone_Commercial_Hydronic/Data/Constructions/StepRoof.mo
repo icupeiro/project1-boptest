@@ -8,7 +8,6 @@ record StepRoof "INFRAX sloped Roof"
     Data.Materials.Concrete(            d=0.27),
     Data.Materials.Concrete(            d=0.06),
     Data.Materials.Gypsum(            d=0.00)});
-
 annotation (Documentation(info="<html>
 <p>
 Example implementation of a Thermally Activated Building System.

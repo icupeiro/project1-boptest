@@ -2,7 +2,6 @@ within Multizone_Commercial_Hydronic.Data.Frames;
 record AluminiumInsulated "Low U value aluminium frame"
   extends IDEAS.Buildings.Data.Interfaces.Frame(
     U_value=0.7);
-
                                           annotation (Documentation(info="<html>
 <p>
 Well insulated aluminum window frame. 

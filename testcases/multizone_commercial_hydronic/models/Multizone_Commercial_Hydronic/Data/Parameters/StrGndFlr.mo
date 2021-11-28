@@ -1,14 +1,12 @@
 within Multizone_Commercial_Hydronic.Data.Parameters;
 record StrGndFlr
   extends Modelica.Icons.Record;
-
   final constant Real pi=Modelica.Constants.pi;
   parameter Modelica.SIunits.Angle orientation = Multizone_Commercial_Hydronic.Data.Orientations.inc;
   parameter Modelica.SIunits.Height WindowHeight = 3.25;
   parameter Modelica.SIunits.Height WindowGndHeight = 2.04;
   parameter Modelica.SIunits.Height HeightGndFlr = 3.5;
   //Angle 71degree with HORIZONTAL
-
   //OuterWalls and Windows
   parameter Modelica.SIunits.Area WindowA = WindowHeight*(0.025+0.08+0.29+0.08+0.055+0.765+0.065);
   parameter Modelica.SIunits.Area WindowB = WindowHeight*(0.025+0.08+0.735+0.08+0.06+0.315+0.07);
@@ -27,7 +25,6 @@ record StrGndFlr
   parameter Modelica.SIunits.Area GlazingG = 2*0.74*(WindowGndHeight-0.085-0.11)+0.88*(WindowGndHeight-0.05-0.07)+2.15*(WindowGndHeight-0.05-0.07);
   parameter Modelica.SIunits.Area GlazingH = (WindowHeight-0.05)*(5.7-0.8-0.41-0.11);
   parameter Modelica.SIunits.Area GlazingI = (WindowHeight-0.1)*(0.97+1.6);
-
   //    Kitchen Lunchroom
   parameter Modelica.SIunits.Volume Vol_GndFlr_KT = HeightGndFlr*A_GndFlr_KT "kitchenlunchroom volume";
   parameter Modelica.SIunits.Area A_GndFlr_KT = 2*2.7*2.7+2.7*(4*1.47+3*1.23+1.58)+9.05*2.7*3 "kitchenlunchroom area";
@@ -53,14 +50,12 @@ record StrGndFlr
   parameter Modelica.SIunits.Volume Vol_GndFlr_Sto = HeightGndFlr*A_GndFlr_Sto "volume of storage rooms";
   parameter Modelica.SIunits.Area A_GndFlr_Sto = 7.0*3.9+5.23*4.15 "area of storage rooms";
   parameter Modelica.SIunits.Area AWall_GndFlr_Sto = (3.9+5.23+0.15)*HeightGndFlr "storage rooms wall area (no windows)";
-
   //InnerWalls
   parameter Modelica.SIunits.Area AinternalWall_HRSV = HeightGndFlr*5.25;
   parameter Modelica.SIunits.Area AinternalWall_KTSto = 3*2.7*HeightGndFlr;
   parameter Modelica.SIunits.Area AinternalWall_SVSto = 7*HeightGndFlr;
   parameter Modelica.SIunits.Area AinternalWall_HRMT1 = 3*2.7*HeightGndFlr;
   parameter Modelica.SIunits.Area AinternalWall_kitchen_hallway = 2.5*HeightGndFlr;
-
   //RectangularZones
   //    MeetingRoom2
   parameter Modelica.SIunits.Length l_GndFlr_MT2 = 4*2.7;
@@ -75,12 +70,9 @@ record StrGndFlr
   parameter Modelica.SIunits.Length l_GndFlr_BRZ = 2.30+2.35+0.15;
   parameter Modelica.SIunits.Length w_GndFlr_BRZ = 4.3;
   parameter Modelica.SIunits.Volume Vol_GndFlr_BRZ = w_GndFlr_BRZ*l_GndFlr_BRZ*HeightGndFlr;
-
   parameter Modelica.SIunits.Volume FlrGnd_TotalVol = Vol_GndFlr_1stAid+Vol_GndFlr_BRZ+Vol_GndFlr_HR+Vol_GndFlr_KT+Vol_GndFlr_MT1+Vol_GndFlr_MT2+Vol_GndFlr_Sto+Vol_GndFlr_SV;
-
   //    Areas
   parameter Modelica.SIunits.Area Areas_GndFlr[8] = {A_GndFlr_HR, A_GndFlr_MT1, l_GndFlr_MT2*w_GndFlr_MT2, A_GndFlr_KT, A_GndFlr_SV, l_GndFlr_1stAid*w_GndFlr_1stAid, l_GndFlr_BRZ*w_GndFlr_BRZ,A_GndFlr_Sto};
-
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end StrGndFlr;

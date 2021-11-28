@@ -1,7 +1,6 @@
 within Multizone_Commercial_Hydronic.Data.Parameters;
 record Str3rdFlr
   extends Modelica.Icons.Record;
-
   //OuterWalls and Windows
   parameter Modelica.SIunits.Height WindowHeight = 2.69;
   parameter Modelica.SIunits.Height Height3rdFlr = 2.95;
@@ -14,7 +13,6 @@ record Str3rdFlr
   parameter Modelica.SIunits.Area GlazingB = 0.735*(WindowHeight-0.08-0.105)+0.31*(WindowHeight-0.05-0.075);
   parameter Modelica.SIunits.Area GlazingC = 1.23*(WindowHeight-0.05-0.075);
   parameter Modelica.SIunits.Area GlazingD = 0.73*(WindowHeight-0.05-0.075);
-
   //    SouthZone
   parameter Modelica.SIunits.Volume Vol_3rdFlr_SZ = Height3rdFlr*(11*32.3+(4.75+0.4)*1.1)+32.3*(11*1.77/2);
   parameter Modelica.SIunits.Area A_3rdFlr_SZ = (11*32.3+(4.75+0.4)*1.1);
@@ -28,7 +26,6 @@ record Str3rdFlr
       //High level windows
   parameter Modelica.SIunits.Area AWindoiws_3rdFlr_HW = 32.2*0.8;
   parameter Real FrameRatio_3rdFlr_HW = 0.08;
-
   //RectangularZones
   //    SouthZone
   //parameter Modelica.SIunits.Length l_3rdFlr_SZ = 32.3;
@@ -61,14 +58,11 @@ record Str3rdFlr
   parameter Modelica.SIunits.Volume Vol_3rdFlr_StoR = w_3rdFlr_StoR*l_3rdFlr_StoR*Height3rdFlr;
   parameter Modelica.SIunits.Area AWindows_3rdFlr_StoR = WindowA;
   parameter Real FrameRatio_3rdFlr_StoR = 1 - GlazingA/WindowA;
-
   parameter Modelica.SIunits.Volume Flr3rd_TotalVol = Vol_3rdFlr_BRZ+Vol_3rdFlr_CPR+Vol_3rdFlr_MTR+Vol_3rdFlr_SmaR+Vol_3rdFlr_StoR+Vol_3rdFlr_SZ;
-
   //Floor area
     //Floor area
   parameter Modelica.SIunits.Area Atotal3rdFlr = Vol_3rdFlr_SZ/Height3rdFlr + l_3rdFlr_BRZ*w_3rdFlr_BRZ + l_3rdFlr_CPR*w_3rdFlr_CPR + l_3rdFlr_MTR*w_3rdFlr_MTR + l_3rdFlr_SmaR*w_3rdFlr_SmaR + l_3rdFlr_StoR*w_3rdFlr_StoR;
   parameter Modelica.SIunits.Area A_3rdFlr[5] = {Vol_3rdFlr_SZ/Height3rdFlr, l_3rdFlr_BRZ*w_3rdFlr_BRZ, l_3rdFlr_CPR*w_3rdFlr_CPR, l_3rdFlr_MTR*w_3rdFlr_MTR, l_3rdFlr_SmaR*w_3rdFlr_SmaR + l_3rdFlr_StoR*w_3rdFlr_StoR};
-
   parameter Modelica.SIunits.Area CCA3rdFlr = Atotal3rdFlr - l_3rdFlr_BRZ*w_3rdFlr_BRZ;
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));

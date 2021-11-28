@@ -4,7 +4,6 @@ record Filling "Filling data for bore field"
     kFil=2.35,
     dFil=1225,
     cFil=1550);
-
     //On 200L grout is the borehole filling composition
     //- 25 kg blast furnace cement
     //- 15 kg bentonite cement stable

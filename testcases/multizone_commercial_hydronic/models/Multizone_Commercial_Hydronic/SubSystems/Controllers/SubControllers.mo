@@ -152,8 +152,7 @@ package SubControllers "Individual controller modules"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Rectangle,                                                     Text}),
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false)));
   end HP;
@@ -287,8 +286,7 @@ package SubControllers "Individual controller modules"
         horizontalAlignment=TextAlignment.Left));
     connect(max.y, add.u2) annotation (Line(points={{-35,80},{-80,80},{-80,44},{-62,
             44}}, color={0,0,127}));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Rectangle,                                                     Text}),
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false)));
   end HP_baseline;
@@ -414,8 +412,7 @@ package SubControllers "Individual controller modules"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Rectangle,                                                     Text}),
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false)));
   end HP_onlyTABS;
@@ -488,8 +485,7 @@ package SubControllers "Individual controller modules"
         index=1,
         extent={{6,3},{6,3}},
         horizontalAlignment=TextAlignment.Left));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Rectangle,                                                     Text}),
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false)));
   end HP_ByPass;
@@ -885,8 +881,7 @@ package SubControllers "Individual controller modules"
         extent={{-3,-6},{-3,-6}},
         horizontalAlignment=TextAlignment.Right));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -260},{100,200}}),                                  graphics={
-            Rectangle,                                                     Text}),
+              -260},{100,200}}),                                  graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false, extent={{-100,-260},{100,200}}), graphics={
           Rectangle(heaSys(     port_a2)),
@@ -995,8 +990,7 @@ package SubControllers "Individual controller modules"
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Rectangle,                                                     Text}),
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false)));
   end CoolingTower;
@@ -1077,8 +1071,7 @@ package SubControllers "Individual controller modules"
         index=1,
         extent={{6,3},{6,3}},
         horizontalAlignment=TextAlignment.Left));
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Rectangle,                                                     Text}),
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false), graphics={Text(
             extent={{0,-94},{0,-84}},
@@ -1198,21 +1191,15 @@ package SubControllers "Individual controller modules"
       annotation (Placement(transformation(extent={{4,-4},{-4,4}},
           rotation=-90,
           origin={40,68})));
-
     Components.RunningMeanTemperature7to18 runningMeanTemperature7to18_1
       annotation (Placement(transformation(extent={{-92,-40},{-72,-20}})));
-
   initial equation
-
   equation
-
     connect(avgExt.TRm, greaterThreshold.u) annotation (Line(points={{-69.4,0},
             {-62,0},{-62,-60},{-52,-60}},    color={0,0,127}));
-
     connect(avgExt.TRm, lessThreshold.u) annotation (Line(points={{-69.4,0},{
             -62,0},{-62,60},{-52,60}},
                                     color={0,0,127}));
-
     connect(restWait.outPort[1], transition.inPort)
       annotation (Line(points={{56,15.8},{56,7.6},{56,7.6}}, color={0,0,0}));
     connect(transition.outPort, restDecide.inPort[1])
@@ -1414,9 +1401,8 @@ package SubControllers "Individual controller modules"
               {44,60}},         color={255,0,255}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P1;
 
     model P3 "hydraulic pumps logic"
@@ -1483,9 +1469,8 @@ package SubControllers "Individual controller modules"
               34,22},{38,22}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P3;
 
     model P4 "hydraulic pumps logic"
@@ -1506,9 +1491,8 @@ package SubControllers "Individual controller modules"
         annotation (Line(points={{51,10},{110,10}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P4;
 
     model P5 "hydraulic pumps logic p05"
@@ -1704,9 +1688,8 @@ package SubControllers "Individual controller modules"
           extent={{6,3},{6,3}}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P5;
 
     model P7off "P07 turning off conditions"
@@ -1759,9 +1742,8 @@ package SubControllers "Individual controller modules"
               62,-56},{62,-34},{110,-34}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P7off;
 
     model P9P13 "hydraulic pumps logic p05"
@@ -1849,9 +1831,8 @@ package SubControllers "Individual controller modules"
           extent={{-6,3},{-6,3}}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P9P13;
 
     model P5_onlyTABS "hydraulic pumps logic p05"
@@ -2035,9 +2016,8 @@ package SubControllers "Individual controller modules"
           extent={{-6,3},{-6,3}}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P5_onlyTABS;
 
     model P1_onlyTABS "hydraulic pumps logic"
@@ -2125,9 +2105,8 @@ package SubControllers "Individual controller modules"
               43.6},{12.8,43.6}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P1_onlyTABS;
 
     model P1_onlyVent "hydraulic pumps logic"
@@ -2217,9 +2196,8 @@ package SubControllers "Individual controller modules"
               8},{50,8}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Rectangle(
-              heaSys(     port_a2)),                                         Text(
-              heaSys(     port_a2))}),
-                                     Diagram(coordinateSystem(preserveAspectRatio=false)));
+              heaSys),                                                       Text(
+              heaSys)}),             Diagram(coordinateSystem(preserveAspectRatio=false)));
     end P1_onlyVent;
 
     package RBCBaseline
@@ -2268,7 +2246,8 @@ package SubControllers "Individual controller modules"
           annotation (Placement(transformation(extent={{-4,60},{16,80}})));
         Modelica.Blocks.Math.Product product1
           annotation (Placement(transformation(extent={{60,70},{80,90}})));
-        Modelica.Blocks.Math.BooleanToReal cooModReal(realTrue=1, realFalse=0)
+        Modelica.Blocks.Math.BooleanToReal cooModReal(realTrue=1, realFalse=
+              0.01)
           "compensation factor computation"
           annotation (Placement(transformation(extent={{28,78},{44,94}})));
         IDEAS.Controls.ControlHeating.RunningMeanTemperatureEN15251 rmot
@@ -4458,8 +4437,7 @@ package SubControllers "Individual controller modules"
           index=1,
           extent={{6,3},{6,3}},
           horizontalAlignment=TextAlignment.Left));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-              Rectangle,                                                     Text}),
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics),
                                                                      Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end Situations;
@@ -5204,7 +5182,6 @@ package SubControllers "Individual controller modules"
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end Damper;
-
   end VAV;
 
   model NightVentilation "night ventilation RBC"
@@ -6144,8 +6121,7 @@ package SubControllers "Individual controller modules"
     connect(hysteresisVAVCoo.y, or2.u1) annotation (Line(points={{-61.1,111},{-46.55,
             111},{-46.55,98},{-33.2,98}}, color={255,0,255}));
    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-120},
-              {100,120}}),                                        graphics={
-            Rectangle,                                                     Text}),
+              {100,120}}),                                        graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false, extent={{-100,-120},{100,120}})));
   end VAV_baseline;
@@ -6433,8 +6409,7 @@ package SubControllers "Individual controller modules"
         extent={{-3,-6},{-3,-6}},
         horizontalAlignment=TextAlignment.Right));
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -260},{100,200}}),                                  graphics={
-            Rectangle,                                                     Text}),
+              -260},{100,200}}),                                  graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false, extent={{-100,-260},{100,200}}), graphics={
           Rectangle(extent={{-52,194},{44,152}}, lineColor={28,108,200}),
@@ -6980,8 +6955,7 @@ package SubControllers "Individual controller modules"
     connect(tracking.y, supplySetpoint.u[1]) annotation (Line(points={{-59,30},
             {-58,30},{-58,56},{-12,56},{-12,30}}, color={0,0,127}));
    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-120},
-              {100,120}}),                                        graphics={
-            Rectangle,                                                     Text}),
+              {100,120}}),                                        graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=
               false, extent={{-100,-120},{100,120}})));
   end VAV_BOPTEST;

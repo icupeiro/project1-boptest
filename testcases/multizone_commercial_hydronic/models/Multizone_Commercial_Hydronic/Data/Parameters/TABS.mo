@@ -13,5 +13,4 @@ record TABS
       rho_b = 2100);
    parameter Real m_flow_nominal_spe(unit="kg/(s.m2)") = 9.8 / 3600
     "Nominal mass flow rate per square meter floor heating, taken from hollandsch huys"; // * 3 is added to avoid having to split the TABS.
-
 end TABS;

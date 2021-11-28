@@ -9,7 +9,6 @@ model OccupancywithCalendar
     nZones=nZones,
     profileType={9,0,8,0,0,7,7,6,6,0,5,5,5,4,4,0,0,0,0,1,2,3,0,0,0,0,0})
     annotation (Placement(transformation(extent={{-20,-8},{20,12}})));
-
 protected
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature prescribedTemperature[
     occ.nZones](each T=297.15) annotation (Placement(transformation(

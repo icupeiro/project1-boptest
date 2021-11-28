@@ -1,19 +1,15 @@
 within Multizone_Commercial_Hydronic.SubSystems.Occupancy.Data;
 record HeatGenerationPeople "Based on ASHRAE Fundamentals 2013"
 extends Modelica.Icons.Record;
-
 parameter Modelica.SIunits.Area surfaceAreaBody= 1.8;
-
 //HeatGeneration [W/person]
 parameter Modelica.SIunits.Power  Sleeping= 41*surfaceAreaBody;
 parameter Modelica.SIunits.Power  Reclining= 45*surfaceAreaBody;
 parameter Modelica.SIunits.Power  SeatedQuiet= 60*surfaceAreaBody;
 parameter Modelica.SIunits.Power  StandingRelaxed= 70*surfaceAreaBody;
-
 parameter Modelica.SIunits.Power  Walking1=115*surfaceAreaBody "3.2 km/h (0.9 m/s)";
 parameter Modelica.SIunits.Power  Walking2=150*surfaceAreaBody "4.3 km/h (1.2 m/s)";
 parameter Modelica.SIunits.Power  Walking3=220*surfaceAreaBody "6.4 km/h (1.8 m/s)";
-
 parameter Modelica.SIunits.Power  OfficeActivitiesReading= 55*surfaceAreaBody;
 parameter Modelica.SIunits.Power  OfficeActivitiesWriting= 60*surfaceAreaBody;
 parameter Modelica.SIunits.Power  OfficeActivitiesTyping= 65*surfaceAreaBody;
@@ -21,10 +17,8 @@ parameter Modelica.SIunits.Power  OfficeActivitiesFiling_seated=70*surfaceAreaBo
 parameter Modelica.SIunits.Power  OfficeActivitiesFiling_standing=80*surfaceAreaBody;
 parameter Modelica.SIunits.Power  OfficeActivitiesWalking= 100*surfaceAreaBody;
 parameter Modelica.SIunits.Power  OfficeActivitiesLifting= 120*surfaceAreaBody;
-
 //Drving
 parameter Modelica.SIunits.Power Car = 60*surfaceAreaBody "60 -115";
-
 //Miscellaneous Occupational Activities
 parameter Modelica.SIunits.Power Cooking = 100*surfaceAreaBody "95 -115";
 parameter Modelica.SIunits.Power Housecleaning = 120*surfaceAreaBody "115-200";
@@ -33,14 +27,12 @@ parameter Modelica.SIunits.Power MachineWork = 105*surfaceAreaBody;
 parameter Modelica.SIunits.Power MachineWorkSawing = 105*surfaceAreaBody "table saw";
 parameter Modelica.SIunits.Power MachineWorkLight = 120*surfaceAreaBody "electrical industry: 115-140";
 parameter Modelica.SIunits.Power MachineWorkHeavy = 235*surfaceAreaBody;
-
 //Miscellaneous Leisure Activities
 parameter Modelica.SIunits.Power Dancing = 150*surfaceAreaBody "140-255";
 parameter Modelica.SIunits.Power exercise=175*surfaceAreaBody "175-235";
 parameter Modelica.SIunits.Power Tennis=210*surfaceAreaBody "210-270";
 parameter Modelica.SIunits.Power Basketball = 290*surfaceAreaBody "290-440";
 parameter Modelica.SIunits.Power Wrestling= 410*surfaceAreaBody "410-505";
-
  annotation (
     Icon(coordinateSystem(preserveAspectRatio=false)),
     Diagram(coordinateSystem(preserveAspectRatio=false)),

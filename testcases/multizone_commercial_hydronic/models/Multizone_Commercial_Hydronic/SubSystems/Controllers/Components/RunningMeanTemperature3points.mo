@@ -1,19 +1,15 @@
 within Multizone_Commercial_Hydronic.SubSystems.Controllers.Components;
 model RunningMeanTemperature3points
   "Calculate the running mean temperature of the previous day at 7, 14 and 21"
-
   parameter Real[24] TAveDayIni(unit="K", displayUnit="degC") = ones(24).* 283.15
     "Initial running mean temperature";
-
   // Interface
    discrete Modelica.Blocks.Interfaces.RealOutput TRm(unit="K",displayUnit = "degC")
     "Running mean average temperature"
      annotation (Placement(transformation(extent={{96,-10},{116,10}})));
-
 protected
   discrete Real[24] TAveDay(unit="K",displayUnit = "degC")
     "Vector with the average hour temperatures of the last day";
-
 public
   Modelica.Blocks.Sources.RealExpression TAmb(y=sim.Te)
     annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
@@ -25,20 +21,14 @@ algorithm
     TAveDay:= TAveDayIni;
   elsewhen sample(0,3600) then
     // Update of TAveDay
-
      for i in 2:24 loop
       TAveDay[i] := pre(TAveDay[i-1]);
      end for;
-
      TAveDay[1] := TAmb.y;
-
   end when;
-
 initial equation
   TRm = TAveDayIni[1];
-
 equation
-
   when sample(3600*21, 3600*24) then
     TRm = (TAveDay[1]*2+TAveDay[8]+TAveDay[15])/4;
   end when
@@ -64,5 +54,4 @@ First implementation.
 </li>
 </ul>
 </html>"));
-
 end RunningMeanTemperature3points;

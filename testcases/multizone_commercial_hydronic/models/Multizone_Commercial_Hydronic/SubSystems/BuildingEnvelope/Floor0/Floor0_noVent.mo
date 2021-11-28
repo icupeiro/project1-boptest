@@ -1,13 +1,11 @@
 within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor0;
 model Floor0_noVent
-
   replaceable package Medium = IDEAS.Media.Air constrainedby
     Modelica.Media.Interfaces.PartialMedium;
   //CHANGE MEETING ROOM 2 FACES B (WOOD WALL) AND C
   //REARRANGE HALL AND MEETING ROOM1; ENTRANCE AS A PART OF THE HALL
   //MEETINGROOM1 simpleglass, same frame ratio as window1st floor
   //HALL west window same frame ratio as window1st floor
-
   IDEAS.Buildings.Components.Zone kitchen(
     V=strGndFlr.Vol_GndFlr_KT,
     hZone=strGndFlr.HeightGndFlr,
@@ -31,7 +29,6 @@ model Floor0_noVent
     each T_start=T_start)
     "Kitchen/lunchroom outer walls"
     annotation (Placement(transformation(extent={{100,-46},{88,-26}})));
-
   outer IDEAS.BoundaryConditions.SimInfoManager sim "Data reader"
     annotation (Placement(transformation(extent={{-140,80},{-120,100}})));
   IDEAS.Buildings.Components.RectangularZoneTemplate MT1(
@@ -91,10 +88,7 @@ model Floor0_noVent
 //       w=0.17,
 //       t=0.032,
 //       beta=0.5235987755983),
-
     //energyDynamicsAir=energyDynamicsAir,
-
-
   IDEAS.Buildings.Components.Zone hall(
     hZone=strGndFlr.HeightGndFlr,
     V=strGndFlr.Vol_GndFlr_HR,
@@ -437,7 +431,6 @@ model Floor0_noVent
 //       s=0.175,
 //       w=0.17,
 //       t=0.032),
-
   IDEAS.Buildings.Components.Window hallWindows_west(
     inc=IDEAS.Types.Tilt.Wall,
     redeclare Multizone_Commercial_Hydronic.Data.Frames.Multizone_Commercial_HydronicWood fraType,
@@ -469,17 +462,14 @@ model Floor0_noVent
    annotation (Placement(transformation(extent={{130,-80},{150,-60}})));
 //  parameter Modelica.Fluid.Types.Dynamics energyDynamicsAir=Modelica.Fluid.Types.Dynamics.FixedInitial
 //    "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
-
   parameter Real mSenFac=5
     "Correction factor for thermal capacity of zone air.";
-
   Modelica.Blocks.Interfaces.RealInput[3] nOcc
   "Input for number of occupants" annotation (Placement(
         transformation(
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={50,-100})));
-
   IDEAS.Buildings.Components.Window meetingRoom1Window_east(
     inc=IDEAS.Types.Tilt.Wall,
     redeclare Data.Frames.Multizone_Commercial_HydronicWood fraType,
@@ -552,7 +542,6 @@ redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.O
     "Start value of temperature";
    parameter Real[8] A_Conv = {servers.A, FirstAid.A, kitchen.A,MT2.A,MT1.A,
     hall.A, storage.A, bathroomZone.A} "Convective area of zones";
-
   IDEAS.Buildings.Components.InternalWall internalWall_HR_MT2(
     redeclare Data.Constructions.SilicateWall constructionType,
     inc=IDEAS.Types.Tilt.Wall,
@@ -595,7 +584,6 @@ redeclare Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Components.O
         rotation=90,
         origin={10,-62})));
 equation
-
   //Kitchen/lunchroom connections
   connect(kitchen.propsBus[1], KTouterWalls[1].propsBus_a) annotation (Line(
       points={{80,11.6667},{70,11.6667},{60,11.6667},{60,-34},{89,-34}},

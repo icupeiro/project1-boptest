@@ -46,11 +46,9 @@ model Floor1
       redeclare IDEAS.Buildings.Components.LightingType.Fluorescent ligTyp,
       redeclare IDEAS.Buildings.Components.LightingControl.OccupancyBased
         ligCtr));
-
   parameter Boolean allowFlowReversal = true
     "= false to simplify equations, assuming, but not enforcing, no flow reversal"
     annotation(Dialog(tab="Assumptions"), Evaluate=true);
-
   Modelica.Fluid.Interfaces.FluidPort_b[4] airOutlet(
     each m_flow(max=if allowFlowReversal then Modelica.Constants.inf else 0),
     redeclare each package Medium = Medium)

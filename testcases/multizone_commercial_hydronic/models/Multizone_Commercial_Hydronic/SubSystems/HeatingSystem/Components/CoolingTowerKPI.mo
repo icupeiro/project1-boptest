@@ -1,7 +1,6 @@
 within Multizone_Commercial_Hydronic.SubSystems.HeatingSystem.Components;
 model CoolingTowerKPI
   extends CoolingTower;
-
   Multizone_Commercial_Hydronic.SubSystems.Controllers.EnergyKPIBus energyKPIBus annotation (Placement(
         transformation(extent={{80,-108},{120,-68}}), iconTransformation(extent=
            {{90,-80},{110,-60}})));
@@ -37,9 +36,7 @@ model CoolingTowerKPI
     annotation (Placement(transformation(extent={{-54,-36},{-46,-28}})));
   Modelica.Blocks.Continuous.Integrator integrator3(k=1/3600, y_start=0.001)
     annotation (Placement(transformation(extent={{-30,-36},{-22,-28}})));
-
 equation
-
     connect(realExpression.y, gain.u) annotation (Line(
       points={{93,90},{94,90},{94,-46},{52,-46},{52,-70},{60.8,-70}},
       color={0,0,127},
@@ -151,5 +148,4 @@ equation
       index=1,
       extent={{6,3},{6,3}},
       horizontalAlignment=TextAlignment.Left));
-
 end CoolingTowerKPI;

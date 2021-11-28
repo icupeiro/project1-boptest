@@ -250,8 +250,9 @@ model TABSSimpler "TABS System for the TACO approach"
             -8}})));
   IDEAS.Fluid.FixedResistances.Junction jun7(
     redeclare package Medium = IDEAS.Media.Water,
+    tau=150,
     portFlowDirection_1=Modelica.Fluid.Types.PortFlowDirection.Entering,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     portFlowDirection_2=Modelica.Fluid.Types.PortFlowDirection.Leaving,
     portFlowDirection_3=Modelica.Fluid.Types.PortFlowDirection.Entering,
@@ -261,42 +262,13 @@ model TABSSimpler "TABS System for the TACO approach"
         extent={{6,6},{-6,-6}},
         rotation=-90,
         origin={-60,-60})));
-  IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_heat_sup(
-    from_dp=true,
-    use_inputFilter=false,
-    redeclare package Medium = IDEAS.Media.Water,
-    m_flow_nominal=hydronic.p11_m_flow,
-    allowFlowReversal=false,
-    dpValve_nominal=1000) annotation (Placement(transformation(
-        extent={{-6,-6},{6,6}},
-        rotation=90,
-        origin={-60,-120})));
-  IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_coo_sup(
-    from_dp=true,
-    use_inputFilter=false,
-    redeclare package Medium = IDEAS.Media.Water,
-    m_flow_nominal=hydronic.p11_m_flow,
-    allowFlowReversal=false,
-    dpValve_nominal=1000) annotation (Placement(transformation(
-        extent={{8,-8},{-8,8}},
-        rotation=0,
-        origin={-22,-60})));
-  IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_heat_ret(
-    from_dp=true,
-    use_inputFilter=false,
-    redeclare package Medium = IDEAS.Media.Water,
-    m_flow_nominal=hydronic.p11_m_flow,
-    allowFlowReversal=false,
-    dpValve_nominal=1000) annotation (Placement(transformation(
-        extent={{-6,6},{6,-6}},
-        rotation=-90,
-        origin={70,-120})));
   IDEAS.Fluid.FixedResistances.Junction jun(
     redeclare package Medium = IDEAS.Media.Water,
+    tau=150,
     m_flow_nominal={1,1,1},
     dp_nominal={0,0,0},
     portFlowDirection_1=Modelica.Fluid.Types.PortFlowDirection.Entering,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     portFlowDirection_3=Modelica.Fluid.Types.PortFlowDirection.Leaving,
     portFlowDirection_2=Modelica.Fluid.Types.PortFlowDirection.Leaving)
@@ -320,8 +292,6 @@ model TABSSimpler "TABS System for the TACO approach"
   Modelica.Fluid.Interfaces.FluidPort_b cooReturn(redeclare package Medium =
         IDEAS.Media.Water) "return of TABS"
     annotation (Placement(transformation(extent={{110,-50},{130,-30}})));
-  Modelica.Blocks.Math.BooleanToReal booleanToReal[2]
-    annotation (Placement(transformation(extent={{-94,-126},{-82,-114}})));
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b[35] port_emb
     annotation (Placement(transformation(extent={{-24,92},{-4,112}})));
   IDEAS.Fluid.FixedResistances.PressureDrop dp_fixed_byPass_TABS(
@@ -345,6 +315,38 @@ model TABSSimpler "TABS System for the TACO approach"
         origin={70,-104})));
   Modelica.Blocks.Interfaces.RealOutput P_pump
     annotation (Placement(transformation(extent={{-100,-60},{-120,-40}})));
+  IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_coo_sup(
+    from_dp=true,
+    use_inputFilter=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    m_flow_nominal=hydronic.p11_m_flow,
+    allowFlowReversal=false,
+    dpValve_nominal=1000) annotation (Placement(transformation(
+        extent={{8,-8},{-8,8}},
+        rotation=0,
+        origin={-22,-60})));
+  IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_heat_sup(
+    from_dp=true,
+    use_inputFilter=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    m_flow_nominal=hydronic.p11_m_flow,
+    allowFlowReversal=false,
+    dpValve_nominal=1000) annotation (Placement(transformation(
+        extent={{-6,-6},{6,6}},
+        rotation=90,
+        origin={-60,-120})));
+  IDEAS.Fluid.Actuators.Valves.TwoWayLinear val_heat_ret(
+    from_dp=true,
+    use_inputFilter=false,
+    redeclare package Medium = IDEAS.Media.Water,
+    m_flow_nominal=hydronic.p11_m_flow,
+    allowFlowReversal=false,
+    dpValve_nominal=1000) annotation (Placement(transformation(
+        extent={{-6,6},{6,-6}},
+        rotation=-90,
+        origin={70,-120})));
+  Modelica.Blocks.Math.BooleanToReal booleanToReal[2]
+    annotation (Placement(transformation(extent={{-94,-134},{-82,-122}})));
 equation
   connect(pump7.port_b, t24.port_a)
     annotation (Line(points={{-60,-36},{-60,-36},{-60,-32}},
@@ -376,34 +378,11 @@ equation
   connect(tcca1.T, dataBus.TretCCA1);
   connect(tcca2.T, dataBus.TretCCA2);
   connect(tcca3.T, dataBus.TretCCA3);
-  connect(heaSupply, val_heat_sup.port_a)
-    annotation (Line(points={{-60,-140},{-60,-126}}, color={0,127,255}));
-  connect(heaReturn, val_heat_ret.port_b)
-    annotation (Line(points={{70,-140},{70,-126}}, color={0,127,255}));
-  connect(val_coo_sup.port_b, jun7.port_3)
-    annotation (Line(points={{-30,-60},{-54,-60}},   color={0,127,255}));
   connect(val_coo_ret.port_a, jun.port_3)
     annotation (Line(points={{82,-50},{82,-50},{76,-50}}, color={0,127,255}));
   connect(val_coo_ret.port_b, cooReturn)
     annotation (Line(points={{98,-50},{110,-50},{110,-40},{120,-40}},
                                                   color={0,127,255}));
-  connect(val_coo_sup.port_a, cooSupply) annotation (Line(points={{-14,-60},{
-          40,-60},{40,-70},{120,-70}},
-                             color={0,127,255}));
-  connect(booleanToReal[1].u, signalBus.heatMode) annotation (Line(points={{-95.2,
-          -120},{-98,-120},{-98,-22}},       color={255,0,255}), Text(
-      string="%second",
-      index=1,
-      extent={{6,3},{6,3}}));
-  connect(booleanToReal[1].y, val_heat_sup.y);
-  connect(val_heat_ret.y, booleanToReal[1].y);
-  connect(booleanToReal[2].u, signalBus.coolMode) annotation (Line(points={{-95.2,
-          -120},{-98,-120},{-98,-22},{-98,-22}},       color={255,0,255}), Text(
-      string="%second",
-      index=1,
-      extent={{6,3},{6,3}}));
-  connect(val_coo_ret.y, booleanToReal[2].y);
-  connect(val_coo_sup.y, booleanToReal[2].y);
     //HeatFlow connections
   connect(cca3[1].heatPortEmb[1], port_emb[1]) annotation (Line(points={{-14,
           83.3333},{-14,92.2857}},      color={191,0,0}));
@@ -592,10 +571,6 @@ equation
   connect(cca3[2].port_b, tcca3.port_a);
   connect(cca3[3].port_b, tcca3.port_a);
   connect(cca3[4].port_b, tcca3.port_a);
-  connect(dp_fixed_retCollector_TABS.port_b, val_heat_ret.port_a) annotation (
-     Line(points={{70,-110},{70,-112},{70,-114}}, color={0,127,255}));
-  connect(val_heat_sup.port_b, TWVTABS.port_1)
-    annotation (Line(points={{-60,-114},{-60,-92}}, color={0,127,255}));
   connect(TWVTABS.port_2, jun7.port_1)
     annotation (Line(points={{-60,-76},{-60,-66}}, color={0,127,255}));
   connect(TWVTABS.port_3, dp_fixed_byPass_TABS.port_b) annotation (Line(
@@ -618,6 +593,32 @@ equation
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
+  connect(heaReturn, val_heat_ret.port_b)
+    annotation (Line(points={{70,-140},{70,-126}}, color={0,127,255}));
+  connect(val_heat_ret.port_a, dp_fixed_retCollector_TABS.port_b)
+    annotation (Line(points={{70,-114},{70,-110}}, color={0,127,255}));
+  connect(val_heat_sup.port_b, TWVTABS.port_1)
+    annotation (Line(points={{-60,-114},{-60,-92}}, color={0,127,255}));
+  connect(val_heat_sup.port_a, heaSupply)
+    annotation (Line(points={{-60,-126},{-60,-140}}, color={0,127,255}));
+  connect(booleanToReal[1].u, signalBus.heatMode) annotation (Line(points={{-95.2,
+          -128},{-98,-128},{-98,-22}},       color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(booleanToReal[1].y, val_heat_sup.y);
+  connect(val_heat_ret.y, booleanToReal[1].y);
+  connect(booleanToReal[2].u, signalBus.coolMode) annotation (Line(points={{-95.2,
+          -128},{-98,-128},{-98,-22},{-98,-22}},       color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
+  connect(val_coo_ret.y, booleanToReal[2].y);
+  connect(val_coo_sup.y, booleanToReal[2].y);
+  connect(jun7.port_3, val_coo_sup.port_b)
+    annotation (Line(points={{-54,-60},{-30,-60}}, color={0,127,255}));
+  connect(val_coo_sup.port_a, cooSupply) annotation (Line(points={{-14,-60},{78,
+          -60},{78,-70},{120,-70}}, color={0,127,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-140},
             {120,100}}),                                        graphics),
                                 Diagram(coordinateSystem(preserveAspectRatio=false, extent={

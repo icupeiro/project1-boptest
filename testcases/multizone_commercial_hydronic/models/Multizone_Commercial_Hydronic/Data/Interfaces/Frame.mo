@@ -1,11 +1,8 @@
 within Multizone_Commercial_Hydronic.Data.Interfaces;
 partial record Frame "Template record for window frames"
-
   extends Modelica.Icons.MaterialProperty;
-
   parameter Boolean present=true;
   parameter Real U_value=1.1 "U-value window frame";
-
   annotation (Documentation(info="<html>
 <p><h4><font color=\"#008000\">General description</font></h4></p>
 <p><h5>Goal</h5></p>

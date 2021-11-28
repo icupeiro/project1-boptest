@@ -2,7 +2,6 @@ within Multizone_Commercial_Hydronic.Data.Interfaces;
 record Glazing
   "Template record for glazing, based on  Window software by LBNL"
   extends Modelica.Icons.MaterialProperty;
-
   parameter Integer nLay(min=1)
     "Number of layers of the glazing, including gaps";
   parameter INFRAX.Data.Interfaces.Material[nLay] mats "Array of materials";
@@ -14,11 +13,9 @@ record Glazing
     "Absorbed solar radiation for each layer as function of angle of incidence";
   parameter Real SwTransDif
     "Transmitted solar radiation as function of angle of incidence";
-
   parameter Real U_value "Design U-value. (Only used for calculation Qdesign)";
   parameter Real g_value
     "Design g-value. (Not used in calculation, only informative)";
-
   annotation (Documentation(info="<html>
   <p>
   The <code>Glazing.mo</code> partial describes the material data 

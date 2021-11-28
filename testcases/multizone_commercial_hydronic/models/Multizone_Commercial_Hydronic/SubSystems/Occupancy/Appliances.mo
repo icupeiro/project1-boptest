@@ -1,9 +1,7 @@
 within Multizone_Commercial_Hydronic.SubSystems.Occupancy;
 model Appliances
   "this is a model to estimate the appliances in Infrax (computers, screens, copiers...)"
-
   // {9,0,8,0,0,7,7,6,6,0,5,5,5,4,4,0,0,0,0,1,2,3,0,0,0,0,0}
-
   parameter Modelica.SIunits.HeatFlowRate OpePC = 75
   "Heat flow produced by a operating computer";
   parameter Modelica.SIunits.HeatFlowRate StaPC = 30
@@ -22,7 +20,6 @@ model Appliances
   "Heat flow produced by a desktop printer (idle)";
   parameter Modelica.SIunits.HeatFlowRate prjScr = 150
   "Heat flow produced by a projector screen";
-
   parameter Modelica.SIunits.HeatFlowRate micWav = 750
   "Heat flow produced by a microwave";
   parameter Modelica.SIunits.HeatFlowRate SouCoo = 120
@@ -37,20 +34,11 @@ model Appliances
   "Heat flow produced by the servers";
   parameter Modelica.SIunits.HeatFlowRate fridge = 400
   "Heat flow produced by a fridge";
-
-
   parameter Real fraRad = 0.3
   "radiant heat transfer fraction for computer+monitor and copier";
-
-
 //3rd Floor
-
 //Bathroom and small room -- no internal gains
-
-
-
   Real AppGains[27];
-
   Modelica.Blocks.Interfaces.RealInput[27] nOcc
   "Occupant number input for different zones"
     annotation (Placement(
@@ -102,7 +90,6 @@ equation
   AppGains[25] = 0;
   AppGains[26] = 0;
   AppGains[27] = 0;
-
   connect(heaCon.port, conv)
     annotation (Line(points={{60,20},{100,20}}, color={191,0,0}));
   connect(heaRad.port, rad)

@@ -1,7 +1,6 @@
 within Multizone_Commercial_Hydronic.SubSystems.Controllers;
 expandable connector SignalBus "Data bus that stores signal data"
   extends Modelica.Icons.SignalBus;
-
 //   Boolean HP_onoff "heat pumps on or off";
 //   Integer HP1_signal "heat pump 1 signal";
 //   Integer HP2_signal "heat pump 2 signal";
@@ -60,8 +59,6 @@ expandable connector SignalBus "Data bus that stores signal data"
 //   Modelica.SIunits.Temperature T_AHU "air handling unit setpoint";
 //   Real TW_3way_signal "thermal wheel minimum state (no working)";
 //   Real NightVentilation "night ventilation on/off";
-
-
   annotation (
     defaultComponentName="weaBus",
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,

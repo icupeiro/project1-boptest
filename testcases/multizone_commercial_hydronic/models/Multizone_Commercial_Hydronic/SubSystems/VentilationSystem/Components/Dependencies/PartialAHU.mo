@@ -1,25 +1,21 @@
 within Multizone_Commercial_Hydronic.SubSystems.VentilationSystem.Components.Dependencies;
 partial model PartialAHU "air handling unit of INFRAX"
-
   replaceable package MediumAir = IDEAS.Media.Air;
   replaceable package MediumHeaCoi =
       IDEAS.Media.Antifreeze.Validation.BaseClasses.PropyleneGlycolWater (
            property_T=273.15,
            X_a=0.30) constrainedby Modelica.Media.Interfaces.PartialMedium;
   replaceable package MediumCooCoi = IDEAS.Media.Water;
-
     extends IDEAS.Fluid.Interfaces.PartialFourPortInterface(redeclare final
       package Medium1 =                                                                     MediumAir,redeclare
       final package Medium2 =                                                                                                     MediumAir,
     final m1_flow_nominal = mFlowAirRet_nominal, final m2_flow_nominal = mFlowAirSup_nominal);
-
   parameter Modelica.SIunits.Time tau = 200 "Time constant of components";
   parameter Modelica.SIunits.Time tauWater = 200;
   parameter Modelica.SIunits.Time tauAir = 200;
   parameter Modelica.SIunits.Time tauSensor = 200;
   parameter Modelica.SIunits.Time tauLoss = 3600*8
     "Time constant of heat losses to environment";
-
   parameter Modelica.SIunits.MassFlowRate mFlowAirSup_nominal
     "Nominal mass flow rate for supply air"
     annotation(Dialog(tab="General", group="Nominal mass flow rates"));
@@ -32,14 +28,12 @@ partial model PartialAHU "air handling unit of INFRAX"
   parameter Modelica.SIunits.MassFlowRate mFlowWatCooCoi_nominal
     "Nominal water mass flow rate for cooling coil"
     annotation(Dialog(tab="General", group="Nominal mass flow rates"));
-
   parameter Modelica.SIunits.Power QHeaCoi_nominal = min(mFlowWatHeaCoi_nominal*4180*(THeaCoiWatSup_nominal-THeaCoiWatRet_nominal),mFlowAirSup_nominal*1005*(THeaCoiAirRet_nominal - THeaCoiAirSup_nominal))
     "Nominal heating power"
     annotation(Dialog(tab="General", group="Nominal power"));
   parameter Modelica.SIunits.Power QCooCoi_nominal = max(mFlowWatCooCoi_nominal*4180*(TCooCoiWatSup_nominal-TCooCoiWatRet_nominal),mFlowAirSup_nominal*1005*(TCooCoiAirRet_nominal - TCooCoiAirSup_nominal))
     "Nominal cooling power"
     annotation(Dialog(tab="General", group="Nominal power"));
-
   parameter Modelica.SIunits.Temperature TCooCoiWatSup_nominal = 15+273.15
     annotation(Dialog(tab="General", group="Nominal temperatures"));
   parameter Modelica.SIunits.Temperature TCooCoiWatRet_nominal = 20+273.15
@@ -48,7 +42,6 @@ partial model PartialAHU "air handling unit of INFRAX"
   annotation(Dialog(tab="General", group="Nominal temperatures"));
   parameter Modelica.SIunits.Temperature TCooCoiAirRet_nominal = 24+273.15
   annotation(Dialog(tab="General", group="Nominal temperatures"));
-
   parameter Modelica.SIunits.Temperature THeaCoiWatSup_nominal = 70+273.15
   annotation(Dialog(tab="General", group="Nominal temperatures"));
   parameter Modelica.SIunits.Temperature THeaCoiWatRet_nominal = 50+273.15
@@ -57,7 +50,6 @@ partial model PartialAHU "air handling unit of INFRAX"
   annotation(Dialog(tab="General", group="Nominal temperatures"));
   parameter Modelica.SIunits.Temperature THeaCoiAirRet_nominal = 23+273.15
   annotation(Dialog(tab="General", group="Nominal temperatures"));
-
   Modelica.Fluid.Interfaces.FluidPort_a portCooCoi_a1(redeclare package Medium =
         MediumCooCoi)
     "Fluid connector a1 (positive design flow direction is from port_a1 to port_b1)"
@@ -104,8 +96,6 @@ partial model PartialAHU "air handling unit of INFRAX"
     annotation (Dialog(group="Nominal pressure drops"));
   Controllers.SignalBus signalBus annotation (Placement(transformation(extent={{-94,86},
             {-66,114}}),           iconTransformation(extent={{-210,-30},{-190,-10}})));
-equation
-
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}})),           Icon(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics={

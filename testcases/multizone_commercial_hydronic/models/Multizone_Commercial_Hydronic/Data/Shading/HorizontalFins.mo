@@ -6,7 +6,6 @@ model HorizontalFins "INFRAX horizontal fins shading"
     s=0.17,
     w=0.175,
     t=0.032);
-
     annotation (
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-50,-100},{50,100}})),
     Documentation(info="<html>

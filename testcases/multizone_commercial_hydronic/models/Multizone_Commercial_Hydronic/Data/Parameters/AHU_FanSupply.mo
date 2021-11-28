@@ -8,7 +8,6 @@ record AHU_FanSupply
           eta={0.80, 0.81, 0.80, 0.75, 0.70, 0.60, 0.40}),
     pressure(V_flow={2, 2.5, 3, 3.5, 4, 4.3, 4.5},
           dp={1600,  1500, 1300, 1000, 700, 400, 200}));
-
   annotation (
 defaultComponentPrefixes="parameter",
 defaultComponentName="per",

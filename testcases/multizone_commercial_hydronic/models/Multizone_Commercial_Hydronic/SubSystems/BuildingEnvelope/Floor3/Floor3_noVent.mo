@@ -1,9 +1,7 @@
 within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor3;
 model Floor3_noVent
-
   replaceable package Medium = IDEAS.Media.Air constrainedby
     Modelica.Media.Interfaces.PartialMedium;
-
   Multizone_Commercial_Hydronic.Data.Parameters.Str3rdFlr str3rdFlr "Record with 3rd floor data"
     annotation (Placement(transformation(extent={{120,-100},{140,-80}})));
   outer IDEAS.BoundaryConditions.SimInfoManager sim "Data reader"
@@ -64,8 +62,6 @@ model Floor3_noVent
         extent={{-6,-10},{6,10}},
         rotation=0,
         origin={-110,-30})));
-
-
   IDEAS.Buildings.Components.OuterWall[4] southWalls(
     A=str3rdFlr.AWall_3rdFlr_SZ,
     inc=str3rdFlr.inc_3rdFlr_SZ,
@@ -77,7 +73,6 @@ model Floor3_noVent
         extent={{-6,-10},{6,10}},
         rotation=-90,
         origin={-34,-2})));
-
   IDEAS.Buildings.Components.RectangularZoneTemplate bathroomZone(
     aziA=Multizone_Commercial_Hydronic.Data.Orientations.N,
     l=str3rdFlr.l_3rdFlr_BRZ,
@@ -313,12 +308,10 @@ model Floor3_noVent
   //  "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
   //parameter Modelica.Fluid.Types.Dynamics energyDynamicsTABS=Modelica.Fluid.Types.Dynamics.FixedInitial
   //  "Type of energy balance for air model: dynamic (3 initialization options) or steady state";
-
   parameter Real[5] A_Conv = {southZone.A, copyRoom.A, meetingRoom.A, smallRoom.A,
   bathroomZone.A} "Convective area of zones";
   parameter Modelica.SIunits.Area[4] ATabs = {inclinatedRoof.A,copyRoom.A, meetingRoom.A,
   smallRoom.A} "Area of TABS ceiling";
-
   parameter Real mSenFac=5
     "Correction factor for thermal capacity of zone air.";
   Modelica.Blocks.Interfaces.RealInput[2] nOcc annotation (Placement(
@@ -350,7 +343,6 @@ equation
   connect(copyRoom.proBusFlo[1], flo[6]);
   connect(meetingRoom.proBusFlo[1], flo[7]);
   connect(smallRoom.proBusFlo[1], flo[8]);
-
   //External connections of southZone
   connect(southZone.propsBus[1], southWalls[1].propsBus_a) annotation (Line(
       points={{-20,-28.1905},{-38,-28.1905},{-38,-7},{-32,-7}},
@@ -413,7 +405,6 @@ equation
       points={{-102,-7},{-102,-7},{-102,-35.8095},{-20,-35.8095}},
       color={255,204,51},
       thickness=0.5));
-
   //External connections of other zones
   connect(meetingRoom.proBusD[1], copyRoom.proBusB[1]) annotation (Line(
       points={{20.4,43},{6,43},{6,56},{-1,56}},
@@ -454,7 +445,6 @@ equation
       index=1,
       extent={{6,3},{6,3}}));
   connect(staE_WallC.propsBus_b, staE[1]);
-
   //Embedded port connections
   connect(inclinatedRoof.port_emb[1], port_emb[1]) annotation (Line(points={{
           -60,-46},{-118,-46},{-118,92.5},{0,92.5}}, color={191,0,0}));
@@ -464,7 +454,6 @@ equation
           44,41},{44,42},{44,102.5},{0,102.5}}, color={191,0,0}));
   connect(smallRoom.port_emb, port_emb[4]) annotation (Line(points={{80,41},{92,
           41},{92,107.5},{0,107.5}}, color={191,0,0}));
-
   //Sensors connected to the data bus
   connect(copyRoom.TSensor, dataBus.T3rdFlr_CPR) annotation (Line(
       points={{1,52},{-68,52},{-68,40.1},{-139.9,40.1}},
@@ -494,12 +483,10 @@ equation
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-
   //Windows control signals
   connect(dataBus.eastShading3rd, southWindow2.Ctrl);
   connect(dataBus.southShading, southWindow3.Ctrl);
   connect(dataBus.westShading,southWindow4.Ctrl);
-
   //Convective and radiative connections
   connect(southZone.gainCon, gainCon[1]);
   connect(southZone.gainRad, gainRad[1]);
@@ -511,7 +498,6 @@ equation
   connect(smallRoom.gainRad, gainRad[4]);
   connect(bathroomZone.gainCon, gainCon[5]);
   connect(bathroomZone.gainRad, gainRad[5]);
-
   //Occupancy connections
   connect(nOcc[1], southZone.yOcc) annotation (Line(points={{80,-110},{80,-110},
           {80,-34},{24,-34},{24,-32}},       color={0,0,127}));

@@ -38,7 +38,6 @@ initial equation
     intUnderSoft[i] = 0;
     intUnder[i] = 0;
   end for;
-
 equation
   for i in 1:nZones loop
     if TSensor[i]>THardUp then
@@ -68,12 +67,10 @@ equation
       der(intUnder[i])=0;
     end if;
   end for;
-
   totalOverHeat = sum(intOverh[:]);
   totalOverhSoft = sum(intOverhSoft[:]);
   totalUndeHeatSoft = sum(intUnderSoft[:]);
   totalUnderHeat=sum(intUnder[:]);
-
   // Set the values for the different kinds of control
   THardUp = if (clock.hour >= 7 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 1] else ctrlLimits.limValue[typeLimit, 1] + 5;
   TSoftUp = if (clock.hour >= 7 and clock.hour < 19) and (clock.weekDay) < 6 then ctrlLimits.limValue[typeLimit, 2] else ctrlLimits.limValue[typeLimit, 2] + 5;

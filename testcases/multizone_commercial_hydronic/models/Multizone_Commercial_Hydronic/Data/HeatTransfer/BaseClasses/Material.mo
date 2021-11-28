@@ -24,7 +24,6 @@ record Material "Thermal properties of materials w/o storage"
   parameter Real nStaReal(min=0) = nStaRef*piMat/piRef
     "Number of states as a real number"
     annotation (Dialog(tab="Advanced"));
-
   parameter Modelica.SIunits.Temperature TSol
     "Solidus temperature, used only for PCM."
     annotation (Dialog(group="Properties for phase change material"));
@@ -34,14 +33,11 @@ record Material "Thermal properties of materials w/o storage"
   parameter Modelica.SIunits.SpecificInternalEnergy LHea
     "Latent heat of phase change"
     annotation (Dialog(group="Properties for phase change material"));
-
   constant Boolean ensureMonotonicity = false
     "Set to true to force derivatives dT/du to be monotone";
-
   constant Boolean phasechange = false
     "Flag, true if the material is a phase change material"
         annotation (Dialog(group="Properties for phase change material"));
-
   annotation (preferredView="info",
   Documentation(info="<html>
 Base record for materials that declares the thermal properties. 

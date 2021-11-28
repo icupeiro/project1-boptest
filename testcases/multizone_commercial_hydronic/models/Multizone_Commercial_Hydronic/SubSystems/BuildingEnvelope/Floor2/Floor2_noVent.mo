@@ -1,6 +1,5 @@
 within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor2;
 model Floor2_noVent
-
   replaceable package Medium = IDEAS.Media.Air constrainedby
     Modelica.Media.Interfaces.PartialMedium;
   outer IDEAS.BoundaryConditions.SimInfoManager sim "Data reader"
@@ -188,7 +187,6 @@ model Floor2_noVent
   "Bathroom zone, not conditioned and with air extraction"
     annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
     //energyDynamicsAir=energyDynamicsAir,
-
   IDEAS.Buildings.Components.InternalWall copyWalls(
     inc=IDEAS.Types.Tilt.Wall,
     azi=Multizone_Commercial_Hydronic.Data.Orientations.N,
@@ -311,7 +309,6 @@ model Floor2_noVent
         rotation=90,
         origin={92,12})));
 equation
-
   //northZone connections
   connect(northZone.propsBus[1], northWall.propsBus_a) annotation (Line(
       points={{20,71.6667},{20,71.6667},{20,87},{90,87}},

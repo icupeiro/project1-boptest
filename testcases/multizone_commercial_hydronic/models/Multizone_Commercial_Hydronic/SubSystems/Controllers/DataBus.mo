@@ -1,7 +1,6 @@
 within Multizone_Commercial_Hydronic.SubSystems.Controllers;
 expandable connector DataBus "Data bus that stores sensor data"
   extends Modelica.Icons.SignalBus;
-
   Modelica.SIunits.Temperature T1;
   Modelica.SIunits.Temperature T2;
   Modelica.SIunits.Temperature T3;
@@ -96,7 +95,6 @@ expandable connector DataBus "Data bus that stores sensor data"
     //Stairs
   Real CO2_GndFlr_WStairs;
   Real CO2_GndFlr_EStairs;
-
    //Average
   Modelica.SIunits.Temperature Tavg_3rdFlr "average temperature of the 3rd floor";
   Modelica.SIunits.Temperature Tavg_2ndFlr "average temperature of the 2nd floor";
@@ -107,7 +105,6 @@ expandable connector DataBus "Data bus that stores sensor data"
   //Modelica.SIunits.MassFlowRate p04_m_flow "current mass flow on pump 04";
   //Modelica.SIunits.MassFlowRate p05_m_flow "current mass flow on pump 05";
   //Modelica.SIunits.MassFlowRate p13_m_flow "current mass flow on pump 13";
-
   //Mass flow rate to outside in storage room, 1st floor
   //Modelica.SIunits.MassFlowRate m_dist;
   //Mass flow rate to outside in south zone, 3rd floor
@@ -117,9 +114,6 @@ expandable connector DataBus "Data bus that stores sensor data"
   Real eastShading3rd(start = 0) "movable east windows shading signal, 3rd floor";
   Real southShading(start = 0) "movable south windows shading signal";
   Real westShading(start = 0) "movable west windows shading signal";
-
-
-
   annotation (
     defaultComponentName="weaBus",
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,

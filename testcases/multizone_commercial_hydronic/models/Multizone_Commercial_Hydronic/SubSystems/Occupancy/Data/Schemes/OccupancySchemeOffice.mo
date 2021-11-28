@@ -1,8 +1,6 @@
 within Multizone_Commercial_Hydronic.SubSystems.Occupancy.Data.Schemes;
 model OccupancySchemeOffice
-
 //Based on InfraxBuildingDilbeek
-
 //INPUTS AND PARAMETERS
   parameter Integer nZones "Total Number of Floor Levels";
   parameter Integer profileType[nZones]  "Profile type of the zone 
@@ -17,16 +15,13 @@ model OccupancySchemeOffice
     8 = Fl 2 Meeting Room Atomium
     9 = Fl 2 Landscape Office
 ";
-
  //parameter String filenameTables = "C:/Users/Administrator/Documents/GitHub/HybridGeotabs/TablesOccupancyInfrax.txt" "File where matrix is stored";
   parameter String filenameTables = "C:/Users/u0112721/Documents/Dymola/hybridGEOTABS/INFRAX/SubSystems/Occupancy/Data/Tables/TablesOccupancyInfrax.txt";
  parameter Integer startYear = 2018;
  parameter Integer startDay = 1;
-
 //OUTPUTS
  Modelica.Blocks.Interfaces.RealOutput nOcc[nZones] "Total Number of Occupants for each zone"
     annotation (Placement(transformation(extent={{98,60},{118,80}})));
-
 //INTERNAL VARIABLES
   Modelica.Blocks.Logical.LessThreshold Weekday(each threshold=5.5)
     annotation (Placement(transformation(extent={{-56,82},{-48,90}})));
@@ -126,18 +121,14 @@ model OccupancySchemeOffice
     startTime(displayUnit="s") = startHour,
     smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments)
     annotation (Placement(transformation(extent={{-40,-84},{-28,-72}})));
-
   Controllers.Components.Clock      clock
     annotation (Placement(transformation(extent={{-96,72},{-76,92}})));
-
   parameter Modelica.SIunits.Time startHour(fixed=false);
   parameter Modelica.SIunits.Time startTime(fixed=false);
-
 initial equation
   startHour =3600*24*(clock.weekDay - 2);
   startTime = time;
 equation
-
 for i in 1:nZones loop
     if profileType[i]==0 then
       nOcc[i] = 0;
@@ -163,7 +154,6 @@ for i in 1:nZones loop
       nOcc[i] = 0;
     end if;
 end for;
-
   connect(Weekday.y, buildingOpen.u1) annotation (Line(points={{-47.6,86},{-28,86},
           {-28,74},{-8,74}}, color={255,0,255}));
   connect(realToBoolean.y, buildingOpen.u2)

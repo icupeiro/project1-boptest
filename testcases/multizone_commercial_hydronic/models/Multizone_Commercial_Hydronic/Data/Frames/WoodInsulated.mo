@@ -8,5 +8,4 @@ Well insulated wooden window frame.
 </p>
 <p>U value from: https://windows.lbl.gov/adv_sys/NTNU-LBNL-EuropeanFramesReport.pdf</p>
 </html>"));
-
 end WoodInsulated;

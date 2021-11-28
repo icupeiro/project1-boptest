@@ -167,10 +167,10 @@ model HeatingSystem "Heating system with no KPI"
     redeclare
       IDEAS.Fluid.Movers.Data.Pumps.Wilo.Stratos65slash1to12_CAN_PN6slash10 per,
     y_start=0,
-    tau=60,
+    tau=300,
     riseTime=120,
     use_inputFilter=false,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     redeclare package Medium = MediumGlycol)
                "passive cooling pump"
     annotation (Placement(transformation(extent={{-76,-70},{-60,-52}})));
@@ -294,8 +294,8 @@ model HeatingSystem "Heating system with no KPI"
         extent={{-5,5},{5,-5}},
         rotation=-90,
         origin={-121,-85})));
-  Components.CoolingTower coolingTower_detailed(redeclare package MediumGlycol =
-        MediumGlycol)
+  Components.CoolingTower coolingTower_detailed(redeclare package MediumGlycol
+      = MediumGlycol)
     annotation (Placement(transformation(extent={{194,80},{218,100}})));
   Components.TABSSimpler tABS_detailed
     annotation (Placement(transformation(extent={{86,68},{106,88}})));
@@ -559,6 +559,7 @@ model HeatingSystem "Heating system with no KPI"
     allowFlowReversal=false,
     redeclare package Medium = IDEAS.Media.Water,
     m_flow_nominal=hydronic.p07_m_flow,
+    from_dp=true,
     dp_nominal(displayUnit="kPa") = 5100) "equilibrium valve" annotation (
       Placement(transformation(
         extent={{8,9},{-8,-9}},

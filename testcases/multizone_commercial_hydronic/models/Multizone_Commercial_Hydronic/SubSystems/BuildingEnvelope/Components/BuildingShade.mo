@@ -3,7 +3,6 @@ model BuildingShade
   "Component for modeling shade cast by distant objects such as buildings and treelines"
   extends IDEAS.Buildings.Components.Shading.Interfaces.PartialShading(
     final controlled=false);
-
   parameter Modelica.SIunits.Length L(min=0)
     "Distance to object perpendicular to window"
     annotation(Dialog(group="Dimensions (see illustration in documentation)"));
@@ -17,10 +16,8 @@ model BuildingShade
     "Fraction of the light that is shaded, e.g. smaller than 1 for shading cast by tree lines.";
   final parameter Real fraSunDifSky(final min=0,final max=1, final unit="1") = 1-vieAngObj/(Modelica.Constants.pi/2)
     "Fraction of window area exposed to diffuse sun light";
-
   Real fraSunDir(final min=0,final max=1, final unit="1")
     "Fraction of window area exposed to direct sun light";
-
   // Computation assumes that window base is at ground level.
   // Viewing angle computed from center of glazing.
 protected
@@ -40,9 +37,7 @@ initial equation
   assert(fraSunDifSky>=0 and fraSunDifSky<=1, "In " + getInstanceName() +
     ": The parameter fraSunDifSky has the value " +String(fraSunDifSky) + " and 
     should be within [0,1]. Please contact the IDEAS developers.");
-
 equation
-
 //  verAzi = Modelica.Math.acos(cos(angInc)/cos(alt));
   verAzi = -0.69813170079773212*(cos(angInc)/cos(alt))^2 - 0.87266462599716477*cos(angInc)/cos(alt) + 1.5707963267948966;
   L1 = max(0,L/cos(verAzi));
@@ -54,12 +49,10 @@ equation
   else
     fraSunDir=1;
   end if;
-
   HShaDirTil=fraSunDir*HDirTil;
   HShaSkyDifTil = fraSunDifSky*HSkyDifTil;
   connect(angInc, iAngInc) annotation (Line(points={{-60,-50},{-14,-50},{-14,-50},
           {40,-50}}, color={0,0,127}));
-
   connect(HGroDifTil, HShaGroDifTil)
     annotation (Line(points={{-60,10},{40,10},{40,10}}, color={0,0,127}));
   annotation (

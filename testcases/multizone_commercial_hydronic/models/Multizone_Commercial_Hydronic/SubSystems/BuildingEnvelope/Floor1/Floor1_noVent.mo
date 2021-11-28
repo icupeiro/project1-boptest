@@ -1,6 +1,5 @@
 within Multizone_Commercial_Hydronic.SubSystems.BuildingEnvelope.Floor1;
 model Floor1_noVent
-
   replaceable package Medium = IDEAS.Media.Air constrainedby
     Modelica.Media.Interfaces.PartialMedium;
   outer IDEAS.BoundaryConditions.SimInfoManager sim "Data reader"
@@ -405,7 +404,6 @@ model Floor1_noVent
 //       L=5,
 //       hWin=(str1stFlr.WindowF + str1stFlr.WindowG)/str1stFlr.WindowHeight1stFlr,
 //       dh=10 - 6.77),
-
   IDEAS.Buildings.Components.InternalWall internalWallhallSZ1(
     inc=IDEAS.Types.Tilt.Wall,
     azi=Multizone_Commercial_Hydronic.Data.Orientations.N,
@@ -552,10 +550,8 @@ model Floor1_noVent
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[7] gainCon
   "Bus to connect the convective heat transfer to the zones"
     annotation (Placement(transformation(extent={{130,-60},{150,-40}})));
-
   parameter Real[7] A_Conv = {northZone.A, southZone1.A, southZone2.A, meetingRoom1.A,
   meetingRoom2.A, hall.A, bathroomZone.A} "Convective area of zones";
-
   parameter Real mSenFac=5
     "Correction factor for thermal capacity of zone air.";
   Modelica.Blocks.Interfaces.RealInput[5] nOcc
@@ -564,7 +560,6 @@ model Floor1_noVent
         extent={{-20,-20},{20,20}},
         rotation=90,
         origin={90,-100})));
-
   parameter Modelica.Media.Interfaces.Types.Temperature T_start=293.15
     "Start value of temperature";
   Modelica.Blocks.Math.Gain gain1(k=1/3) annotation (Placement(transformation(
@@ -855,7 +850,6 @@ equation
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-
   connect(roof1stFlr.port_emb[1], port_emb) annotation (Line(points={{-80,76},{
           -80,100},{140,100},{140,70}}, color={191,0,0}));
   //NOTE: Hall does not have TABS

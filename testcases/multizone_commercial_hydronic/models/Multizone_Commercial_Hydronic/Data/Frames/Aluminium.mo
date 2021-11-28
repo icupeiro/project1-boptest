@@ -7,5 +7,4 @@ record Aluminium "Old aluminium frame"
 Aluminum window frame. U value may vary.
 </p>
 </html>"));
-
 end Aluminium;

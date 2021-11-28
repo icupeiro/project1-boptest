@@ -1,7 +1,6 @@
 within Multizone_Commercial_Hydronic.Data.Parameters;
 record Str2ndFlr
   extends Modelica.Icons.Record;
-
   //OuterWalls and Windows
   parameter Modelica.SIunits.Height WindowHeight = 2.69;
   parameter Modelica.SIunits.Height Height2ndFlr = 2.95;
@@ -30,12 +29,10 @@ record Str2ndFlr
   parameter Modelica.SIunits.Area AWindows_2ndFlr_SZ[4] = {WindowD, 3*WindowC+WindowB, 5*(WindowC+WindowA)+WindowC, 2*(WindowC+WindowB)};
   parameter Modelica.SIunits.Area AGlazing_2ndFlr_SZ[4] = {GlazingD, 3*GlazingC+GlazingB, 5*(GlazingC+GlazingA)+GlazingC, 2*(GlazingC+GlazingB)};
   parameter Real FrameRatio_2ndFlr_SZ[4] = {1 - AGlazing_2ndFlr_SZ[1]/AWindows_2ndFlr_SZ[1], 1 - AGlazing_2ndFlr_SZ[2]/AWindows_2ndFlr_SZ[2],  1 - AGlazing_2ndFlr_SZ[3]/AWindows_2ndFlr_SZ[3], 1 - AGlazing_2ndFlr_SZ[4]/AWindows_2ndFlr_SZ[4]};
-
   //InnerWalls
   parameter Modelica.SIunits.Area AglassWall = 3.2*2*Height2ndFlr;
   parameter Modelica.SIunits.Area AinternalWalls[2] = Height2ndFlr*{4.84+3.49, 3.2*2};
   parameter Modelica.SIunits.Area Awall_NZSZ = Height2ndFlr*(4.84+3.49);
-
   //RectangularZones
   //    BathroomZone
   parameter Modelica.SIunits.Length l_2ndFlr_BRZ = 3.55;
@@ -59,9 +56,7 @@ record Str2ndFlr
   parameter Modelica.SIunits.Length l_2ndFlr_CPR = 4.84+3.49;
   parameter Modelica.SIunits.Length w_2ndFlr_CPR = 3.2;
   parameter Modelica.SIunits.Volume Vol_2ndFlr_CPR = l_2ndFlr_CPR*w_2ndFlr_CPR*Height2ndFlr;
-
   parameter Modelica.SIunits.Volume Flr2nd_TotalVol = Vol_2ndFlr_BRZ+Vol_2ndFlr_CPR+Vol_2ndFlr_MTR1+Vol_2ndFlr_MTR2+Vol_2ndFlr_NZ+Vol_2ndFlr_SZ2;
-
   //Floor area
   parameter Modelica.SIunits.Area Atotal2ndFlr = l_2ndFlr_CPR*w_2ndFlr_CPR + l_2ndFlr_BRZ*w_2ndFlr_BRZ + l_2ndFlr_MTR1*w_2ndFlr_MTR1 + l_2ndFlr_MTR2*w_2ndFlr_MTR2 + Vol_2ndFlr_SZ/Height2ndFlr + Vol_2ndFlr_NZ/Height2ndFlr;
   parameter Modelica.SIunits.Area A_2ndFlr[6] = {Vol_2ndFlr_NZ/Height2ndFlr, Vol_2ndFlr_SZ/Height2ndFlr, l_2ndFlr_MTR1*w_2ndFlr_MTR1, l_2ndFlr_MTR2*w_2ndFlr_MTR2, l_2ndFlr_CPR*w_2ndFlr_CPR, l_2ndFlr_BRZ*w_2ndFlr_BRZ};

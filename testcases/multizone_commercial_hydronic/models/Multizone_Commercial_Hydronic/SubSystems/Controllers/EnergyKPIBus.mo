@@ -1,9 +1,7 @@
 within Multizone_Commercial_Hydronic.SubSystems.Controllers;
 expandable connector EnergyKPIBus "Data bus that stores sensor data"
   extends Modelica.Icons.SignalBus;
-
   //COMPONENT LEVEL #########################################################################
-
   //Heat pump 1
   Real COP_HP1 "Instant COP of heat pump 1";
   Real SCOP_HP1 "Seasonal COP of heat pump 1";
@@ -35,7 +33,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Modelica.SIunits.Energy Qcon_totalHP "Condenser heating energy of combined heat pumps";
   Modelica.SIunits.Power dotQeva_totalHP "Evaporator heating power of combined heat pumps";
   Modelica.SIunits.Energy Qeva_totalHP "Evaporator heating energy of combined heat pumps";
-
   //Cooling tower
   Modelica.SIunits.Power dotW_CT "Cooling tower electrical power";
   Modelica.SIunits.Energy W_CT "Cooling tower electrical energy";
@@ -83,7 +80,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Modelica.SIunits.Energy Q_TABScomp_heating "TABS (component level) total heating thermal energy";
   Modelica.SIunits.Power dotQ_TABScomp_cooling "TABS (component level) total cooling thermal power";
   Modelica.SIunits.Energy Q_TABScomp_cooling "TABS (component level) total cooling thermal energy";
-
   Modelica.SIunits.Power dotQ_TABS "power from TABS both heating and cooling";
   Modelica.SIunits.Energy Q_TABS "energy from TABS both heating and cooling (for balance)";
   //Pumps
@@ -121,7 +117,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   //Others
   Modelica.SIunits.Power dotQ_buffTank "buffer tank power losses";
   Modelica.SIunits.Energy Q_buffTank "buffer tank energy losses";
-
   /// FCUs ---------- nonGEOTABS
   Modelica.SIunits.Power[22] dotW_FCU "Fan power of FCUs";
   Modelica.SIunits.Energy[22] W_FCU "Fan energy of FCUs";
@@ -129,11 +124,8 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Modelica.SIunits.Energy[22] Qhea_FCU "Thermal heating energy of FCUs";
   Modelica.SIunits.Power[22] dotQcoo_FCU "Thermal cooling power of FCUs";
   Modelica.SIunits.Energy[22] Qcoo_FCU "Thermal cooling energy of FCUs";
-
   // SYSTEM INDICATORS #######################################################################################
-
   //TABS -- Primary system --------------------------------------------------------------------------------
-
     //Total
     //Heating
   Modelica.SIunits.Power dotQ_TABSsystem_heating "TABS (system level) total heating thermal power";
@@ -153,9 +145,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Real rQ_Ren_TABS_cooling "TABS renewable source cooling thermal energy ratio (borefield)";
   Real EER_TABS "TABS instant performance for cooling";
   Real SEER_TABS "TABS seasonal performance for cooling";
-
-
-
   //Air conditioning -- Secondary system ------------------------------------------------------------------
     //AHU Efficiency
     //Total ventilation system
@@ -169,41 +158,31 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Modelica.SIunits.Energy Q_Vent_cooling "Total ventilation cooling energy";
   Real EER_Vent "Total ventilation instant performance for cooling";
   Real SEER_Vent "Total ventilation seasonal performance for cooling";
-
-
   //DHW
   //--Infrax does not have DHW modeled
-
   //Electricity production
   //--Infrax does not have PV modeled
-
-
   //Fractions
   //Between heating and cooling
   Real dot_f_hea "From total instant power that goes to the building, fraction that goes for heating";
   Real dot_f_coo "From total instant power that goes to the building, fraction that goes for cooling";
   Real f_hea "From total energy that went to the building, fraction that went for heating";
   Real f_coo "From total energy that went to the building, fraction that went for cooling";
-
   Real dot_f_tabs_hea "From the total instant power that goes to tabs, fraction that goes to heating";
   Real dot_f_tabs_coo "From the total instant power that goes to tabs, fraction that goes to cooling";
   Real f_tabs_hea "From the total energy that went to tabs, fraction that was used for heating";
   Real f_tabs_coo "From the total energy that went to tabs, fraction that was used for cooling";
-
   Real dot_f_vent_hea "From the total instant power that goes to the ventilation system, fraction that goes to heating";
   Real dot_f_vent_coo "From the total instant power that goes to the ventilation system, fraction that goes to cooling";
   Real f_vent_hea "From the total energy that went to the ventilation system, fraction that was used for heating";
   Real f_vent_coo "From the total energy that went to the ventilation system, fraction that was used for cooling";
-
   Real dot_f_ct_hea "From the total instant power dissipated by the cooling tower, fraction that is dissipated from the heating side";
   Real dot_f_ct_coo "From the total instant power dissipated by the cooling tower, fraction that is dissipated from the cooling side";
   Real f_ct_hea "From the total energy dissipated by the cooling tower, fraction that was dissipated from the heating side";
   Real f_ct_coo "From the total energy dissipated by the cooling tower, fraction that was dissipated from the cooling side";
-
   //Heating fractions Qhea = Qcon = Qtabs+Qvent+Qct
   Real dot_f_hea_ren "From the total instant heating power, fraction that comes from RENEWABLE(borefield) power";
   Real f_hea_ren "From the total heating energy, fraction that comes from RENEWABLE(borefield) energy";
-
   Real dot_f_hea_tabs "From the total instant heating (condenser) power, fraction that is used in TABS";
   Real f_hea_tabs "From the total heating (condenser) energy, fraction that is used in TABS";
   Real dot_f_hea_tabs_ren "From the total instant heating (condenser) power, RENEWABLE (extracted from borefield) fraction that is used in TABS";
@@ -216,7 +195,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Real f_hea_ct "From the total heating (condenser) energy, fraction that is dissipated in the cooling tower";
   Real dot_f_hea_ct_ren "From the total instant heating (condenser) power, RENEWABLE (extracted from borefield) fraction that is dissipated in the cooling tower";
   Real f_hea_ct_ren "From the total heating (condenser) energy, RENEWABLE (extracted from borefield) fraction that is dissipated in the cooling tower";
-
   //Cooling fractions Qcoo = Qtabs + Qvent = Qhp+Qren(inj)+Qct
   Real dot_f_coo_tabs "From the total cooling instant power, fraction that is used by TABS";
   Real dot_f_coo_vent "From the total cooling instant power, fraction that is used by ventilation";
@@ -228,7 +206,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Real f_coo_ren "From the total cooling energy, fraction that comes from the borefield (renewable)";
   Real f_coo_hp "From the total cooling energy, fraction that comes from the evaporator";
   Real f_coo_ct "From the total cooling energy, fraction that comes from the cooling tower";
-
   // BUILDING INDICATORS
   Modelica.SIunits.Energy Q_total_heating "Total heating thermal energy of the building [kWh]";
   Modelica.SIunits.Energy Q_total_cooling "Total cooling thermal energy of the building [kWh]";
@@ -236,7 +213,6 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Real spQ_total_heating(unit="kJ/(m2.s)") "Total specific heating thermal energy of the building [kWh/y/m2]";
   Real spQ_total_cooling(unit="kJ/(m2.s)") "Total specific cooling thermal energy of the building [kWh/y/m2]";
   Real spW_total(unit="kJ/(m2.s)") "Total specific electrical energy used by the building [kWh/y/m2]";
-
     //Borefield
   Modelica.SIunits.Power dotQ_borFie "Borefield power balance into the ground";
   Modelica.SIunits.Energy Q_borFie "Borefield energy balance into the ground";
@@ -245,11 +221,8 @@ expandable connector EnergyKPIBus "Data bus that stores sensor data"
   Modelica.SIunits.Power dotQ_borFie_extracted "Borefield power extracted into the ground";
   Modelica.SIunits.Energy Q_borFie_extracted "Borefield energy extracted into the ground";
   Real balance "Borefield balance factor";
-
   //CO2
   Modelica.SIunits.Concentration CO2 "Indirect CO2 emissions of the building operation";
-
-
   annotation (
     defaultComponentName="weaBus",
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,

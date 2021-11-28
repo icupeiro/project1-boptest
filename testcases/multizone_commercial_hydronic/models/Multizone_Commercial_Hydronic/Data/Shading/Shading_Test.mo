@@ -2,7 +2,6 @@ within Multizone_Commercial_Hydronic.Data.Shading;
 model Shading_Test
   extends LIDEAS.Components.LinearisationInterface(sim(
           incAndAziInBus={{IDEAS.Types.Tilt.Wall,IDEAS.Types.Azimuth.S}}, nWindow=1));
-
   LIDEAS.Components.LinZone zone(
     redeclare package Medium = IDEAS.Media.Air,
     nSurf=2,

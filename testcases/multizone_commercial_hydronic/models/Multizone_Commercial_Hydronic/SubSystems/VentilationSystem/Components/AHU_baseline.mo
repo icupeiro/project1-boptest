@@ -1,9 +1,7 @@
 within Multizone_Commercial_Hydronic.SubSystems.VentilationSystem.Components;
 model AHU_baseline
-
   extends
     Multizone_Commercial_Hydronic.SubSystems.VentilationSystem.Components.Dependencies.PartialAHU;
-
   Buildings.Fluid.FixedResistances.Junction                   spl(
     dp_nominal={0,0,0},
     massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
@@ -15,7 +13,6 @@ model AHU_baseline
     redeclare package Medium = MediumAir,
     portFlowDirection_3=Modelica.Fluid.Types.PortFlowDirection.Leaving)
     annotation (Placement(transformation(extent={{26,-54},{14,-66}})));
-
   IDEAS.Fluid.Actuators.Valves.Simplified.ThreeWayValveMotor  threeWayValveMotor(
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     massDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
@@ -135,7 +132,6 @@ model AHU_baseline
     annotation (Placement(transformation(extent={{32,-24},{46,-8}})));
 equation
   heatPort.T=273.15;
-
   connect(threeWayValveMotor.port_1, spl.port_2)
     annotation (Line(points={{-10,-60},{14,-60}}, color={0,127,255}));
   connect(heaCoi.port_a2, port_a2) annotation (Line(points={{70,-60},{86,-60},{

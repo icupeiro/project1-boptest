@@ -5,5 +5,4 @@ record borFie
     conDat = Multizone_Commercial_Hydronic.Data.Parameters.BorefieldData.General(),
     soiDat = Multizone_Commercial_Hydronic.Data.Parameters.BorefieldData.Soil(),
     filDat = Multizone_Commercial_Hydronic.Data.Parameters.BorefieldData.Filling());
-
 end borFie;

@@ -1,8 +1,6 @@
 within Multizone_Commercial_Hydronic.Data.Interfaces;
 partial record Construction "Template record for surface structure: define/order layers from outer to inner"
-
   extends Modelica.Icons.MaterialProperty;
-
   parameter Integer nLay(min=1)=size(mats,1)
     "Number of layers of the construction, including gaps";
   parameter Integer nGain = size(locGain,1)
@@ -19,7 +17,6 @@ partial record Construction "Template record for surface structure: define/order
     "Thermal insulation thickness of insulationType";
   parameter Modelica.SIunits.Angle incLastLay = IDEAS.Types.Tilt.Other
     "Set to IDEAS.Types.Tilt.Floor if the last layer of mats is a floor, to .Ceiling if it is a ceiling and to .Other if other. For verification purposes.";
-
   annotation (Documentation(info="<html>
 <p><h4><font color=\"#008000\">General description</font></h4></p>
 <p><h5>Goal</h5></p>

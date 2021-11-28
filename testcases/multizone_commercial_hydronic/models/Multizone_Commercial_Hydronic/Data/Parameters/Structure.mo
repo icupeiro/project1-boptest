@@ -1,11 +1,9 @@
 within Multizone_Commercial_Hydronic.Data.Parameters;
 record Structure
   extends Modelica.Icons.Record;
-
   final constant Real pi=Modelica.Constants.pi;
   //Total building height
   parameter Modelica.SIunits.Height h = 15;
-
   //Windows
   parameter Modelica.SIunits.Height WindowHeight = 2.69;
   parameter Modelica.SIunits.Area WindowA = WindowHeight*(0.025+0.08+0.29+0.08+0.055+0.765+0.065);
@@ -16,7 +14,6 @@ record Structure
   parameter Modelica.SIunits.Area GlazingB = 0.735*(WindowHeight-0.08-0.105)+0.31*(WindowHeight-0.05-0.075);
   parameter Modelica.SIunits.Area GlazingC = 1.23*(WindowHeight-0.05-0.075);
   parameter Modelica.SIunits.Area GlazingD = 0.73*(WindowHeight-0.05-0.075);
-
   //Stairs areas
   parameter Modelica.SIunits.Area A_westStair = 4.8*4.85 "area of the western stairs";
   parameter Modelica.SIunits.Area A_eastStair = 5*2.55 "area of the eastern stairs";
@@ -24,7 +21,6 @@ record Structure
   parameter Modelica.SIunits.Area AWindows_eastStair = 1.8*(4.35+2.91);
   parameter Modelica.SIunits.Volume Vol_westStair = A_westStair*h;
   parameter Modelica.SIunits.Volume Vol_eastStair = A_eastStair*h;
-
   //Basement parameters (garage)
   parameter Modelica.SIunits.Height HeightFlr = 2.60;
   parameter Modelica.SIunits.Area A_Grg = 28.8*32.6+13.08*(32.6+5.7)/2;
@@ -32,10 +28,8 @@ record Structure
   parameter Modelica.SIunits.Area AWall_Grg_Soil = (13.08+5.7+28.8+32.6+28.8)*HeightFlr "wall of the basement in contact with the soil";
   parameter Modelica.SIunits.Area AWall_Grg_Out = 40.47*HeightFlr
                                                                  "wall of the basement facing the west outdoor";
-
   //koepels
   parameter Modelica.SIunits.Area A_stairs_koepel = 1.3*0.8;
-
   //Areas between floors (TABS loops)
   //   Floor 3 loops
   parameter Modelica.SIunits.Area A_3rdFlr_SZ = (11*32.3+(4.75+0.4)*1.1);
@@ -64,11 +58,9 @@ record Structure
                                                                                                                                                              "same as hall area (str1stFlr) withouth the triangle part";
   //    Floor 0 and 2
   parameter Modelica.SIunits.Area A_hall_2SZ = 6.75*4.50 "glass hollow";
-
   //    Floor 1 external
   parameter Modelica.SIunits.Area A_Roof1stFlr_hall = Square(7.27+3.18+0.21)*sin(71*pi/180)*cos(71*pi/180)/2;
   parameter Modelica.SIunits.Area A_Roof1stFlr_SZ1 = ((5.4+0.3+1.2)*2.7*4+Square(0.55+4.8+0.95+0.84)*sin(71*pi/180)*cos(71*pi/180)/2)-1.2*2.7*3;
-
   //    Floor 0 and 1
   parameter Modelica.SIunits.Area A_hall_1SZ2 = 2.05*(4*2.7-3.84)+2.7*6.8;
   parameter Modelica.SIunits.Area A_hall_1hall = ((0.3+0.7+1.1+1.2+2.4+0.4+1.12+1.18+2.65)*(5.3+0.8)+1.1*(4.75-0.4)+Square(5.3+4.75+0.4)/(2*tan(71*pi/180))) "same as 1st Flr hall";
@@ -86,11 +78,9 @@ record Structure
   parameter Modelica.SIunits.Area A_FirstAid_1NZ1 = 3.84*(2.55-(3.2-2.05));
   parameter Modelica.SIunits.Area A_FirstAid_1MT1 = 3.84*(3.2-2.05);
   parameter Modelica.SIunits.Area A_BRZ_1BRZ = (2.30+2.35+0.15)*4.3;
-
   parameter Modelica.SIunits.Area A_2Flr_3Flr[8] = {A_2NZ_3SZ,  A_2SZ_3SZ, A_2MT1_3SZ, A_2MT2_3SZ, A_2BRZ_3BRZ, A_2NZ_3CPR, A_2NZ_3MTR, A_2NZ_3SmaR+A_2NZ_3StoR};
   parameter Modelica.SIunits.Area A_1Flr_2Flr[7] = {A_1NZ_2NZ, A_1SZ1_2SZ, A_1SZ2_2SZ, A_1MT1_2MT1, A_1MT2_2MT2, A_1BRZ_2BRZ, A_1HALL_2SZ};
   parameter Modelica.SIunits.Area A_GndFlr_1stFlr[16] = {A_hall_1SZ2, A_hall_1hall, A_hall_1MT1, A_hall_1SZ1, A_KT_1SZ2, A_KT_1MT2, A_KT_1NZ, A_SV_1SZ2, A_SV_1NZ, A_Sto_1SZ2, A_Sto_1NZ, A_MT1_1SZ1, A_MT2_1SZ2, A_FirstAid_1NZ1, A_FirstAid_1MT1, A_BRZ_1BRZ};
-
   //CCA Areas
   parameter Modelica.SIunits.Area CCA_Areas[35] = {A_3rdFlr_SZ, A_3rdFlr_CPR, A_3rdFlr_MTR, A_3rdFlr_SmaR,
                                                    A_2NZ_3SZ,  A_2SZ_3SZ, A_2MT1_3SZ, A_2MT2_3SZ, A_2NZ_3CPR, A_2NZ_3MTR, A_2NZ_3SmaR+A_2NZ_3StoR,
@@ -125,7 +115,6 @@ record Structure
   algorithm
     y := x*x;
   end Square;
-
    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end Structure;

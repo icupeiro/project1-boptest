@@ -14,7 +14,6 @@ record Air "parameters for air system"
   parameter Modelica.SIunits.Temperature closeCoo[15] = {0.5, 1.3, 1.3, 100, 1.3, 1.3, 1.3, 100, 1.3, 1.3, 1.3, 1.3, 1.3, -0.5, -1}; //parameter which deactivates vav cooling flow demand in ducts with VAV
   //1 SZ_3rdFlr, 2 CPR_3rdFlr, 3 SmaR_3rdFlr, 4 NZ_2ndFlr, 5 SZ_2ndFlr, 6 MT1_2ndFlr, 7 MT2_2ndFlr,
   //8 NZ_1stFlr, 9 SZ1_1stFlr, 10 SZ2_1stFlr, 11 MT1_1stFlr, 12 MT2_1stFlr, 13 KT_GndFlr, 14 MT1_GndFlr, 15 MT2_GndFlr
-
   //VAV and ducts - extract
   //Values are taken from commisioning tests when possible, otherwise nominal values are used
   parameter Modelica.SIunits.MassFlowRate m_nominal_extract_duct[10] = {150, 200, 200, 100, 50, 250, 150, 100, 90, 70}*1.225/3600;
@@ -23,7 +22,6 @@ record Air "parameters for air system"
   parameter Modelica.SIunits.MassFlowRate m_nominal_extract_vav_min[14] = {0, 0, 0, 0, 300, 0, 0, 0, 300, 0, 0, 0, 0, 0}*1.225/3600; //minimum value for some of the VAVs
   //1 SZ_3rdFlr, 2 CPR_3rdFlr, 3 SmaR_3rdFlr, 4 NZ_2ndFlr, 5 SZ_2ndFlr, 6 MT1_2ndFlr, 7 MT2_2ndFlr,
   //8 NZ_1stFlr, 9 SZ2_1stFlr, 10 MT1_1stFlr, 11 MT2_1stFlr, 12 KT_GndFlr, 13 MT1_GndFlr, 14 MT2_GndFlr
-
   //Air heating coils
   //Code: 1 SZ_3rdFlr, 2 CPR_3rdFlr, 3 MTR_3rdFlr, 4 SmaR_3rdFlr, 5 NZ_2ndFlr, 6 SZ_2ndFlr, 7 MT1_2ndFlr, 8 MT2_2ndFlr,
   // 9 NZ_1stFlr, 10 SZ1_1stFlr, 11 SZ2_1stFlr, 12 MT1_1stFlr, 13 MT2_1stFlr, 14 reception, 15 EHBO, 16 KT, 17 MT1, 18 MT2,
@@ -43,10 +41,8 @@ record Air "parameters for air system"
   parameter Modelica.SIunits.Temperature TWatRet_nominal = 273.15 + 28;
   parameter Modelica.SIunits.Temperature TAirSup_nominal = 273.15 + 15;
   parameter Modelica.SIunits.Temperature TAirRet_nominal = 273.15 + 25;
-
   parameter Real k[21] = {2, 2, 2, 2, 2, 2, 2, 5, 10, 5, 2, 2, 2, 5, 5, 2, 2, 2, 2, 2, 2};
   parameter Modelica.SIunits.Time[21] Ti = {100, 100, 100, 100, 100, 100, 100, 100, 120, 60, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
-
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end Air;
