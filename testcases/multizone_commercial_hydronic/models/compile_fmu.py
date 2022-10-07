@@ -17,7 +17,7 @@ from pymodelica import environ
 #environ['JVM_ARGS'] = '-Xmx4096m'
 #environ['JVM_ARGS'] = '-Xmx8192m'
 #environ['JVM_ARGS'] = '-Xmx16384m'
-environ['JVM_ARGS'] = '-Xmx26g'
+environ['JVM_ARGS'] = '-Xmx22g'
 
 def compile_fmu():
     '''Compile the fmu.
