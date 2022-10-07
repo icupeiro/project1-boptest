@@ -14,9 +14,10 @@ to be simulated.
 import subprocess
 import pandas as pd
 import os
+import numpy as np
 
 def find_days(heat, cool, data='simulate', img_name='boptest_bestest_air',
-              plot = False):
+              plot = False, peak_cool_restriction_hour=None):
     '''Find the start and final times for the test case scenarios.
 
     Parameters
@@ -38,6 +39,12 @@ def find_days(heat, cool, data='simulate', img_name='boptest_bestest_air',
         performed.
     plot: boolean
         Set to True to show an overview of the days found
+    peak_cool_restriction_hour: integer, optional
+        Hour if want peak cooling loads to only be considered equal to or after the hour
+        each day.  This can be useful to avoid including hours with peak
+        cooling loads due to morning start up, which may lead to the
+        same peak load for many different days.  None will have no restrictions.
+        Default is None.
 
     Returns
     -------
@@ -70,10 +77,10 @@ def find_days(heat, cool, data='simulate', img_name='boptest_bestest_air',
         subprocess.call(cmd)
 
         # Read results to data frame
-        df = pd.read_csv('simulation.csv', index_col='Time')
+        df_raw = pd.read_csv('simulation.csv', index_col='Time')
 
     elif os.path.isfile(data) and data.endswith('.csv'):
-        df = pd.read_csv(data, index_col='Time')
+        df_raw = pd.read_csv(data, index_col='Time')
 
     else:
         raise Exception('The data argument should be either the <simulate>'/
@@ -81,46 +88,62 @@ def find_days(heat, cool, data='simulate', img_name='boptest_bestest_air',
                         'the yearly model simulation data. ')
 
     # Load data
-    df.index = pd.TimedeltaIndex(df.index.values, unit='s')
-    df = df.resample('15T').mean()
+    df_raw.index = pd.TimedeltaIndex(df_raw.index.values, unit='s')
+    df = df_raw.resample('15T').mean()
     df.dropna(axis=0, inplace=True)
     # Since assume two-week test period with one-week warmup,
     # edges of year are not available to choose from
-    df_available = df.loc[pd.Timedelta(days=14):pd.Timedelta(days=365-7)]
+    df_available =  df.loc[pd.Timedelta(days=14):pd.Timedelta(days=365-7)]
+    df_available_cool = df[cool].loc[pd.Timedelta(days=14):pd.Timedelta(days=365-7)]
+    df_cool = df[cool]
+    if peak_cool_restriction_hour is not None:
+        # Limit available cooling hours to those after restriction
+        df_available_cool = df_available_cool[df_available_cool.index.seconds/3600>=peak_cool_restriction_hour]
+        df_cool = df_cool[df_cool.index.seconds/3600>=peak_cool_restriction_hour]
+    df_available_heat = df[heat].loc[pd.Timedelta(days=14):pd.Timedelta(days=365-7)]
+    df_heat = df[heat]
 
 
     # Find peak
     if heat is not None:
-        peak_heat_day = df_available[heat].idxmax().days
+        peak_heat_day = df_available_heat.idxmax().days
         days['peak_heat_day'] = peak_heat_day
         print('Peak heat is day {0}.'.format(peak_heat_day))
 
     if cool is not None:
-        peak_cool_day = df_available[cool].idxmax().days
+        peak_cool_day = df_available_cool.idxmax().days
         days['peak_cool_day'] = peak_cool_day
         print('Peak cool is day {0}.'.format(peak_cool_day))
 
     # Find typical
-    df_daily = df.resample('D').max()
-    df_available_daily = df_available.resample('D').max()
+    df_daily_cool = df_cool.resample('D').max()
+    df_available_daily_cool = df_available_cool.resample('D').max()
+    df_daily_heat = df_heat.resample('D').max()
+    df_available_daily_heat = df_available_heat.resample('D').max()
 
     if heat is not None:
-        median_heat = df_daily[heat][df_daily[heat]>1].median()
-        typical_heat_day = df_available_daily[heat][df_available_daily[heat].values <= median_heat].sort_values(ascending=False).index[0].days
+        median_heat = df_daily_heat[df_daily_heat>1].median()
+        typical_heat_day = df_available_daily_heat[df_available_daily_heat.values <= median_heat].sort_values(ascending=False).index[0].days
         days['typical_heat_day'] = typical_heat_day
         print('Typical heat is day {0}.'.format(typical_heat_day))
 
     if cool is not None:
-        median_cool = df_daily[cool][df_daily[cool]>1].median()
-        typical_cool_day = df_available_daily[cool][df_available_daily[cool].values <= median_cool].sort_values(ascending=False).index[0].days
+        median_cool = df_daily_cool[df_daily_cool>1].median()
+        typical_cool_day = df_available_daily_cool[df_available_daily_cool.values <= median_cool].sort_values(ascending=False).index[0].days
         days['typical_cool_day'] = typical_cool_day
         print('Typical cool is day {0}.'.format(typical_cool_day))
 
     # Find heat cool mix
-
+    df_available_daily = df_available.resample('D').sum()
     if (heat is not None) and (cool is not None):
-        mix = df_available_daily[heat]+df_available_daily[cool]-abs(df_available_daily[heat]-df_available_daily[cool])
-        mix_day = mix.idxmax().days
+        df_available_daily_sum = pd.DataFrame(index=df_available_daily.index, columns=df_available_daily.columns)
+        # For every day, integrate heating and cooling load
+        for d in df_available_daily.index:
+            for c in df_available_daily_sum.columns:
+                df_available_daily_sum.loc[d,c] = np.trapz(df_raw[c][df_raw.index.days==d.days], df_raw.index.seconds[df_raw.index.days==d.days])
+        # Calculate mix day
+        mix = df_available_daily_sum[heat]+df_available_daily_sum[cool]-abs(df_available_daily_sum[heat]-df_available_daily_sum[cool])
+        mix_day = mix.astype(float).idxmax().days
         days['mix_day'] = mix_day
         print('Mix is day {0}.'.format(mix_day))
 

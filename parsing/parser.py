@@ -42,15 +42,19 @@ def parse_instances(model_path, file_name):
     '''
 
     # Compile fmu
+<<<<<<< HEAD
     fmu_path = compile_fmu(model_path, file_name, compiler_options={'generate_html_diagnostics':True})
+=======
+    fmu_path = compile_fmu(model_path, file_name, jvm_args="-Xmx8g")
+>>>>>>> aed9bc0c89c6a906f0c28adaaab551f871f3a383
     # Load fmu
     fmu = load_fmu(fmu_path)
     # Check version
     if fmu.get_version() != '2.0':
         raise ValueError('FMU version must be 2.0')
     # Get all parameters
-    allvars =   fmu.get_model_variables(variability = 0).keys() + \
-                fmu.get_model_variables(variability = 1).keys()
+    allvars =   list(fmu.get_model_variables(variability = 0).keys()) + \
+                list(fmu.get_model_variables(variability = 1).keys())
     # Initialize dictionaries
     instances = {'Overwrite':dict(), 'Read':dict()}
     signals = {}
@@ -157,11 +161,12 @@ def write_wrapper(model_path, file_name, instances):
                 f.write('\tModelica.Blocks.Interfaces.RealInput {0};\n'.format(input_signals_w_info[block], block))
                 # Instantiate input activation
                 f.write('\tModelica.Blocks.Interfaces.BooleanInput {0};\n'.format(input_activate_w_info[block], block))
-            # Add outputs for every read block
+            # Add outputs for every read block and overwrite block
             f.write('\t// Out read\n')
-            for block in instances['Read'].keys():
-                # Instantiate input signal
-                f.write('\tModelica.Blocks.Interfaces.RealOutput {0} = mod.{1}.y "{2}";\n'.format(_make_var_name(block,style='output',attribute='(unit="{0}")'.format(instances['Read'][block]['Unit'])), block, instances['Read'][block]['Description']))
+            for i in ['Read', 'Overwrite']:
+                for block in instances[i].keys():
+                    # Instantiate signal
+                    f.write('\tModelica.Blocks.Interfaces.RealOutput {0} = mod.{1}.y "{2}";\n'.format(_make_var_name(block,style='output',attribute='(unit="{0}")'.format(instances[i][block]['Unit'])), block, instances[i][block]['Description']))
             # Add original model
             f.write('\t// Original model\n')
             f.write('\t{0} mod(\n'.format(model_path))
@@ -178,13 +183,21 @@ def write_wrapper(model_path, file_name, instances):
             # End file -- with hard line ending
             f.write('end wrapped;\n')
         # Export as fmu
+<<<<<<< HEAD
         fmu_path = compile_fmu('wrapped', [wrapped_path]+file_name, compiler_options={'generate_html_diagnostics':True})
+=======
+        fmu_path = compile_fmu('wrapped', [wrapped_path]+file_name, jvm_args="-Xmx8g")
+>>>>>>> aed9bc0c89c6a906f0c28adaaab551f871f3a383
     # If there are not, write and export wrapper model
     else:
         # Warn user
         warnings.warn('No signal exchange block instances found in model.  Exporting model as is.')
         # Compile fmu
+<<<<<<< HEAD
         fmu_path = compile_fmu(model_path, file_name, compiler_options={'generate_html_diagnostics':True})
+=======
+        fmu_path = compile_fmu(model_path, file_name, jvm_args="-Xmx8g")
+>>>>>>> aed9bc0c89c6a906f0c28adaaab551f871f3a383
         wrapped_path = None
 
     return fmu_path, wrapped_path
